@@ -53,7 +53,7 @@ test('all 8 tiles open a sheet', async ({ page }) => {
   }
 });
 
-test('search finds a dealer by town; the 8 pm link opens the summary', async ({ page }) => {
+test('search finds a dealer by town', async ({ page }) => {
   await page.goto('/index.html#/owner');
   await page.locator('#search-toggle').click();
   await page.locator('#search-input').fill('Mydukur');
@@ -61,9 +61,7 @@ test('search finds a dealer by town; the 8 pm link opens the summary', async ({ 
   await page.locator('.search-results .hit', { hasText: 'Sri Durga Electricals' }).click();
   await expect(page).toHaveURL(/#\/owner\/reports\/dealer\/D-/);
   await page.goto('/index.html#/owner');
-  await page.getByRole('link', { name: /Tonight’s 8 pm summary/ }).click();
-  await expect(page).toHaveURL(/#\/whatsapp\/summary$/);
-  await expect(page.locator('.wa-msg')).toContainText('Sales:');
+  await expect(page.locator('a[href*="whatsapp"]')).toHaveCount(0);
   expect(page.errors).toEqual([]);
 });
 

@@ -1,19 +1,24 @@
 // "One day at Devansh": eight steps with a bar (phone) or a side rail (laptop). Each step switches role and screen,
 // rings what to tap, and can do the step for the presenter with the scripted GUIDED records (the same store actions the screens use).
 // The current step is at localStorage['dm.guide']; the small context (before numbers, ids made on the way) is at 'dm.guide.ctx'.
-import { t, onLangChange } from './i18n.js';
+import { addStrings, t, onLangChange } from './i18n.js';
 import {
   getState, subscribe, resetDemo, advancePO, receivePO, createOrder, approveCredit,
-  createTrip, markLoaded, markLeft, markDelivered, recordPayment,
+  createTrip, markLoaded, markLeft, markDelivered, recordPayment, setDemoClock,
 } from './store.js';
 import { cycleBar, dealerBalance } from './selectors.js';
 import { GUIDED } from './seed.js';
-import { setRole } from './views/staff.js';
+import { setRole, resetRole } from './views/staff.js';
+import { setSince } from './ui/since.js';
 import { inr, esc, invoiceHref } from './ui/common.js';
+import guideStrings from './strings/en-guide.js';
+addStrings(guideStrings);
 
 const KEY = 'dm.guide';
 const CTX = 'dm.guide.ctx';
-const OTHER_KEYS = ['dm.syncQueue', 'dm.offline'];
+const OTHER_KEYS = ['dm.syncQueue', 'dm.offline', 'dm.staffDealer', 'dm.range', 'dm.filters'];
+// The story's time of day at each step (see the greeting and the "Delivered at" times); the clock never goes backwards.
+const STEP_TIME = { 2: '10:20', 3: '11:40', 4: '13:10', 5: '15:30', 7: '17:45', 8: '19:55' };
 const FULL = { full: true };
 const BY = GUIDED.by;
 
@@ -120,8 +125,10 @@ export const STEPS = [
   },
   {
     role: 'owner', hash: '#/owner', targets: () => ['.part[data-part="bank"]'], done: () => true,
-    vars: () => ({ before: inr(ctx().before?.bank ?? 0), after: inr(cycleBar(getState()).bank) }),
-    phases: [{ hash: () => '#/whatsapp/summary', targets: () => ['.wa-msg'] }],
+    vars: () => {
+      const b = ctx().before || {}; const a = cycleBar(getState());
+      return { total0: inr(b.total ?? 0), total1: inr(a.total), added: inr(a.total - (b.total ?? 0)), before: inr(b.bank ?? 0), after: inr(a.bank), moved: inr(a.bank - (b.bank ?? 0)) };
+    },
   },
 ];
 export const TOTAL = STEPS.length;
@@ -137,6 +144,8 @@ async function show(n, phase = 0) {
   const def = STEPS[n - 1];
   saveStep(n); saveCtx({ phase });
   if (def.staff) setRole(def.staff);
+  if (phase === 0 && STEP_TIME[n]) setDemoClock(STEP_TIME[n]);
+  setSince(n === TOTAL ? ctx().before || null : null);
   await def.enter?.();
   const h = hashOf(def, phase);
   wantScroll = true;
@@ -147,7 +156,7 @@ async function show(n, phase = 0) {
 export const guideStep = (n) => show(n, 0);
 
 export function resetAll() {
-  resetDemo();
+  resetDemo(); resetRole(); setSince(null);
   saveStep(null); mem.ctx = {}; write(CTX, null);
   OTHER_KEYS.forEach((k) => write(k, null));
   render();
@@ -159,7 +168,7 @@ export async function startGuide() {
   await show(1);
 }
 export function resumeGuide() { const n = savedStep(); if (n) show(n, ctx().phase || 0); }
-export function exitGuide() { saveStep(null); write(CTX, null); mem.ctx = {}; render(); }
+export function exitGuide() { setSince(null); saveStep(null); write(CTX, null); mem.ctx = {}; render(); }
 
 // ---------- the bar / rail ----------
 let bar = null;
@@ -167,6 +176,7 @@ let targetEl = null;
 let lastSel = '';
 let pending = null;
 let error = '';
+let lastPrimaryAt = 0; // a double tap on Next must not also press the button that replaces it
 
 function ensureBar() {
   if (bar) return bar;
@@ -181,8 +191,14 @@ function sizeVar() {
   const on = bar && !bar.hidden;
   document.body.classList.toggle('guide-on', !!on);
   document.documentElement.style.setProperty('--guide-h', on ? `${bar.offsetHeight}px` : '0px');
+  railTop();
+}
+
+// The laptop rail starts exactly where the header ends, and slides up to the top edge as the header scrolls away.
+function railTop() {
   const hdr = document.getElementById('hdr');
-  document.documentElement.style.setProperty('--hdr-h', hdr ? `${hdr.offsetHeight}px` : '0px');
+  const px = hdr ? Math.max(0, Math.round(hdr.getBoundingClientRect().bottom)) : 0;
+  document.documentElement.style.setProperty('--rail-top', `${px}px`);
 }
 
 function state() {
@@ -228,6 +244,9 @@ function onClick(e) {
   const { n, def, phase, done, more } = state();
   if (kind === 'back') { if (phase > 0) show(n, phase - 1); else if (n > 1) show(n - 1, 0); return; }
   const mode = b.dataset.mode;
+  const now = Date.now();
+  if (now - lastPrimaryAt < 320) return;
+  lastPrimaryAt = now;
   error = '';
   if (mode === 'back') { show(n, phase); return; }
   if (mode === 'do') {
@@ -252,7 +271,7 @@ function applyTarget() {
   let el = null; let sel = '';
   for (const s of list) { const c = viewEl.querySelector(s); if (c) { el = c; sel = s; break; } }
   if (el !== targetEl) { targetEl?.classList.remove('guide-target'); targetEl = el; el?.classList.add('guide-target'); }
-  if (el && (wantScroll || sel !== lastSel)) { el.scrollIntoView({ block: 'center', inline: 'nearest' }); wantScroll = false; }
+  if (el && (wantScroll || sel !== lastSel)) { el.scrollIntoView({ block: 'center', inline: 'nearest' }); wantScroll = false; } // the page never scrolls sideways, so this only moves it up or down
   lastSel = sel;
 }
 const later = () => { if (!pending) pending = requestAnimationFrame(applyTarget); };
@@ -267,6 +286,8 @@ export function initGuide(view) {
     subscribe(() => { render(); });
     onLangChange(() => render());
     globalThis.addEventListener('hashchange', () => { error = ''; render(); });
+    globalThis.addEventListener('scroll', railTop, { passive: true });
+    globalThis.addEventListener('resize', railTop);
   }
   render();
 }

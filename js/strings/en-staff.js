@@ -30,7 +30,7 @@ export default {
   'out.drop.pending': 'Waiting', 'out.drop.delivered': 'Delivered', 'out.drop.partial': 'Part delivered', 'out.drop.not': 'Not delivered',
   'out.reason.closed': 'Shop closed', 'out.reason.rejected': 'Rejected', 'out.reason.partial': 'Partial',
   'trip.form.title': 'New trip', 'trip.form.sub': 'Pick the vehicle and the invoices it carries', 'trip.form.vehicle': 'Vehicle', 'trip.form.driver': 'Driver',
-  'trip.form.invoices': 'Invoices waiting to go out', 'trip.form.none': 'No invoice is waiting to load.', 'trip.form.sum': '{n} invoices selected, total',
+  'trip.form.invoices': 'Invoices waiting to go out (drops follow the order ticked)', 'trip.form.none': 'No invoice is waiting to load.', 'trip.form.sum': '{n} invoices selected, total',
   'trip.form.eway': 'E-way bill number', 'trip.form.ewayHint': 'Type the e-way bill number', 'trip.form.ewayNote': 'Needed when the goods are worth more than {limit}.',
   'trip.form.pickOne': 'Tick at least one invoice.', 'trip.form.save': 'Plan trip', 'trip.form.done': 'Trip {id} planned with {n} drops.', 'trip.form.see': 'See it in Outbound',
   'ord.title': 'Order desk', 'ord.desk': 'New order', 'ord.findDealer': 'Find a dealer', 'ord.findPlaceholder': 'Name or town', 'ord.choose': 'Choose', 'ord.noDealer': 'No dealer matches.',

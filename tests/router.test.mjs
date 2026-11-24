@@ -12,12 +12,12 @@ test('owner and report lenses', () => {
   assert.deepEqual([r.name, r.params.lens], ['owner-report', 'brand']);
 });
 
-test('staff, dealer, driver, whatsapp carry their parameter', () => {
+test('staff, dealer, driver carry their parameter', () => {
   assert.deepEqual(route('#/staff/inbound').params, { page: 'inbound' });
   assert.equal(route('#/staff').name, 'staff');
   assert.deepEqual(route('#/dealer/d07').params, { dealerId: 'd07' });
   assert.deepEqual(route('#/driver/dr2').params, { driverId: 'dr2' });
-  assert.deepEqual(route('#/whatsapp/dues').params, { kind: 'dues' });
+  assert.equal(route('#/whatsapp/summary').name, 'unknown'); // the WhatsApp segment was removed
 });
 
 test('unknown hashes and trailing slashes', () => {

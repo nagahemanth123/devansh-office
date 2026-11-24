@@ -1,6 +1,8 @@
 // The start page: four role cards, the guided day, and Reset demo.
-import { t } from '../i18n.js';
+import { addStrings, t } from '../i18n.js';
 import { esc, chev } from '../ui/common.js';
+import guideStrings from '../strings/en-guide.js';
+addStrings(guideStrings);
 
 const ROLES = [['owner', '#/owner'], ['staff', '#/staff'], ['dealer', '#/dealer/D-MYD-01'], ['driver', '#/driver/demo']];
 

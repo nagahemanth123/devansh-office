@@ -1,8 +1,10 @@
-// UI strings. The demo is English only (client decision, 24 Nov): the Telugu files stay in js/strings but nothing loads them.
+// UI strings. The demo is English only (client decision, 24 Nov).
 import en from './strings/en.js';
 
 const listeners = new Set();
 
+// Screens add their own strings when they load: addStrings(await import(...)) or a plain import of a strings file.
+export function addStrings(more) { Object.assign(en, more); }
 export function getLang() { return 'en'; }
 export function setLang() { /* English only */ }
 export function onLangChange(fn) {

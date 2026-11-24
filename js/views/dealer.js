@@ -1,9 +1,13 @@
 // The dealer's phone: what he owes, how his orders are moving, his invoices and purchases at his own rates,
 // and two big buttons (reorder, raise a query). Reads only dealerView; it never sees costs or other dealers.
-import { t } from '../i18n.js';
+import { addStrings, t } from '../i18n.js';
 import { getState, subscribe, createOrder, raiseQuery } from '../store.js';
 import { dealerView } from '../selectors.js';
 import { esc, chip, inr, fmtDay, fmtTime } from '../ui/common.js';
+import phoneStrings from '../strings/en-phone.js';
+import staffStrings from '../strings/en-staff.js';
+addStrings(phoneStrings);
+addStrings(staffStrings);
 
 const FULL = { full: true };
 export const DEFAULT_DEALER = 'D-MYD-01';
@@ -14,7 +18,7 @@ const ui = { more: false, moreInv: false, panel: '', draft: '', note: null }; //
 
 const trackerHTML = (step) => {
   const at = STEPS.indexOf(step);
-  return `<ol class="dl-trk" aria-label="${esc(t('d.tracker'))}">${STEPS.map((k, i) => `<li class="${i < at ? 'done' : i === at ? 'now' : ''}"${i === at ? ' aria-current="step"' : ''}><i aria-hidden="true"></i><span class="tel">${esc(t(`d.step.${k}`))}</span></li>`).join('')}</ol>`;
+  return `<ol class="dl-trk" aria-label="${esc(t('d.tracker'))}">${STEPS.map((k, i) => `<li class="${i < at || step === 'delivered' ? 'done' : i === at ? 'now' : ''}"${i === at && step !== 'delivered' ? ' aria-current="step"' : ''}><i aria-hidden="true"></i><span class="tel">${esc(t(`d.step.${k}`))}</span></li>`).join('')}</ol>`;
 };
 
 function orderCard(o) {
@@ -29,7 +33,7 @@ function orderCard(o) {
 }
 
 // What a reorder can really ask for: the last order's items, with quantities held to what the godown has.
-const askLines = (last) => last.lines.map((l) => ({ ...l, take: Math.min(l.qty, l.inStock) })).filter((l) => l.take > 0);
+const askLines = (last) => last.lines.filter((l) => l.take > 0);
 
 function reorderHTML(last, names) {
   const lines = askLines(last);

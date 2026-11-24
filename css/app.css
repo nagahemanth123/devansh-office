@@ -48,6 +48,9 @@ a { color: inherit; }
   .search-toggle { display: none; }
 }
 
+.hdr.no-search #search, .hdr.no-search #search-toggle { display: none; }
+.hdr.no-search .brand { margin-right: auto; }
+
 /* ---------- view ---------- */
 .view { flex: 1 0 auto; width: 100%; max-width: 1280px; margin: 0 auto; padding: 24px var(--gutter) 32px; }
 .view h1 { margin: 0 0 8px; font-size: 28px; line-height: 1.15; font-weight: 800; font-stretch: 108%; }
@@ -84,7 +87,7 @@ a { color: inherit; }
   .lp-guide { grid-template-columns: 1fr auto; align-items: center; padding: 24px; }
   .lp-gbtns { min-width: 260px; }
 }
-.ftr-link { margin-left: 14px; color: var(--ink-3); text-underline-offset: 3px; }
+.ftr-link { display: inline-block; padding: 14px 8px; margin: -14px 0 -14px 6px; min-height: 44px; line-height: 16px; color: var(--ink-3); text-underline-offset: 3px; }
 .stub { margin: 0; padding: 16px; max-width: 640px; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); color: var(--ink-2); }
 .stub code { color: var(--ink-3); font-size: 14px; overflow-wrap: anywhere; }
 .btn {

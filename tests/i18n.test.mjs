@@ -1,7 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { t, getLang, setLang } from '../js/i18n.js';
+import { t, getLang, setLang, addStrings } from '../js/i18n.js';
 import en from '../js/strings/en.js';
+import guideStrings from '../js/strings/en-guide.js';
+
+addStrings(guideStrings);
 
 test('English is the only language and t() interpolates', () => {
   assert.equal(getLang(), 'en');

@@ -1,7 +1,9 @@
 // Staff desktop: a role picker, the five quick actions (always on screen), and five pages
 // (inbound, outbound, orders, ledger, stock). Each page lives in its own file and is loaded on demand.
-import { t } from '../i18n.js';
+import { addStrings, t } from '../i18n.js';
 import { esc } from '../ui/common.js';
+import staffStrings from '../strings/en-staff.js';
+addStrings(staffStrings);
 
 export const PAGES = ['inbound', 'outbound', 'orders', 'ledger', 'stock'];
 export const ROLES = ['godown', 'sales', 'accounts', 'admin'];
@@ -20,6 +22,7 @@ export function setRole(r) {
   roleNow = r;
   try { globalThis.localStorage?.setItem(ROLE_KEY, r); } catch { /* keep in memory */ }
 }
+export function resetRole() { roleNow = null; try { globalThis.localStorage?.removeItem(ROLE_KEY); } catch { /* storage blocked */ } }
 export const me = () => BY[getRole()];
 export const canSeeCost = () => getRole() !== 'godown'; // Godown never sees purchase rates or margins
 export const discountLimit = () => DISCOUNT[getRole()] ?? 0;
@@ -46,6 +49,8 @@ export function showError(root, msg) {
 export const clearError = (root) => { const b = root.querySelector('[data-error]'); if (b) b.hidden = true; };
 
 const QUICK = [['po', 'q.po'], ['grn', 'q.grn'], ['order', 'q.order'], ['trip', 'q.trip'], ['pay', 'q.pay']];
+const MONEY_QUICK = new Set(['order', 'pay']); // the godown works with goods, not money
+const quickHTML = () => QUICK.filter(([k]) => getRole() !== 'godown' || !MONEY_QUICK.has(k)).map(([k, key]) => `<button type="button" class="stf-q tel" data-quick="${k}">${esc(t(key))}</button>`).join('');
 
 async function openQuick(kind, from) {
   if (kind === 'po' || kind === 'grn') {
@@ -68,7 +73,7 @@ export function renderStaff(el, { page } = {}) {
     <div class="stf-top"><div class="stf-in">
       <nav class="stf-tabs" aria-label="${esc(t('stf.pages'))}">${PAGES.map((p) => `<a class="tel" href="#/staff/${p}"${p === current ? ' aria-current="page"' : ''}>${esc(t(`stf.page.${p}`))}</a>`).join('')}</nav>
       <div class="stf-role" role="group" aria-label="${esc(t('stf.role'))}"><span class="stf-rl tel">${esc(t('stf.role'))}</span>${ROLES.map((r) => `<button type="button" data-role="${r}" aria-pressed="${r === getRole()}" class="tel">${esc(t(`stf.role.${r}`))}</button>`).join('')}</div>
-      <div class="stf-quick" role="group" aria-label="${esc(t('stf.quick'))}">${QUICK.map(([k, key]) => `<button type="button" class="stf-q tel" data-quick="${k}">${esc(t(key))}</button>`).join('')}</div>
+      <div class="stf-quick" role="group" aria-label="${esc(t('stf.quick'))}">${quickHTML()}</div>
     </div></div>
     <div class="stf-page stf-in" data-page></div></div>`;
   const host = el.querySelector('[data-page]');
@@ -85,6 +90,7 @@ export function renderStaff(el, { page } = {}) {
     if (r) {
       setRole(r.dataset.role);
       el.querySelectorAll('[data-role]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.role === getRole())));
+      el.querySelector('.stf-quick').innerHTML = quickHTML();
       mount();
       return;
     }

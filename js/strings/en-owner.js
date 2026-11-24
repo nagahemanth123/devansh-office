@@ -1,4 +1,4 @@
-// Owner screens (home, reports, activity, invoice, 8 pm summary). Spread into en.js.
+// Owner screens (home, reports, activity, invoice). Spread into en.js.
 export default {
   'nav.label': 'Owner sections', 'nav.home': 'Home', 'nav.reports': 'Reports', 'nav.activity': 'Activity',
 
@@ -9,6 +9,7 @@ export default {
   'search.none': 'Nothing found', 'search.kind.dealer': 'Dealer', 'search.kind.brand': 'Brand', 'search.kind.product': 'Product', 'search.kind.invoice': 'Invoice',
 
   // home
+  'since.line': 'This morning: {total} bought this month, {bank} back in the bank.', 'since.same': 'no change', 'since.morning': 'since morning',
   'home.hello.morning': 'Good morning', 'home.hello.afternoon': 'Good afternoon', 'home.hello.evening': 'Good evening',
   'home.q': 'Did the ₹1 Cr come back?',
   'home.isBack': 'back',
@@ -16,8 +17,7 @@ export default {
   'home.where': 'Where the {total} is now',
   'home.better': 'more came back than at this point last month',
   'home.less': 'less came back than at this point last month',
-  'home.incoming': '{amount} more is coming from brands',
-  'home.summaryLink': 'Tonight’s 8 pm summary', 'home.summarySub': 'The WhatsApp message you get every evening',
+  'home.incoming': '{amount} ordered from brands, not yet received',
   'bar.bank': 'Cash back in the bank', 'bar.unpaid': 'Delivered, dealers yet to pay', 'bar.road': 'On the road', 'bar.godown': 'Still in the godown',
   'bar.caption': 'At purchase cost. On the road includes bills waiting to load.',
   'tile.sales.today': 'Sales today', 'tile.sales.week': 'Sales this week', 'tile.sales.month': 'Sales this month', 'tile.sales.custom': 'Sales in range',
@@ -25,8 +25,8 @@ export default {
   'tile.dealersOwe': 'Dealers owe us', 'tile.weOwe': 'We owe brands', 'tile.stock': 'Stock value', 'tile.lorries': 'Lorries coming in',
   'tile.vehicles': 'Our vehicles on the road', 'tile.staff': 'Staff present', 'tile.of': 'of', 'tile.lorriesUnit': 'lorries',
   'cmp.vsPrev': '{pct}% vs {period}', 'cmp.prev.day': 'yesterday', 'cmp.prev.week': 'last week', 'cmp.prev.month': 'last month', 'cmp.prev.custom': 'the period before',
-  'cmp.pctOfSales': '{pct}% of sales', 'cmp.old60': '{amount} is 60+ days old', 'cmp.dueThisWeek': '{amount} due this week',
-  'cmp.daysCover': '{days} days of cover', 'cmp.noCover': 'No sales yet to measure cover', 'cmp.goodsValue': '{amount} of goods',
+  'cmp.pctOfSales': '{pct}% of sales', 'cmp.pctOfSalesOlder': '{pct}% of sales (includes older dues)', 'cmp.old60': '{amount} is 60+ days old', 'cmp.dueThisWeek': '{amount} due this week',
+  'cmp.daysCover': '{days} days of cover', 'cmp.noCover': 'No sales yet to measure cover', 'cmp.goodsValue': '{amount} of goods on the way',
   'cmp.dropsDone': '{done} of {total} drops done', 'cmp.onLeave': '{count} on leave',
   'att.title': 'Needs attention', 'att.sub': 'Biggest money first',
   'att.credit': '{dealer}, {town} is {amount} over credit limit, with a new order waiting',
@@ -89,16 +89,11 @@ export default {
   'inv.taxable': 'Taxable value', 'inv.cgst': 'CGST', 'inv.sgst': 'SGST', 'inv.roundOff': 'Round off', 'inv.grand': 'Grand total', 'inv.paidSoFar': 'Paid so far', 'inv.balance': 'Balance',
   'inv.paid': 'Paid', 'inv.partPaid': 'Part paid', 'inv.unpaid': 'Unpaid', 'inv.payments': 'Payments',
   'inv.irn': 'e-invoice IRN / QR appears here', 'inv.irnNote': 'Sample: the live GST portal number and QR are added when this is connected.',
-  'pay.pending': 'cheque pending', 'pay.bounced': 'bounced', 'pay.cleared': 'cleared',
+  'pay.pending': 'Cheque pending', 'pay.bounced': 'Bounced', 'pay.cleared': 'Cleared',
 
   // activity
   'act.title': 'Activity', 'act.note': 'Every change made in the system, newest first. This record is read-only. Showing the last {n}.',
   'actor.owner': 'Owner', 'actor.godown': 'Godown', 'actor.sales': 'Sales', 'actor.accounts': 'Accounts', 'actor.admin': 'Admin', 'actor.driver': 'Driver', 'actor.dealer': 'Dealer', 'actor.system': 'System',
   'act.po': 'Brand order', 'act.trip': 'Trip', 'act.delivery': 'Delivery', 'act.order': 'Order', 'act.payment': 'Payment', 'act.brand': 'Brand payment', 'act.cheque': 'Cheque', 'act.query': 'Query',
 
-  // 8 pm WhatsApp summary
-  'wa.sum.title': 'Evening summary', 'wa.sum.head': 'Today, {date}',
-  'wa.sum.sales': 'Sales: {amount} from {n} invoices', 'wa.sum.collected': 'Collected: {amount}', 'wa.sum.cheques': 'Cheques waiting to clear: {amount}',
-  'wa.sum.deliveries': 'Deliveries: {done} of {total} done', 'wa.sum.overdue': 'Overdue: {amount} from {n} dealers', 'wa.sum.claims': 'Claims raised: {n}',
-  'wa.sum.bar': '{bank} is back of {total} bought this month.',
 };

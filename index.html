@@ -5,16 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Devansh Marketing</title>
 <meta name="theme-color" content="#0F52BA">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- Archivo loads without blocking the page; system-ui shows until it arrives. -->
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-<noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap" rel="stylesheet"></noscript>
+<!-- The whole module graph is fetched in one round trip instead of one per import level (slow 4G). -->
+<link rel="modulepreload" href="js/i18n.js">
+<link rel="modulepreload" href="js/router.js">
+<link rel="modulepreload" href="js/money.js">
+<link rel="modulepreload" href="js/strings/en.js">
+<link rel="modulepreload" href="js/strings/en-owner.js">
+<link rel="modulepreload" href="js/data/catalog.js">
+<link rel="modulepreload" href="js/selectors.js">
+<link rel="modulepreload" href="js/seed.js">
+<link rel="modulepreload" href="js/store.js">
+<link rel="modulepreload" href="js/ui/common.js">
+<link rel="modulepreload" href="js/ui/search.js">
+<link rel="modulepreload" href="js/ui/time-toggle.js">
+<link rel="modulepreload" href="js/ui/sheet.js">
+<link rel="modulepreload" href="js/ui/since.js">
+<link rel="modulepreload" href="js/views/owner-home.js">
 <link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/app.css">
 <link rel="stylesheet" href="css/owner.css">
-<link rel="stylesheet" href="css/staff.css">
-<link rel="stylesheet" href="css/phone-roles.css">
 <link rel="stylesheet" href="css/guide.css">
 </head>
 <body>
@@ -47,7 +56,6 @@
 import { t, translateDom } from './js/i18n.js';
 import { onRoute } from './js/router.js';
 import { initSearch, setSearchAllowed } from './js/ui/search.js';
-import { renderLanding } from './js/views/landing.js';
 
 const view = document.getElementById('view');
 const hdr = document.getElementById('hdr');
@@ -59,7 +67,7 @@ const roleMenu = document.getElementById('role-menu');
 const previews = document.getElementById('ftr-previews');
 let current = null;
 
-const ROLE_OF = { landing: 'landing', owner: 'owner', 'owner-report': 'owner', 'owner-activity': 'owner', 'owner-invoice': 'owner', staff: 'staff', dealer: 'dealer', driver: 'driver', whatsapp: 'whatsapp', unknown: 'unknown' };
+const ROLE_OF = { landing: 'landing', owner: 'owner', 'owner-report': 'owner', 'owner-activity': 'owner', 'owner-invoice': 'owner', staff: 'staff', dealer: 'dealer', driver: 'driver', unknown: 'unknown' };
 const el = (tag, attrs = {}, text) => {
   const n = document.createElement(tag);
   for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
@@ -67,24 +75,32 @@ const el = (tag, attrs = {}, text) => {
   return n;
 };
 
+// Staff and phone-role styles load with their screens, so the owner home does not wait for them.
+const sheets = new Map();
+const css = (href) => {
+  if (!sheets.has(href)) sheets.set(href, new Promise((done) => { const l = el('link', { rel: 'stylesheet', href }); l.onload = l.onerror = done; document.head.append(l); }));
+  return sheets.get(href);
+};
+const withCss = (href, load) => async (r) => { await css(href); return load(r); };
+
 // Screens load on demand. A view returns a function that stops its listeners; it runs before the next render.
 const VIEWS = {
   landing: async () => {
     const G = await import('./js/guide.js');
     G.initGuide(view);
+    const { renderLanding } = await import('./js/views/landing.js');
     return renderLanding(view, { total: G.TOTAL, savedStep: G.savedStep, onStart: () => G.startGuide(), onContinue: () => G.resumeGuide(), onReset: () => G.resetAll() });
   },
   owner: async () => (await import('./js/views/owner-home.js')).renderOwnerHome(view),
   'owner-report': async (r) => (await import('./js/views/owner-reports.js')).renderOwnerReports(view, r.params),
   'owner-activity': async () => (await import('./js/views/owner-activity.js')).renderOwnerActivity(view),
   'owner-invoice': async (r) => (await import('./js/views/invoice.js')).renderInvoice(view, r.params.invoiceId),
-  staff: async (r) => (await import('./js/views/staff.js')).renderStaff(view, r.params),
-  dealer: async (r) => (await import('./js/views/dealer.js')).renderDealer(view, r.params),
-  driver: async (r) => (await import('./js/views/driver.js')).renderDriver(view, r.params),
-  whatsapp: async (r) => (await import('./js/views/whatsapp.js')).renderWhatsApp(view, r.params),
+  staff: withCss('css/staff.css', async (r) => (await import('./js/views/staff.js')).renderStaff(view, r.params)),
+  dealer: withCss('css/phone-roles.css', async (r) => (await import('./js/views/dealer.js')).renderDealer(view, r.params)),
+  driver: withCss('css/phone-roles.css', async (r) => (await import('./js/views/driver.js')).renderDriver(view, r.params)),
 };
-// Owner, dealer, driver and the chat mockups are phone screens: on a laptop they sit in a phone-sized frame.
-const FRAMED = new Set(['owner', 'dealer', 'driver', 'whatsapp']);
+// Owner, dealer and driver are phone screens: on a laptop they sit in a phone-sized frame.
+const FRAMED = new Set(['owner', 'dealer', 'driver']);
 const BLEED = new Set(['owner', 'owner-report', 'owner-activity', 'owner-invoice', 'staff', 'dealer', 'driver']);
 let dispose = null;
 let token = 0;
@@ -98,8 +114,10 @@ function renderView(r) {
   stage.classList.toggle('framed', FRAMED.has(role));
   previews.hidden = r.name !== 'landing';
   setSearchAllowed(role === 'owner');
+  hdr.classList.toggle('no-search', role !== 'owner'); // the search box only answers on owner screens, so it is hidden elsewhere
+  if (role !== 'owner') hdr.classList.remove('search-open');
   if (VIEWS[r.name]) {
-    VIEWS[r.name](r).then((stop) => { if (mine === token) dispose = stop; else if (stop) stop(); });
+    VIEWS[r.name](r).then((stop) => { if (mine === token) dispose = stop; else if (stop) stop(); setTimeout(loadFonts, 200); });
   } else if (r.name === 'unknown') {
     view.append(el('h1', {}, t('unknown.title')), el('a', { class: 'btn', href: '#/' }, t('unknown.back')));
   } else {
@@ -138,6 +156,13 @@ onRoute((r) => { current = r; renderView(r); window.scrollTo(0, 0); });
 initSearch(document.getElementById('search-input'), document.getElementById('search'));
 translateDom();
 try { if (localStorage.getItem('dm.guide')) import('./js/guide.js').then((G) => G.initGuide(view)); } catch { /* storage blocked: no saved guide */ }
+// Archivo is fetched after the first screen so it never competes with the screen's own files; system-ui shows until it arrives.
+const fontCss = 'https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap';
+let fontsAsked = false;
+function loadFonts() {
+  if (fontsAsked) return; fontsAsked = true;
+  document.head.append(el('link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }), el('link', { rel: 'stylesheet', href: fontCss }));
+}
 document.documentElement.dataset.ready = '1'; // the shell is wired: tests wait for this
 </script>
 </body>

@@ -1,11 +1,13 @@
 // Dealer ledger: invoices, payments, balance, credit limit and ageing on one page, cheque clear / bounce buttons,
 // and the record-payment form that splits one payment across invoices.
-import { t } from '../i18n.js';
+import { addStrings, t } from '../i18n.js';
 import { getState, subscribe, recordPayment, setCheque } from '../store.js';
 import { dealerLedger, dealerOwes, invoiceBalance, r2 } from '../selectors.js';
 import { esc, chip, inr, fmtDay, invoiceHref } from '../ui/common.js';
 import { openPanel } from '../ui/panel.js';
 import { me, guarded, showError, clearError, errText } from './staff.js';
+import phoneStrings from '../strings/en-phone.js'; // the invoice status words (d.lbl.*) are shared with the dealer screen
+addStrings(phoneStrings);
 
 const FULL = { full: true };
 const KEY = 'dm.staffDealer';

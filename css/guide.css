@@ -11,7 +11,7 @@
 .rolelist :focus-visible { outline-color: var(--sapphire); }
 
 /* ---------- stage and phone frame ---------- */
-.stage { flex: 1 0 auto; width: 100%; }
+.stage { flex: 1 0 auto; width: 100%; min-width: 0; }
 .phone { width: 100%; }
 @media (min-width: 900px) {
   .stage.framed { background: var(--page); display: flex; justify-content: center; align-items: flex-start; padding: 24px 0 32px; }
@@ -65,13 +65,13 @@ body.guide-on .dr-ov { bottom: var(--guide-h, 0); }
 
 /* ---------- the rail (laptop) ---------- */
 @media (min-width: 900px) {
-  .guide { left: 0; right: auto; top: var(--hdr-h, 64px); bottom: 0; width: 300px; border-top: 0; border-right: 2px solid var(--sapphire); padding: 20px 20px 24px; align-content: start; gap: 12px; overflow-y: auto; }
+  .guide { left: 0; right: auto; top: var(--rail-top, 64px); bottom: 0; width: 300px; border-top: 0; border-right: 2px solid var(--sapphire); padding: 20px 20px 24px; align-content: start; gap: 12px; overflow-y: auto; }
   .g-title { font-size: 22px; }
   .g-text { font-size: 16px; }
   .g-btns { grid-template-columns: 1fr; margin-top: 8px; }
   .g-back { order: 2; min-height: 44px; }
   body.guide-on { padding-bottom: 0; }
-  body.guide-on .stage, body.guide-on .ftr { margin-left: 300px; }
+  body.guide-on .stage, body.guide-on .ftr { margin-left: 300px; width: auto; min-width: 0; }
   body.guide-on .scrim, body.guide-on .sp-scrim, body.guide-on .dr-ov { bottom: 0; }
 }
 @media (prefers-reduced-motion: no-preference) { .guide-target { transition: outline-offset .15s; } }

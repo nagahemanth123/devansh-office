@@ -134,7 +134,7 @@ test('phone screens hold at 360 and 430', async ({ page }) => {
     await page.addInitScript((l) => localStorage.setItem('dm.lang', l), lang);
     for (const w of [360, 430]) {
       await page.setViewportSize({ width: w, height: 844 });
-      for (const hash of ['#/dealer/D-MYD-01', '#/driver/DR2', '#/whatsapp/reminder', '#/whatsapp/otp', '#/whatsapp/summary']) {
+      for (const hash of ['#/dealer/D-MYD-01', '#/driver/DR2']) {
         await page.goto(`/index.html${hash}`);
         await expect(page.locator('#view')).not.toBeEmpty();
         const over = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
@@ -142,14 +142,4 @@ test('phone screens hold at 360 and 430', async ({ page }) => {
       }
     }
   }
-});
-
-test('whatsapp: reminder, the OTP, and the not-sent note, with no real app name', async ({ page }) => {
-  await page.goto('/index.html#/whatsapp/reminder');
-  await expect(page.locator('.wa-msg[lang="en"]')).toContainText('Hello Sri Durga Electricals');
-  await expect(page.locator('[data-wa-note]')).toHaveText('Nothing is sent in this demo.');
-  await loadTrip(page);
-  await page.goto('/index.html#/whatsapp/otp');
-  await expect(page.locator('[data-otp-code]')).toHaveText('4721');
-  expect((await page.locator('#view').innerText()).toLowerCase()).not.toContain('whatsapp');
 });

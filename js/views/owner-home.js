@@ -1,9 +1,10 @@
 // Owner home: the Godown board, live from the records. Phone first.
-import { t, getLang } from '../i18n.js';
+import { t } from '../i18n.js';
 import { getState, subscribe } from '../store.js';
 import { cycleBar, tiles, attention, comingIn, goingOut, districtWeekly, brandCards, recordsBehind, brandPaymentsWeek, topDealerDues, addDays, BRAND } from '../selectors.js';
 import { esc, ST, inr, chip, chev, logo, say, fmtDay, fmtTime, fmtStamp, ownerNavHTML } from '../ui/common.js';
 import { openRecords, openSheet, rowsBody } from '../ui/sheet.js';
+import { getSince, onSince } from '../ui/since.js';
 import { getRange, setRange, onRangeChange, rangeKind, timeToggleHTML, bindTimeToggle } from '../ui/time-toggle.js';
 
 let allBrands = false;
@@ -23,7 +24,12 @@ function hero(s, bar) {
   </div></header>`;
 }
 
-function tray(bar) {
+const deltaHTML = (d) => {
+  const r = Math.round(d);
+  return `<small class="mv tel${r > 0 ? ' up' : ''}" data-delta>${r === 0 ? esc(t('since.same')) : `${r > 0 ? '+' : '−'}${esc(inr(Math.abs(r)))} ${esc(t('since.morning'))}`}</small>`;
+};
+
+function tray(bar, since) {
   const parts = [['bank', 'green'], ['unpaid', 'amber'], ['road', 'blue'], ['godown', 'neutral']];
   let acc = 0; let roadCentre = 0;
   const segs = parts.map(([k, st]) => {
@@ -37,11 +43,12 @@ function tray(bar) {
     <h3 class="tel">${esc(t('home.where', { total: inr(bar.total) }))}</h3>
     <div class="stack" data-bar>${segs}</div>
     <div class="under"><span class="num" style="left:${roadCentre}%;color:var(--blue)">${esc(inr(bar.road))}</span></div>
+    ${since ? `<p class="since tel" data-since>${esc(t('since.line', { total: inr(since.total), bank: inr(since.bank) }))}</p>` : ''}
     <p class="cap tel">${esc(t('bar.caption'))} <b class="num">${esc(t('home.incoming', { amount: inr(bar.incoming) }))}</b></p>
     <div class="parts">${parts.map(([k, st]) => `
       <button type="button" class="part" data-part="${k}">
         <span class="sw" style="background:${ST[st]}"></span>
-        <span class="lbl tel">${esc(t(`bar.${k}`))}</span>
+        <span class="lblw"><span class="lbl tel">${esc(t(`bar.${k}`))}</span>${since ? deltaHTML(bar[k] - since[k]) : ''}</span>
         <span class="pc">${Math.round((bar[k] / bar.total) * 100)}%</span>
         <span class="amt num">${esc(inr(bar[k]))}</span>
         <span class="cv">${chev}</span>
@@ -113,7 +120,7 @@ function chartHTML(w) {
   const max = Math.ceil(top / step) * step;
   const y = (v) => tp + ph - (v / max) * ph;
   const ticks = []; for (let v = 0; v <= max; v += step) ticks.push(v);
-  const lab = getLang() === 'te' ? 'ఇప్పటివరకు' : t('dist.soFar');
+  const lab = t('dist.soFar');
   let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${esc(t('dist.aria'))}">
   <defs>
     <pattern id="hk" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#fff"/><rect width="3.2" height="6" fill="#0F52BA"/></pattern>
@@ -170,8 +177,8 @@ function moneyHTML(s) {
   return `<div class="list">
     <div class="card money-card">
       <h3 class="tel">${esc(t('dues.title'))} · <span class="num">${esc(inr(tot))}</span></h3>
-      <div class="stack" style="height:52px">${bands.map((d) => `<button type="button" data-dues="${d.k}" style="flex:${Math.max(d.amount, 1)} 1 0;background:${ST[BAND[d.k]]}" class="num" aria-label="${esc(t(`dues.${d.k}`))}">${esc(inr(d.amount))}</button>`).join('')}</div>
-      <div class="bands">${bands.map((d) => `<button type="button" data-dues="${d.k}"><span>${esc(t(`dues.${d.k}`))}</span>${chip(BAND[d.k], t(`age.${BAND[d.k]}`))}</button>`).join('')}</div>
+      <div class="stack" style="height:52px">${bands.map((d) => `<button type="button" data-dues="${d.k}" style="flex:${Math.max(d.amount, 1)} 1 0;background:${ST[BAND[d.k]]}" class="num" aria-label="${esc(t(`dues.${d.k}`))}, ${esc(inr(d.amount))}">${d.amount / tot >= 0.2 ? esc(inr(d.amount)) : ''}</button>`).join('')}</div>
+      <div class="bands">${bands.map((d) => `<button type="button" data-dues="${d.k}"><span>${esc(t(`dues.${d.k}`))}</span><span class="bamt num">${esc(inr(d.amount))}</span>${chip(BAND[d.k], t(`age.${BAND[d.k]}`))}</button>`).join('')}</div>
     </div>
     <div class="card money-card">
       <h3 class="tel">${esc(t('dues.top'))}</h3>
@@ -201,7 +208,7 @@ export function renderOwnerHome(el) {
     const incTotal = inc.filter((x) => x.step !== 'received').reduce((a, x) => a + x.value, 0);
     const done = out.reduce((a, v) => a + v.done, 0); const drops = out.reduce((a, v) => a + v.drops, 0);
     return `<div class="ow">${ownerNavHTML('home')}${hero(s, bar)}
-    <div class="ow-in">${tray(bar)}
+    <div class="ow-in">${tray(bar, getSince())}
       <div class="ow-main">
         <section class="full ttsec"><div data-tt>${timeToggleHTML()}</div>
           <div class="tiles">${tiles(s, { range }).map((x) => tileHTML(x, rk)).join('')}</div></section>
@@ -211,7 +218,6 @@ export function renderOwnerHome(el) {
         ${section(t('dist.title'), esc(t('dist.weeks')), districtHTML(districtWeekly(s, {})))}
         ${section(t('brands.title'), esc(t(`range.${rk}`)), brandsHTML(brandCards(s, { range })))}
         ${section(t('money.title'), '', moneyHTML(s), 'full')}
-        <section class="full"><a class="card sumlink" href="#/whatsapp/summary"><span><b class="tel">${esc(t('home.summaryLink'))}</b><span class="tel">${esc(t('home.summarySub'))}</span></span>${chev}</a></section>
       </div></div></div>`;
   }
 
@@ -256,7 +262,7 @@ export function renderOwnerHome(el) {
   }
 
   el.addEventListener('click', onClick);
-  const offs = [bindTimeToggle(el), subscribe(() => render()), onRangeChange(() => render(true))];
+  const offs = [bindTimeToggle(el), subscribe(() => render()), onRangeChange(() => render(true)), onSince(() => render())];
   render();
   return () => { el.removeEventListener('click', onClick); offs.forEach((f) => f()); };
 }

@@ -1,9 +1,13 @@
 // The driver's phone: today's drops in order, one big Delivered button (photo, then the dealer's 4-digit code),
 // Not delivered (shop closed, rejected, or partial), and an offline switch. Reads only driverView.
-import { t } from '../i18n.js';
+import { addStrings, t } from '../i18n.js';
 import { getState, subscribe, markDelivered, markNotDelivered } from '../store.js';
 import { driverView } from '../selectors.js';
 import { esc, chip, inr } from '../ui/common.js';
+import phoneStrings from '../strings/en-phone.js';
+import staffStrings from '../strings/en-staff.js';
+addStrings(phoneStrings);
+addStrings(staffStrings);
 
 const FULL = { full: true };
 export const DEFAULT_DRIVER = 'DR2';

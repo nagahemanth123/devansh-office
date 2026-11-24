@@ -43,6 +43,16 @@ export function resetDemo() {
 // Tests only: forget the in-memory copy and read storage again, as a page reload would.
 export function _reloadForTests() { state = null; return current(); }
 
+// The guided day moves the demo clock to a scripted time of day ('HH:MM') before a step, so the story reads morning to evening.
+// It is not an action: no audit entry, and it never goes backwards.
+export function setDemoClock(time) {
+  const s = current();
+  const at = `${s.today}T${time}`;
+  if (!/^\d\d:\d\d$/.test(time) || at <= s.clock) return false;
+  s.clock = at; s.rev += 1; persist(); listeners.forEach((fn) => fn(s));
+  return true;
+}
+
 // Wraps a rule as a public action: stamps the demo clock, saves and notifies on success.
 function action(rule) {
   return (...args) => {

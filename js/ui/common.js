@@ -1,6 +1,6 @@
 // Small helpers shared by the owner screens: escaping, status chips, brand logos, money, dates, and
 // turning a selector's {key, vars} into a sentence in the current language.
-import { t, getLang } from '../i18n.js';
+import { t } from '../i18n.js';
 import { formatINR } from '../money.js';
 
 export const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -10,9 +10,9 @@ export const chev = '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden
 export const chip = (status, word) => `<span class="st" style="background:${ST[status] || ST.neutral}">${esc(word)}</span>`;
 export const invoiceHref = (id) => `#/owner/invoice/${encodeURIComponent(id)}`;
 
-// ---------- dates (ISO strings, shown in the current language) ----------
+// ---------- dates (ISO strings, shown in English) ----------
 function parts(iso, opts) {
-  const f = new Intl.DateTimeFormat(getLang() === 'te' ? 'te-IN' : 'en-IN', { timeZone: 'UTC', ...opts });
+  const f = new Intl.DateTimeFormat('en-IN', { timeZone: 'UTC', ...opts });
   return Object.fromEntries(f.formatToParts(new Date(`${iso.slice(0, 10)}T12:00:00Z`)).map((p) => [p.type, p.value]));
 }
 export function fmtDay(iso, { weekday = true } = {}) {
@@ -50,9 +50,9 @@ export function say(key, vars) {
 const PLATE = { sentini: '#26384B' }; // a white logo needs a dark plate
 export function logo(brandKey, brandName) {
   const alt = esc(brandName || brandKey);
-  const src = `assets/brands/${brandKey}.png`;
-  if (PLATE[brandKey]) return `<span class="logo plate" style="background:${PLATE[brandKey]}"><img src="${src}" alt="${alt}"></span>`;
-  return `<span class="logo${brandKey === 'sparsh-pearl' ? ' sq' : ''}"><img src="${src}" alt="${alt}"></span>`;
+  const src = `assets/brands/${brandKey}.webp`;
+  if (PLATE[brandKey]) return `<span class="logo plate" style="background:${PLATE[brandKey]}"><img src="${src}" alt="${alt}" loading="lazy" decoding="async"></span>`;
+  return `<span class="logo${brandKey === 'sparsh-pearl' ? ' sq' : ''}"><img src="${src}" alt="${alt}" loading="lazy" decoding="async"></span>`;
 }
 
 // age of an open bill -> status word

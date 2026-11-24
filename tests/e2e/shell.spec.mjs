@@ -58,9 +58,20 @@ for (const lang of ['en']) {
   }
 }
 
-test('search opens on phone and stays inline on desktop', async ({ page }) => {
+test('search is hidden where it does nothing (start page, staff, dealer, driver)', async ({ page }) => {
+  for (const width of [390, 1280]) {
+    await page.setViewportSize({ width, height: 800 });
+    for (const h of ['', '#/staff/inbound', '#/dealer/D-MYD-01', '#/driver/demo']) {
+      await page.goto(`/index.html${h}`);
+      await expect(page.locator('#search-toggle'), `${h} ${width}`).toBeHidden();
+      await expect(page.locator('#search-input'), `${h} ${width}`).toBeHidden();
+    }
+  }
+});
+
+test('search opens on phone and stays inline on desktop (owner)', async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 700 });
-  await page.goto('/index.html');
+  await page.goto('/index.html#/owner');
   await expect(page.locator('#search-input')).toBeHidden();
   await page.locator('#search-toggle').click();
   await expect(page.locator('#search-input')).toBeVisible();

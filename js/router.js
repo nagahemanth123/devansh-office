@@ -1,12 +1,11 @@
 // Hash routes: #/ , #/owner , #/owner/reports/:lens , #/staff/:page ,
-// #/owner/reports/:lens/...drill , #/owner/activity , #/owner/invoice/:id , #/dealer/:dealerId , #/driver/:driverId , #/whatsapp/:kind
+// #/owner/reports/:lens/...drill , #/owner/activity , #/owner/invoice/:id , #/dealer/:dealerId , #/driver/:driverId
 // route(hash) is pure. onRoute(fn) calls fn with the current route now and on every change.
 const SIMPLE = {
   owner: { name: 'owner' },
   staff: { name: 'staff', param: 'page', optional: true },
   dealer: { name: 'dealer', param: 'dealerId' },
   driver: { name: 'driver', param: 'driverId' },
-  whatsapp: { name: 'whatsapp', param: 'kind' },
 };
 
 export function route(hash = '') {
@@ -30,7 +29,11 @@ export function route(hash = '') {
 }
 
 export function onRoute(fn) {
-  const handler = () => fn(route(globalThis.location.hash));
+  const handler = () => {
+    // The WhatsApp screens were removed (client decision, 24 Nov): an old #/whatsapp/... link opens the start page.
+    if (/^#\/whatsapp(\/|$)/.test(globalThis.location.hash)) { globalThis.location.replace('#/'); return; }
+    fn(route(globalThis.location.hash));
+  };
   globalThis.addEventListener('hashchange', handler);
   handler();
   return () => globalThis.removeEventListener('hashchange', handler);

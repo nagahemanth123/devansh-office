@@ -1,19 +1,16 @@
-// Landing, role menu and the guided day. Keys are shared with te-guide.js.
+// Landing and the guided day. Loaded with the start page and the guide, not with the owner home.
 export default {
   'landing.title': 'Where is my money today?',
   'landing.intro': 'A working demo on sample data.',
   'landing.seats': 'Open as',
   'landing.open': 'Open as {role}',
   'landing.guide.title': 'One day at Devansh',
-  'landing.guide.sub': 'Eight steps from the owner’s morning to the 8 pm summary: godown, sales desk, dispatch, driver, dealer and accounts. It starts from the morning each time.',
+  'landing.guide.sub': 'Eight steps from the owner’s morning to the owner’s evening bar: godown, sales desk, dispatch, driver, dealer and accounts. It starts from the morning each time.',
   'landing.guide.go': 'Start the day',
   'landing.guide.cont': 'Continue: step {n} of {total}',
   'landing.reset': 'Reset demo',
   'landing.reset.sub': 'Puts every number back to the start of the day.',
   'landing.reset.done': 'Demo reset. The day is back to the start.',
-  'landing.previews': 'Previews',
-  'role.menu': 'Switch role',
-  'role.home': 'Start page',
   'g.region': 'One day at Devansh',
   'g.step': 'Step {n} of {total}',
   'g.exit': 'Leave guide',
@@ -49,8 +46,5 @@ export default {
   'g.s7.text': 'The payment is attached to the invoice. The other half stays pending on his balance.',
   'g.s8.who': 'Owner · evening',
   'g.s8.title': 'The bar has moved',
-  'g.s8.text': 'Cash back in the bank {before} → {after}. The total stays the same: goods only move from one part to another.',
-  'g.s8.p2.title': 'The 8 pm summary',
-  'g.s8.p2.text': 'What the owner gets on WhatsApp tonight. Nothing is sent in this demo.',
-  'g.s8.p2.btn': 'See the 8 pm summary',
+  'g.s8.text': 'The Goldmedal lorry added {added} to the goods bought this month ({total0} → {total1}). The dealer’s UPI payment moved {moved} back into the bank: {before} → {after}. Each line shows what changed since morning.',
 };
