@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Devansh Godown Board</title>
+<meta name="theme-color" content="#0F52BA">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:"Anek Telugu";src:url("../assets/fonts/AnekTelugu-Variable.woff2") format("woff2");font-weight:100 800;font-stretch:75% 125%;font-display:swap}
+:root{
+  --sapphire:#0F52BA; --sapphire-press:#0B4296; --sapphire-ink:#0A3A84;
+  --ink:#0E1A2B; --ink-2:#38424F; --ink-3:#5A6372;
+  --paper:#F3F2EE; --card:#FFFFFF; --line:#E2E0D9; --well:#E7E5DE; --page:#DEDCD5;
+  --g:#17804A; --b:#2563EB; --a:#AE5A00; --r:#C22A2A; --n:#59636F;
+  --radius:14px;
+  --font:"Archivo","Anek Telugu",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--page);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.4;font-stretch:100%}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:left}
+button:focus-visible,a:focus-visible{outline:3px solid #F2B705;outline-offset:2px;border-radius:8px}
+.app{max-width:430px;margin:0 auto;background:var(--paper);min-height:100vh;box-shadow:0 0 0 1px #D2D0C8}
+.num{font-stretch:112%;font-weight:800;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+html[lang=te] .tel{line-height:1.55}
+
+/* ---------- top sapphire block ---------- */
+.top{background:var(--sapphire);color:#fff;padding:8px 16px 90px}
+.bar{display:flex;align-items:center;gap:6px;height:56px}
+.bar img{height:34px;width:auto;display:block;margin-right:auto}
+.iconbtn{width:44px;height:44px;display:grid;place-items:center;border-radius:10px}
+.iconbtn:active{background:var(--sapphire-press)}
+.lang{display:flex;height:48px;border:2px solid #fff;border-radius:10px;overflow:hidden;margin-left:2px}
+.lang button{min-width:46px;height:100%;text-align:center;font-weight:700;font-size:15px;color:#fff;padding:0 10px;display:grid;place-items:center}
+.lang button[aria-pressed=true]{background:#fff;color:var(--sapphire)}
+.lang button+button{border-left:2px solid #fff}
+.lang .te{font-family:"Anek Telugu";font-size:17px;line-height:1}
+.hello{margin:8px 0 0;font-size:16px;color:#DCE6F7;display:flex;gap:8px;flex-wrap:wrap}
+.hello b{color:#fff;font-weight:700}
+.q{margin:12px 0 0;font-size:20px;font-weight:700;color:#fff}
+.answer{font-size:46px;line-height:1.02;margin:6px 0 8px}
+.answer small{font-size:22px;font-weight:700;font-stretch:100%;letter-spacing:0;margin-left:4px}
+.sub{font-size:16px;color:#E3EBF8;margin:0;max-width:34ch}
+.sub b{color:#fff}
+
+/* ---------- cycle tray ---------- */
+.tray{margin:-74px 12px 0;background:var(--card);border-radius:var(--radius);padding:18px 16px 0;overflow:hidden;position:relative}
+.tray h3{margin:0 0 12px;font-size:17px;font-weight:700}
+.stack{display:flex;height:60px;gap:3px;border-radius:8px;overflow:hidden}
+.stack > *{display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;white-space:nowrap;min-width:0;overflow:hidden}
+.under{position:relative;height:30px}
+.under span{position:absolute;top:0;transform:translateX(-50%);font-size:15px;font-weight:700;padding-top:9px;white-space:nowrap}
+.under span::before{content:"";position:absolute;left:50%;top:0;width:2px;height:7px;background:var(--b);transform:translateX(-1px)}
+.parts{margin:4px -16px 0;border-top:1px solid var(--line)}
+.part{display:grid;grid-template-columns:8px 1fr auto 74px 16px;gap:10px;align-items:center;width:100%;min-height:50px;padding:6px 16px;border-bottom:1px solid var(--line)}
+.part:active{background:#F6F5F1}
+.part .sw{width:8px;align-self:stretch;border-radius:3px}
+.part .lbl{font-size:15px;font-weight:600;color:var(--ink)}
+.part .amt{text-align:right;font-size:18px}
+.part .pc{font-size:15px;font-weight:600;color:var(--ink-3)}
+.better{display:flex;gap:10px;align-items:center;background:var(--g);color:#fff;margin:0 -16px;padding:12px 16px;font-size:15px;font-weight:600}
+.better .num{font-size:18px;white-space:nowrap}
+
+/* ---------- sections ---------- */
+main{padding:0 12px 8px}
+section{margin-top:30px}
+.sh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 4px 12px}
+.sh h2{margin:0;font-size:23px;font-weight:800;font-stretch:108%;letter-spacing:-.01em}
+.sh .side{font-size:15px;color:var(--ink-3);font-weight:600;white-space:nowrap}
+.card{background:var(--card);border-radius:var(--radius)}
+
+/* tiles */
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.tile{background:var(--card);border-radius:var(--radius);padding:13px 14px 0;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.tile:active{background:#F8F7F3}
+.tile .tl{font-size:15px;font-weight:600;color:var(--ink-2);padding-right:18px;line-height:1.3;min-height:39px}
+html[lang=te] .tile .tl{min-height:46px;line-height:1.5}
+.tile .chev{position:absolute;right:12px;top:15px;color:var(--ink-3)}
+.tile .tv{font-size:clamp(24px,7.2vw,31px);padding-top:2px;line-height:1.05;white-space:nowrap;font-stretch:106%}
+.tile .tv small{font-size:16px;font-weight:700;font-stretch:100%;color:var(--ink-2);letter-spacing:0;margin-left:3px}
+.tile .tc{font-size:15px;color:var(--ink-3);padding:5px 0 13px;line-height:1.3}
+.tile .tc.up{color:var(--g);font-weight:700}
+.tile .tc.flag{margin:auto -14px 0;padding:9px 14px 11px;color:#fff;font-weight:600}
+
+/* status chip */
+.chip{display:inline-flex;align-items:center;height:28px;padding:0 10px;border-radius:6px;color:#fff;font-size:14px;font-weight:700;white-space:nowrap;line-height:1}
+html[lang=te] .chip{font-size:15px;height:30px}
+
+/* attention */
+.att{display:grid;grid-template-columns:6px 1fr;width:100%;border-bottom:1px solid var(--line)}
+.att:last-child{border-bottom:0}
+.att .stripe{align-self:stretch}
+.att .body{padding:13px 14px 14px;display:flex;flex-direction:column;gap:7px}
+.att .top1{display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:30px}
+.att .txt{font-size:15px;color:var(--ink);line-height:1.4}
+.att .money{font-size:20px}
+.att:active{background:#F8F7F3}
+
+/* brand cards */
+.bcard{background:var(--card);border-radius:var(--radius);overflow:hidden;position:relative}
+.band{height:8px}
+.logo{height:50px;display:flex;align-items:center}
+.logo img{height:38px;max-width:138px;width:auto;object-fit:contain;object-position:left center;display:block}
+.logo.sq img{height:50px}
+.logo.plate{padding:0 10px;border-radius:6px}
+.logo.plate img{height:34px}
+
+/* inbound */
+.key{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:0 16px 8px;font-size:13px;color:var(--ink-3);font-weight:600;line-height:1.25}
+.inb{padding:12px 16px 14px}
+.inb .row1{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.inb .val{font-size:20px}
+.inb .meta{font-size:15px;color:var(--ink-3);margin:6px 0 10px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.steps i{height:14px;background:var(--well);border-radius:3px}
+.inb .now{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.list{display:grid;gap:10px}
+
+/* outbound */
+.plate-no{display:inline-block;border:2px solid var(--ink);border-radius:5px;padding:3px 8px;font-weight:800;font-stretch:96%;font-size:16px;letter-spacing:.04em;background:#fff;line-height:1.2}
+.outb{padding:14px 16px}
+.outb .row1{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.outb .who{font-size:15px;color:var(--ink-2);margin:8px 0 10px}
+.drops{display:flex;gap:4px}
+.drops i{flex:1;height:14px;border-radius:3px;background:var(--well)}
+.outb .row3{display:flex;justify-content:space-between;align-items:baseline;margin-top:9px;font-size:16px}
+.outb .row3 b{font-weight:800}
+
+/* district */
+.dist{padding:16px 12px 12px}
+.totals{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 4px 6px}
+.totals div{border-top:6px solid;padding-top:8px}
+.totals span{display:block;font-size:15px;font-weight:600;color:var(--ink-2)}
+.totals b{font-size:24px}
+.note{font-size:15px;color:var(--ink-3);margin:8px 4px 0}
+svg text{font-family:var(--font)}
+
+/* top brands grid */
+.bgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bg-in{padding:12px 14px 14px}
+.bg-in .amt{font-size:22px;margin:12px 0 2px}
+.bg-in .share{height:8px;background:var(--well);border-radius:3px;overflow:hidden;margin:6px 0 10px}
+.bg-in .share i{display:block;height:100%}
+.more{display:flex;justify-content:center;align-items:center;gap:8px;width:100%;min-height:52px;margin-top:10px;border:2px solid var(--ink);border-radius:12px;font-weight:700;font-size:16px;background:transparent}
+.more:active{background:#E9E7E0}
+
+/* money */
+.money-card{padding:16px}
+.money-card h3{margin:0 0 12px;font-size:17px;font-weight:700}
+.bands{margin-top:10px}
+.bands div{display:flex;justify-content:space-between;align-items:center;min-height:44px;border-bottom:1px solid var(--line);font-size:16px;font-weight:700}
+.bands div:last-child{border-bottom:0;min-height:36px;padding-top:6px}
+.dealer{display:grid;grid-template-columns:1fr auto;gap:4px 10px;padding:13px 0;border-bottom:1px solid var(--line);width:100%;align-items:center}
+.dealer:last-child{border-bottom:0;padding-bottom:2px}
+.dealer .dn{font-size:16px;font-weight:700}
+.dealer .dt{font-size:15px;color:var(--ink-3)}
+.dealer .da{font-size:19px;text-align:right}
+.dealer .dc{text-align:right}
+.pay{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:0 14px 0 0;min-height:72px}
+.pay .vb{width:8px;align-self:stretch}
+.pay .pa{font-size:20px;text-align:right}
+.pay .pd{margin-top:4px;text-align:right}
+
+footer{padding:26px 16px 40px;text-align:center;font-size:15px;color:var(--ink-3);border-top:1px solid #D9D7CF;margin-top:34px}
+
+/* sheet */
+.scrim{position:fixed;inset:0;background:rgba(10,20,36,.55);display:flex;align-items:flex-end;justify-content:center;z-index:20;opacity:0;transition:opacity .2s}
+.scrim[hidden]{display:none}
+.scrim.open{opacity:1}
+.sheet{width:100%;max-width:430px;max-height:88vh;background:var(--paper);border-radius:18px 18px 0 0;overflow:auto;transform:translateY(24px);transition:transform .22s ease-out}
+.scrim.open .sheet{transform:none}
+.sheet-head{color:#fff;padding:14px 12px 18px 18px;position:sticky;top:0}
+.sheet-head .r1{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.sheet-head h2{margin:8px 0 0;font-size:19px;font-weight:700;line-height:1.3}
+.sheet-head .big{font-size:40px;margin-top:6px;line-height:1}
+.sheet-head .closer{width:44px;height:44px;border-radius:10px;background:rgba(255,255,255,.18);display:grid;place-items:center;flex:none}
+.sheet-body{padding:14px 12px 28px}
+.inv{background:#fff;border-radius:12px;padding:14px;display:grid;grid-template-columns:1fr auto;gap:6px 10px;margin-bottom:10px}
+.inv .dn{font-size:16px;font-weight:700;line-height:1.3}
+.inv .no{font-size:15px;color:var(--ink-3)}
+.inv .amt{font-size:20px;text-align:right}
+.inv .nt{grid-column:1/-1;font-size:15px;color:var(--ink-2);border-top:1px solid var(--line);padding-top:8px;margin-top:2px}
+.sheet-foot{font-size:15px;color:var(--ink-3);padding:4px 4px 0}
+.ph{background:#fff;border-radius:12px;padding:18px 16px;font-size:16px;color:var(--ink-2)}
+@media (prefers-reduced-motion:reduce){.scrim,.sheet{transition:none}}
+@media (min-width:431px){body{padding:0}}
+img[src*="sparsh-pearl"]{filter:brightness(.62) saturate(1.15)}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<div class="scrim" id="scrim" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle"></div></div>
+
+<script id="fallback" type="application/json">
+{"asOf":"Tue 24 Nov 2026, 8:10 am","cycle":{"label":"This month's purchases","total":13800000,"parts":[{"key":"recovered","label":"Cash back in the bank","te":"బ్యాంక్‌లో వచ్చిన డబ్బు","amount":5210000,"status":"green"},{"key":"unpaid","label":"Delivered, dealers yet to pay","te":"డెలివరీ అయింది, డీలర్లు ఇంకా కట్టలేదు","amount":4430000,"status":"amber"},{"key":"road","label":"On the road","te":"రోడ్డు మీద ఉంది","amount":860000,"status":"blue"},{"key":"godown","label":"Still in the godown","te":"ఇంకా గోడౌన్‌లోనే","amount":3300000,"status":"neutral"}],"vsLastMonth":"₹6.4 L more came back than at this point in October"},"tiles":[{"key":"sales","label":"Sales this month","te":"ఈ నెల అమ్మకాలు","value":9640000,"compare":"+12% vs October","trend":"up"},{"key":"collected","label":"Collected","te":"వసూలైంది","value":5210000,"compare":"54% of sales","trend":"flat"},{"key":"dealersOwe","label":"Dealers owe us","te":"డీలర్లు మనకు ఇవ్వాల్సింది","value":4430000,"compare":"₹11.8 L is 60+ days old","trend":"down","status":"amber"},{"key":"weOwe","label":"We owe brands","te":"మనం బ్రాండ్లకు ఇవ్వాల్సింది","value":6170000,"compare":"₹18.2 L due this week","trend":"flat"},{"key":"stock","label":"Stock value","te":"స్టాక్ విలువ","value":16200000,"compare":"41 days of cover","trend":"flat"},{"key":"lorries","label":"Lorries coming in","te":"వస్తున్న లారీలు","value":4,"unit":"lorries","compare":"₹27.6 L of goods","trend":"flat"},{"key":"vehicles","label":"Our vehicles on the road","te":"రోడ్డు మీద మన వాహనాలు","value":3,"of":5,"compare":"17 of 26 drops done","trend":"flat"},{"key":"staff","label":"Staff present","te":"హాజరైన సిబ్బంది","value":14,"of":16,"compare":"2 on leave","trend":"flat"}],"attention":[{"text":"Sri Lakshmi Electricals, Pulivendula is ₹1.9 L over credit limit, with a new order waiting","amount":190000,"status":"red","kind":"credit"},{"text":"Finolex payment of ₹9.6 L is due Friday 28 Nov","amount":960000,"status":"amber","kind":"brand-payment"},{"text":"Vehicle AP 04 TU 5521 was loaded 2 h ago and has not left (₹4.7 L of goods)","amount":470000,"status":"amber","kind":"vehicle"},{"text":"Sai Ram Sanitary, Tadipatri: cheque of ₹86,000 bounced","amount":86000,"status":"red","kind":"cheque"},{"text":"Goldmedal lorry arrived 10 units short (6A modular switches). Claim ₹14,600","amount":14600,"status":"red","kind":"short"},{"text":"Parryware Neo EWC will run out in 6 days","amount":null,"status":"amber","kind":"stock"}],"comingIn":[{"brand":"goldmedal","po":"PO-2611-041","value":640000,"step":"received","note":"10 short"},{"brand":"finolex","po":"PO-2611-044","value":920000,"step":"on the way","note":"Expected tomorrow"},{"brand":"parryware","po":"PO-2611-046","value":710000,"step":"left brand godown","note":"Chennai, 2 days"},{"brand":"victura","po":"PO-2611-048","value":490000,"step":"ordered","note":"Placed Sat"}],"goingOut":[{"vehicle":"AP 04 TU 5521","driver":"Ramesh","route":"Kadapa · Kamalapuram","drops":6,"done":0,"value":470000,"status":"amber","note":"Loaded, not left"},{"vehicle":"AP 04 TV 1187","driver":"Suresh","route":"Jammalamadugu · Mydukur","drops":7,"done":5,"value":380000,"status":"blue"},{"vehicle":"AP 39 U 2204","driver":"Naresh","route":"Tadipatri · Gooty · Guntakal","drops":8,"done":7,"value":560000,"status":"blue"},{"vehicle":"AP 04 TS 9032","driver":"Mahesh","route":"Pulivendula","drops":5,"done":5,"value":290000,"status":"green"}],"districtWeekly":{"weeks":["27 Oct","3 Nov","10 Nov","17 Nov","24 Nov"],"Kadapa":[1480000,1720000,1610000,1890000,920000],"Anantapur":[1020000,1150000,1240000,1310000,640000]},"brands":[{"key":"parryware","name":"Parryware","sales":2210000,"health":"green"},{"key":"finolex","name":"Finolex","sales":1840000,"health":"amber"},{"key":"ultravolt","name":"Ultravolt","sales":1560000,"health":"green"},{"key":"goldmedal","name":"Goldmedal","sales":1120000,"health":"red"},{"key":"kenstar","name":"Kenstar","sales":830000,"health":"amber"},{"key":"sparsh-pearl","name":"Sparsh Pearl","sales":610000,"health":"green"},{"key":"poddar","name":"Poddar Pipes","sales":520000,"health":"green"},{"key":"sentini","name":"Sentini Flopipes","sales":430000,"health":"green"},{"key":"victura","name":"Victura Airmotion","sales":310000,"health":"amber"},{"key":"acebond","name":"Acebond","sales":210000,"health":"green"}],"duesByAge":[{"band":"0–30 days","amount":2210000,"status":"green"},{"band":"31–60 days","amount":1040000,"status":"amber"},{"band":"60+ days","amount":1180000,"status":"red"}],"topDues":[{"dealer":"Sri Lakshmi Electricals","town":"Pulivendula","owes":540000,"oldestDays":74,"status":"red"},{"dealer":"Venkateswara Hardware","town":"Kadapa","owes":410000,"oldestDays":52,"status":"amber"},{"dealer":"Sai Ram Sanitary","town":"Tadipatri","owes":360000,"oldestDays":68,"status":"red"},{"dealer":"Balaji Pipes & Fittings","town":"Guntakal","owes":290000,"oldestDays":21,"status":"green"},{"dealer":"Sri Sai Electricals","town":"Jammalamadugu","owes":240000,"oldestDays":38,"status":"amber"}],"brandPaymentsThisWeek":[{"brand":"finolex","amount":960000,"due":"Fri 28 Nov"},{"brand":"ultravolt","amount":540000,"due":"Thu 27 Nov"},{"brand":"sparsh-pearl","amount":320000,"due":"Sat 29 Nov"}],"drill":{"unpaid":[{"invoice":"DM/26-27/3418","dealer":"Sri Lakshmi Electricals, Pulivendula","amount":184000,"days":74,"status":"red"},{"invoice":"DM/26-27/3502","dealer":"Sai Ram Sanitary, Tadipatri","amount":86000,"days":68,"status":"red","note":"Cheque bounced"},{"invoice":"DM/26-27/3611","dealer":"Venkateswara Hardware, Kadapa","amount":152000,"days":52,"status":"amber"},{"invoice":"DM/26-27/3720","dealer":"Sri Sai Electricals, Jammalamadugu","amount":98000,"days":38,"status":"amber"},{"invoice":"DM/26-27/3804","dealer":"Balaji Pipes & Fittings, Guntakal","amount":121000,"days":21,"status":"green","note":"Half paid by UPI"}]}}
+</script>
+
+<script>
+(function(){
+const ST = {green:'var(--g)', blue:'var(--b)', amber:'var(--a)', red:'var(--r)', neutral:'var(--n)'};
+const BRAND = {
+  parryware:{c:'#0A87C6'}, finolex:{c:'#1583C6'}, ultravolt:{c:'#00975A'}, goldmedal:{c:'#CF1220'},
+  kenstar:{c:'#46494F'}, 'sparsh-pearl':{c:'#A2843A'}, poddar:{c:'#E87400'}, sentini:{c:'#26384B', dark:true},
+  victura:{c:'#1B1B1B'}, acebond:{c:'#00507F'}
+};
+const T = {
+  hello:['Good morning','శుభోదయం'],
+  q:['Did the ₹1 Cr come back?','₹1 కోటి తిరిగి వచ్చిందా?'],
+  isBack:['back','వచ్చింది'],
+  of:(a,b)=>[`of ${a} bought this month.<br><b>${b} is still out.</b>`,`ఈ నెల కొన్న ${a} లో.<br><b>ఇంకా ${b} బయట ఉంది.</b>`],
+  whereNow:(a)=>[`Where the ${a} is now`,`ఇప్పుడు ${a} ఎక్కడ ఉంది`],
+  better:['more came back than at this point in October','అక్టోబర్‌లో ఇదే రోజుకి కంటే ఎక్కువ వచ్చింది'],
+  attention:['Needs attention','ఇవి చూడాలి'],
+  byMoney:['Biggest money first','ఎక్కువ డబ్బు ముందు'],
+  comingIn:['Coming in from brands','బ్రాండ్ల నుంచి వస్తున్నవి'],
+  goingOut:['Going out to dealers','డీలర్లకు వెళ్తున్నవి'],
+  district:['Sales by district','జిల్లా వారీగా అమ్మకాలు'],
+  fiveWeeks:['Last 5 weeks','గత 5 వారాలు'],
+  partial:['This week has just started, so its bars are part-week (striped).','ఈ వారం ఇప్పుడే మొదలైంది, అందుకే చారల బార్లు సగం వారం మాత్రమే.'],
+  topBrands:['Top brands','టాప్ బ్రాండ్లు'],
+  thisMonth:['Sales this month','ఈ నెల అమ్మకాలు'],
+  allBrands:['Show all 10 brands','మొత్తం 10 బ్రాండ్లు చూపించు'],
+  fewerBrands:['Show top 6 only','టాప్ 6 మాత్రమే'],
+  money:['Money','డబ్బు లెక్క'],
+  duesAge:['Dealers owe us, by age','డీలర్ బాకీలు, ఎన్ని రోజులవి'],
+  topOwe:['Dealers who owe the most','ఎక్కువ బాకీ ఉన్న డీలర్లు'],
+  brandPay:['We pay brands this week','ఈ వారం బ్రాండ్లకు కట్టాల్సింది'],
+  oldest:(d)=>[`Oldest bill ${d} days`,`పాత బిల్లు ${d} రోజులు`],
+  footer:['Sample numbers for preview · Busy Fox','ప్రివ్యూ కోసం శాంపిల్ నంబర్లు · Busy Fox'],
+  search:['Search','వెతకండి'],
+  close:['Close','మూసివేయి'],
+  tapHint:['Tap a part to see the list','లిస్ట్ కోసం ఒక భాగం నొక్కండి'],
+  drillFoot:(a,b)=>[`Showing the 5 oldest bills, ${a} of ${b}. Oldest first.`,`5 పాత బిల్లులు, ${b} లో ${a}. పాతవి ముందు.`],
+  ph:{
+    recovered:['Every payment received this month, dealer by dealer, opens here in the live app.','ఈ నెల వచ్చిన ప్రతి పేమెంట్, డీలర్ వారీగా, లైవ్ యాప్‌లో ఇక్కడ కనిపిస్తుంది.'],
+    road:['Every bill now on a vehicle, with its route and drop, opens here in the live app.','వాహనాల మీద ఉన్న ప్రతి బిల్లు, రూట్‌తో, లైవ్ యాప్‌లో ఇక్కడ కనిపిస్తుంది.'],
+    godown:['Stock still in the godown, brand by brand, opens here in the live app.','గోడౌన్‌లో ఉన్న స్టాక్, బ్రాండ్ వారీగా, లైవ్ యాప్‌లో ఇక్కడ కనిపిస్తుంది.']
+  },
+  days:(d)=>[`${d} days`,`${d} రోజులు`],
+  drops:(d,n)=>[`${d} of ${n} drops`,`${n} లో ${d} డ్రాప్స్`],
+  of_:['of','లో'],
+  lorries:['lorries','లారీలు'],
+  kadapa:['Kadapa','కడప'], anantapur:['Anantapur','అనంతపురం'],
+  steps:[['Ordered','ఆర్డర్ చేశాం'],['Left brand godown','బ్రాండ్ గోడౌన్ దాటింది'],['On the way','దారిలో ఉంది'],['Received','వచ్చేసింది']],
+  att:{credit:['Over limit','లిమిట్ దాటింది'],'brand-payment':['Due Fri','శుక్ర గడువు'],vehicle:['Not left','బయల్దేరలేదు'],cheque:['Bounced','బౌన్స్'],short:['Short','తక్కువ వచ్చింది'],stock:['Low stock','స్టాక్ తక్కువ']},
+  out:{amber:['Not left','బయల్దేరలేదు'],blue:['On route','దారిలో'],green:['All done','అన్నీ అయ్యాయి']},
+  health:{green:['Good','బాగుంది'],amber:['Watch','గమనించాలి'],red:['Problem','సమస్య']},
+  dues:{green:['On time','టైమ్‌లోనే'],amber:['Getting old','పాతబడుతోంది'],red:['Overdue','గడువు దాటింది']},
+  inv:{green:['On time','టైమ్‌లోనే'],amber:['Due soon','త్వరలో గడువు'],red:['Overdue','గడువు దాటింది']},
+  due:(d)=>[`Due ${d}`,`గడువు ${d}`]
+};
+let D, lang='en', allBrands=false, opener=null;
+const L = v => Array.isArray(v) ? (lang==='te'?v[1]:v[0]) : v;
+const lbl = o => (lang==='te' && o.te) ? o.te : o.label;
+const trim = s => s.replace(/\.0+$/,'').replace(/(\.\d*?)0+$/,'$1');
+function money(v){
+  if(v>=1e7) return '₹'+trim((v/1e7).toFixed(2))+'\u00A0Cr';
+  if(v>=1e5) return '₹'+(v/1e5).toFixed(1)+'\u00A0L';
+  return '₹'+v.toLocaleString('en-IN');
+}
+const full = v => '₹'+v.toLocaleString('en-IN');
+const chip = (status, word) => `<span class="chip" style="background:${ST[status]}">${word}</span>`;
+const chev = `<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const bname = k => (D.brands.find(b=>b.key===k)||{name:k}).name;
+function logo(k){
+  const b = BRAND[k]||{c:'#333'};
+  return b.dark
+    ? `<span class="logo plate" style="background:${b.c}"><img src="../assets/brands/${k}.png" alt="${bname(k)}"></span>`
+    : `<span class="logo${k==='sparsh-pearl'?' sq':''}"><img src="../assets/brands/${k}.png" alt="${bname(k)}"></span>`;
+}
+
+function render(){
+  document.documentElement.lang = lang;
+  const c = D.cycle, back = c.parts[0].amount, out = c.total - back;
+  const pct = a => Math.round(a / c.total * 100);
+  let acc = 0; const road = c.parts.find(p=>p.key==='road');
+  let roadCentre = 0;
+  const segs = c.parts.map(p=>{
+    const w = p.amount / c.total * 100;
+    if(p.key==='road') roadCentre = acc + w/2;
+    acc += w;
+    const inside = p.key!=='road' ? `<span class="num">${money(p.amount)}</span>` : '';
+    return `<button style="flex:${p.amount} 1 0;background:${ST[p.status]}" data-part="${p.key}" aria-label="${p.label}, ${money(p.amount)}">${inside}</button>`;
+  }).join('');
+  const sorted = [...D.attention].sort((a,b)=>(b.amount??-1)-(a.amount??-1));
+  const tileVal = t => {
+    if(t.of) return `${t.value}<small>${L(T.of_)} ${t.of}</small>`;
+    if(t.unit) return `${t.value}<small>${L(T.lorries)}</small>`;
+    return money(t.value);
+  };
+  const tileCmp = t => {
+    if(t.status) return `<div class="tc flag" style="background:${ST[t.status]}">${t.compare}</div>`;
+    if(t.trend==='up') return `<div class="tc up"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" style="margin-right:4px"><path d="M6 1l5 8H1z" fill="currentColor"/></svg>${t.compare}</div>`;
+    return `<div class="tc">${t.compare}</div>`;
+  };
+  const stepIdx = {'ordered':0,'left brand godown':1,'on the way':2,'received':3};
+  const brands = allBrands ? D.brands : D.brands.slice(0,6);
+  const maxSale = D.brands[0].sales;
+  const dues = D.duesByAge, duesTot = dues.reduce((s,d)=>s+d.amount,0);
+  const pays = [...D.brandPaymentsThisWeek].sort((a,b)=>dayNo(a.due)-dayNo(b.due));
+  const kTot = D.districtWeekly.Kadapa.reduce((a,b)=>a+b,0), aTot = D.districtWeekly.Anantapur.reduce((a,b)=>a+b,0);
+
+  document.getElementById('app').innerHTML = `
+  <header class="top">
+    <div class="bar">
+      <img src="../assets/devansh/devansh-logo-primary-white.svg" alt="Devansh Marketing" width="81" height="34">
+      <button class="iconbtn" aria-label="${L(T.search)}"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="#fff" stroke-width="2.6"/><path d="M15.5 15.5L21 21" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/></svg></button>
+      <div class="lang" role="group" aria-label="Language">
+        <button data-lang="en" aria-pressed="${lang==='en'}">EN</button>
+        <button data-lang="te" class="te" aria-pressed="${lang==='te'}">తె</button>
+      </div>
+    </div>
+    <p class="hello tel"><b>${L(T.hello)}</b><span>${D.asOf}</span></p>
+    <h1 class="q tel">${L(T.q)}</h1>
+    <div class="answer num">${money(back)}<small class="tel">${L(T.isBack)}</small></div>
+    <p class="sub tel">${L(T.of(money(c.total), money(out)))}</p>
+  </header>
+
+  <div class="tray">
+    <h3 class="tel">${L(T.whereNow(money(c.total)))}</h3>
+    <div class="stack">${segs}</div>
+    <div class="under"><span class="num" style="left:${roadCentre}%;color:var(--b)">${money(road.amount)}</span></div>
+    <div class="parts">
+      ${c.parts.map(p=>`
+      <button class="part" data-part="${p.key}">
+        <span class="sw" style="background:${ST[p.status]}"></span>
+        <span class="lbl tel">${lbl(p)}</span>
+        <span class="pc">${pct(p.amount)}%</span>
+        <span class="amt num">${money(p.amount)}</span>
+        <span style="color:var(--ink-3);display:flex">${chev}</span>
+      </button>`).join('')}
+    </div>
+    <div class="better"><span class="num">+₹6.4 L</span><span class="tel">${L(T.better)}</span></div>
+  </div>
+
+  <main>
+    <div class="tiles">
+      ${D.tiles.map(t=>`
+      <button class="tile" aria-label="${lbl(t)}">
+        <span class="tl tel">${lbl(t)}</span><span class="chev">${chev}</span>
+        <span class="tv num">${tileVal(t)}</span>
+        ${tileCmp(t)}
+      </button>`).join('')}
+    </div>
+
+    <section>
+      <div class="sh"><h2 class="tel">${L(T.attention)}</h2><span class="side tel">${L(T.byMoney)}</span></div>
+      <div class="card" style="overflow:hidden">
+        ${sorted.map(a=>`
+        <button class="att">
+          <span class="stripe" style="background:${ST[a.status]}"></span>
+          <span class="body"><span class="top1">${chip(a.status, L(T.att[a.kind]))}${a.amount!=null?`<span class="money num">${money(a.amount)}</span>`:''}</span><span class="txt">${a.text}</span></span>
+        </button>`).join('')}
+      </div>
+    </section>
+
+    <section>
+      <div class="sh"><h2 class="tel">${L(T.comingIn)}</h2><span class="side num">${money(D.comingIn.reduce((s,x)=>s+x.value,0))}</span></div>
+      <div class="key tel">${T.steps.map(s=>`<span>${L(s)}</span>`).join('')}</div>
+      <div class="list">
+      ${D.comingIn.map(x=>{
+        const i = stepIdx[x.step], col = i===3 ? 'green' : 'blue';
+        const short = /short/i.test(x.note||'');
+        return `<div class="bcard">
+          <div class="band" style="background:${BRAND[x.brand].c}"></div>
+          <div class="inb">
+            <div class="row1">${logo(x.brand)}<span class="val num">${money(x.value)}</span></div>
+            <div class="meta">${x.po}${short?'':' · '+x.note}</div>
+            <div class="steps">${[0,1,2,3].map(n=>`<i style="${n<=i?'background:'+ST[col]:''}"></i>`).join('')}</div>
+            <div class="now">${chip(col, L(T.steps[i]))}${short?chip('red', x.note):''}</div>
+          </div></div>`;
+      }).join('')}
+      </div>
+    </section>
+
+    <section>
+      <div class="sh"><h2 class="tel">${L(T.goingOut)}</h2><span class="side tel">${L(T.drops(D.goingOut.reduce((s,v)=>s+v.done,0), D.goingOut.reduce((s,v)=>s+v.drops,0)))}</span></div>
+      <div class="list">
+      ${D.goingOut.map(v=>`
+        <div class="card outb">
+          <div class="row1"><span class="plate-no">${v.vehicle}</span>${chip(v.status, lang==='en'&&v.note?v.note:L(T.out[v.status]))}</div>
+          <div class="who">${v.driver} · ${v.route}</div>
+          <div class="drops">${Array.from({length:v.drops},(_,n)=>`<i style="${n<v.done?'background:'+ST[v.status==='amber'?'blue':v.status]:''}"></i>`).join('')}</div>
+          <div class="row3"><b class="tel">${L(T.drops(v.done, v.drops))}</b><span class="num">${money(v.value)}</span></div>
+        </div>`).join('')}
+      </div>
+    </section>
+
+    <section>
+      <div class="sh"><h2 class="tel">${L(T.district)}</h2><span class="side tel">${L(T.fiveWeeks)}</span></div>
+      <div class="card dist">
+        <div class="totals">
+          <div style="border-color:var(--sapphire)"><span class="tel">${L(T.kadapa)}</span><b class="num">${money(kTot)}</b></div>
+          <div style="border-color:#5B8BD8"><span class="tel">${L(T.anantapur)}</span><b class="num">${money(aTot)}</b></div>
+        </div>
+        ${chart()}
+        <p class="note tel">${L(T.partial)}</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="sh"><h2 class="tel">${L(T.topBrands)}</h2><span class="side tel">${L(T.thisMonth)}</span></div>
+      <div class="bgrid">
+      ${brands.map(b=>`
+        <div class="bcard">
+          <div class="band" style="background:${BRAND[b.key].c}"></div>
+          <div class="bg-in">
+            ${logo(b.key)}
+            <div class="amt num">${money(b.sales)}</div>
+            <div class="share"><i style="width:${(b.sales/maxSale*100).toFixed(1)}%;background:${BRAND[b.key].c}"></i></div>
+            ${chip(b.health, L(T.health[b.health]))}
+          </div>
+        </div>`).join('')}
+      </div>
+      <button class="more" id="moreBrands" aria-expanded="${allBrands}"><span class="tel">${L(allBrands?T.fewerBrands:T.allBrands)}</span></button>
+    </section>
+
+    <section>
+      <div class="sh"><h2 class="tel">${L(T.money)}</h2></div>
+      <div class="list">
+        <div class="card money-card">
+          <h3 class="tel">${L(T.duesAge)} · <span class="num">${money(duesTot)}</span></h3>
+          <div class="stack" style="height:52px">${dues.map(d=>`<span style="flex:${d.amount} 1 0;background:${ST[d.status]}" class="num">${money(d.amount)}</span>`).join('')}</div>
+          <div class="bands">
+            ${dues.map(d=>`<div><span>${d.band}</span>${chip(d.status, L(T.dues[d.status]))}</div>`).join('')}
+          </div>
+        </div>
+        <div class="card money-card">
+          <h3 class="tel">${L(T.topOwe)}</h3>
+          ${D.topDues.map(d=>`
+          <button class="dealer">
+            <span><span class="dn">${d.dealer}</span><br><span class="dt">${d.town} · <span class="tel">${L(T.oldest(d.oldestDays))}</span></span></span>
+            <span><span class="da num" style="display:block">${money(d.owes)}</span><span class="dc" style="display:block;margin-top:5px">${chip(d.status, L(T.dues[d.status]))}</span></span>
+          </button>`).join('')}
+        </div>
+        <div class="sh" style="margin-top:14px;margin-bottom:2px"><h3 class="tel" style="margin:0;font-size:17px;font-weight:700">${L(T.brandPay)}</h3><span class="side num">${money(pays.reduce((s,p)=>s+p.amount,0))}</span></div>
+        ${pays.map(p=>`
+        <div class="bcard pay">
+          <span class="vb" style="background:${BRAND[p.brand].c}"></span>
+          ${logo(p.brand)}
+          <span><span class="pa num" style="display:block">${money(p.amount)}</span><span class="pd" style="display:block">${chip('amber', L(T.due(p.due)))}</span></span>
+        </div>`).join('')}
+      </div>
+    </section>
+  </main>
+  <footer class="tel">${L(T.footer)}</footer>`;
+}
+function dayNo(s){ return parseInt(s.replace(/^\D+/,''),10); }
+
+function chart(){
+  const w = D.districtWeekly, W=340, H=220, l=44, r=6, t=26, b=40;
+  const pw = W-l-r, ph = H-t-b, max = 2000000, n = w.weeks.length, gw = pw/n, bw = 21;
+  const y = v => t + ph - v/max*ph;
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Weekly sales, Kadapa and Anantapur">
+  <defs>
+    <pattern id="hk" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#fff"/><rect width="3.2" height="6" fill="#0F52BA"/></pattern>
+    <pattern id="ha" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#fff"/><rect width="3.2" height="6" fill="#5B8BD8"/></pattern>
+  </defs>`;
+  [0,500000,1000000,1500000,2000000].forEach(v=>{
+    s += `<line x1="${l}" x2="${W-r}" y1="${y(v)}" y2="${y(v)}" stroke="${v?'#E6E4DD':'#0E1A2B'}" stroke-width="${v?1:1.5}"/>`;
+    s += `<text x="${l-6}" y="${y(v)+4}" text-anchor="end" font-size="12" fill="#5A6372">${v?'₹'+v/1e5+' L':'0'}</text>`;
+  });
+  w.weeks.forEach((wk,i)=>{
+    const cx = l + gw*i + gw/2, part = i===n-1, last = i===n-2;
+    const k = w.Kadapa[i], a = w.Anantapur[i];
+    const x1 = cx - bw - 1.5, x2 = cx + 1.5;
+    s += `<rect x="${x1}" y="${y(k)}" width="${bw}" height="${y(0)-y(k)}" fill="${part?'url(#hk)':'#0F52BA'}" ${part?'stroke="#0F52BA" stroke-width="1.5"':''}/>`;
+    s += `<rect x="${x2}" y="${y(a)}" width="${bw}" height="${y(0)-y(a)}" fill="${part?'url(#ha)':'#5B8BD8'}" ${part?'stroke="#5B8BD8" stroke-width="1.5"':''}/>`;
+    if(last || part){
+      s += `<text x="${x1+bw/2}" y="${y(k)-6}" text-anchor="middle" font-size="12" font-weight="800" fill="#0E1A2B">${trim((k/1e5).toFixed(1))}</text>`;
+      s += `<text x="${x2+bw/2}" y="${y(a)-6}" text-anchor="middle" font-size="12" font-weight="800" fill="#0E1A2B">${trim((a/1e5).toFixed(1))}</text>`;
+    }
+    s += `<text x="${cx}" y="${H-b+18}" text-anchor="middle" font-size="13" font-weight="${part?700:500}" fill="${part?'#0E1A2B':'#5A6372'}">${wk}</text>`;
+    if(part) s += `<text x="${cx}" y="${H-b+34}" text-anchor="middle" font-size="12" font-weight="700" fill="#0E1A2B">${lang==='te'?'ఇప్పటివరకు':'so far'}</text>`;
+  });
+  return s + `</svg>`;
+}
+
+function openSheet(key, from){
+  opener = from;
+  const p = D.cycle.parts.find(x=>x.key===key);
+  const sheet = document.getElementById('sheet');
+  let body;
+  if(key==='unpaid'){
+    const rows = D.drill.unpaid;
+    const sum = rows.reduce((s,r)=>s+r.amount,0);
+    body = rows.map(r=>`
+      <div class="inv">
+        <div><div class="dn">${r.dealer}</div><div class="no">${r.invoice}</div></div>
+        <div style="text-align:right"><div class="amt num">${full(r.amount)}</div></div>
+        <div>${chip(r.status, L(T.inv[r.status]))}</div>
+        <div class="num" style="text-align:right;font-size:16px;align-self:center">${L(T.days(r.days))}</div>
+        ${r.note?`<div class="nt">${r.note}</div>`:''}
+      </div>`).join('') + `<p class="sheet-foot tel">${L(T.drillFoot(full(sum), money(p.amount)))}</p>`;
+  } else {
+    body = `<div class="ph tel">${L(T.ph[key])}</div>`;
+  }
+  sheet.innerHTML = `
+    <div class="sheet-head" style="background:${ST[p.status]}">
+      <div class="r1"><h2 id="sheetTitle" class="tel">${lbl(p)}</h2>
+        <button class="closer" id="closeSheet" aria-label="${L(T.close)}"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4l12 12M16 4L4 16" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+      </div>
+      <div class="big num">${money(p.amount)}</div>
+    </div>
+    <div class="sheet-body">${body}</div>`;
+  const scrim = document.getElementById('scrim');
+  scrim.hidden = false;
+  requestAnimationFrame(()=>scrim.classList.add('open'));
+  document.body.style.overflow='hidden';
+  document.getElementById('closeSheet').focus();
+}
+function closeSheet(){
+  const scrim = document.getElementById('scrim');
+  if(scrim.hidden) return;
+  scrim.classList.remove('open');
+  document.body.style.overflow='';
+  setTimeout(()=>{scrim.hidden = true;}, 200);
+  if(opener && document.body.contains(opener)) opener.focus();
+}
+
+document.addEventListener('click', e=>{
+  const lg = e.target.closest('[data-lang]');
+  if(lg){ lang = lg.dataset.lang; render(); document.querySelector(`[data-lang="${lang}"]`).focus(); return; }
+  const pt = e.target.closest('[data-part]');
+  if(pt){ openSheet(pt.dataset.part, pt); return; }
+  if(e.target.closest('#moreBrands')){ allBrands = !allBrands; render(); document.getElementById('moreBrands').focus(); return; }
+  if(e.target.closest('#closeSheet') || e.target.id==='scrim'){ closeSheet(); }
+});
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeSheet(); });
+
+const fb = () => JSON.parse(document.getElementById('fallback').textContent);
+fetch('../assets/data.json').then(r=>r.ok?r.json():Promise.reject()).catch(fb).then(d=>{ D=(x=>JSON.parse(JSON.stringify(x).replace(/(₹[\d.,]+) (L|Cr)\b/g,'$1\u00A0$2')))(d); render(); });
+})();
+</script>
+</body>
+</html>

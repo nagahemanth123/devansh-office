@@ -1,0 +1,90 @@
+{
+  "_note": "SAMPLE numbers for the look previews. Same numbers in every direction. Dealer names are made up; towns are real. Money in rupees.",
+  "asOf": "Tue 24 Nov 2026, 8:10 am",
+  "business": "Devansh Marketing, Proddatur",
+  "owner": "Owner",
+  "cycle": {
+    "label": "This month's purchases",
+    "total": 13800000,
+    "parts": [
+      {"key": "recovered", "label": "Cash back in the bank", "te": "బ్యాంక్‌లో వచ్చిన డబ్బు", "amount": 5210000, "status": "green"},
+      {"key": "unpaid", "label": "Delivered, dealers yet to pay", "te": "డెలివరీ అయింది, డీలర్లు ఇంకా కట్టలేదు", "amount": 4430000, "status": "amber"},
+      {"key": "road", "label": "On the road", "te": "రోడ్డు మీద ఉంది", "amount": 860000, "status": "blue"},
+      {"key": "godown", "label": "Still in the godown", "te": "ఇంకా గోడౌన్‌లోనే", "amount": 3300000, "status": "neutral"}
+    ],
+    "vsLastMonth": "₹6.4 L more came back than at this point in October"
+  },
+  "tiles": [
+    {"key": "sales", "label": "Sales this month", "te": "ఈ నెల అమ్మకాలు", "value": 9640000, "compare": "+12% vs October", "trend": "up"},
+    {"key": "collected", "label": "Collected", "te": "వసూలైంది", "value": 5210000, "compare": "54% of sales", "trend": "flat"},
+    {"key": "dealersOwe", "label": "Dealers owe us", "te": "డీలర్లు మనకు ఇవ్వాల్సింది", "value": 4430000, "compare": "₹11.8 L is 60+ days old", "trend": "down", "status": "amber"},
+    {"key": "weOwe", "label": "We owe brands", "te": "మనం బ్రాండ్లకు ఇవ్వాల్సింది", "value": 6170000, "compare": "₹18.2 L due this week", "trend": "flat"},
+    {"key": "stock", "label": "Stock value", "te": "స్టాక్ విలువ", "value": 16200000, "compare": "41 days of cover", "trend": "flat"},
+    {"key": "lorries", "label": "Lorries coming in", "te": "వస్తున్న లారీలు", "value": 4, "unit": "lorries", "compare": "₹27.6 L of goods", "trend": "flat"},
+    {"key": "vehicles", "label": "Our vehicles on the road", "te": "రోడ్డు మీద మన వాహనాలు", "value": 3, "of": 5, "compare": "17 of 26 drops done", "trend": "flat"},
+    {"key": "staff", "label": "Staff present", "te": "హాజరైన సిబ్బంది", "value": 14, "of": 16, "compare": "2 on leave", "trend": "flat"}
+  ],
+  "attention": [
+    {"text": "Sri Lakshmi Electricals, Pulivendula is ₹1.9 L over credit limit, with a new order waiting", "amount": 190000, "status": "red", "kind": "credit"},
+    {"text": "Finolex payment of ₹9.6 L is due Friday 28 Nov", "amount": 960000, "status": "amber", "kind": "brand-payment"},
+    {"text": "Vehicle AP 04 TU 5521 was loaded 2 h ago and has not left (₹4.7 L of goods)", "amount": 470000, "status": "amber", "kind": "vehicle"},
+    {"text": "Sai Ram Sanitary, Tadipatri: cheque of ₹86,000 bounced", "amount": 86000, "status": "red", "kind": "cheque"},
+    {"text": "Goldmedal lorry arrived 10 units short (6A modular switches). Claim ₹14,600", "amount": 14600, "status": "red", "kind": "short"},
+    {"text": "Parryware Neo EWC will run out in 6 days", "amount": null, "status": "amber", "kind": "stock"}
+  ],
+  "comingIn": [
+    {"brand": "goldmedal", "po": "PO-2611-041", "value": 640000, "step": "received", "note": "10 short"},
+    {"brand": "finolex", "po": "PO-2611-044", "value": 920000, "step": "on the way", "note": "Expected tomorrow"},
+    {"brand": "parryware", "po": "PO-2611-046", "value": 710000, "step": "left brand godown", "note": "Chennai, 2 days"},
+    {"brand": "victura", "po": "PO-2611-048", "value": 490000, "step": "ordered", "note": "Placed Sat"}
+  ],
+  "goingOut": [
+    {"vehicle": "AP 04 TU 5521", "driver": "Ramesh", "route": "Kadapa · Kamalapuram", "drops": 6, "done": 0, "value": 470000, "status": "amber", "note": "Loaded, not left"},
+    {"vehicle": "AP 04 TV 1187", "driver": "Suresh", "route": "Jammalamadugu · Mydukur", "drops": 7, "done": 5, "value": 380000, "status": "blue"},
+    {"vehicle": "AP 39 U 2204", "driver": "Naresh", "route": "Tadipatri · Gooty · Guntakal", "drops": 8, "done": 7, "value": 560000, "status": "blue"},
+    {"vehicle": "AP 04 TS 9032", "driver": "Mahesh", "route": "Pulivendula", "drops": 5, "done": 5, "value": 290000, "status": "green"}
+  ],
+  "districtWeekly": {
+    "weeks": ["27 Oct", "3 Nov", "10 Nov", "17 Nov", "24 Nov"],
+    "Kadapa": [1480000, 1720000, 1610000, 1890000, 920000],
+    "Anantapur": [1020000, 1150000, 1240000, 1310000, 640000]
+  },
+  "brands": [
+    {"key": "parryware", "name": "Parryware", "sales": 2210000, "health": "green"},
+    {"key": "finolex", "name": "Finolex", "sales": 1840000, "health": "amber"},
+    {"key": "ultravolt", "name": "Ultravolt", "sales": 1560000, "health": "green"},
+    {"key": "goldmedal", "name": "Goldmedal", "sales": 1120000, "health": "red"},
+    {"key": "kenstar", "name": "Kenstar", "sales": 830000, "health": "amber"},
+    {"key": "sparsh-pearl", "name": "Sparsh Pearl", "sales": 610000, "health": "green"},
+    {"key": "poddar", "name": "Poddar Pipes", "sales": 520000, "health": "green"},
+    {"key": "sentini", "name": "Sentini Flopipes", "sales": 430000, "health": "green"},
+    {"key": "victura", "name": "Victura Airmotion", "sales": 310000, "health": "amber"},
+    {"key": "acebond", "name": "Acebond", "sales": 210000, "health": "green"}
+  ],
+  "duesByAge": [
+    {"band": "0–30 days", "amount": 2210000, "status": "green"},
+    {"band": "31–60 days", "amount": 1040000, "status": "amber"},
+    {"band": "60+ days", "amount": 1180000, "status": "red"}
+  ],
+  "topDues": [
+    {"dealer": "Sri Lakshmi Electricals", "town": "Pulivendula", "owes": 540000, "oldestDays": 74, "status": "red"},
+    {"dealer": "Venkateswara Hardware", "town": "Kadapa", "owes": 410000, "oldestDays": 52, "status": "amber"},
+    {"dealer": "Sai Ram Sanitary", "town": "Tadipatri", "owes": 360000, "oldestDays": 68, "status": "red"},
+    {"dealer": "Balaji Pipes & Fittings", "town": "Guntakal", "owes": 290000, "oldestDays": 21, "status": "green"},
+    {"dealer": "Sri Sai Electricals", "town": "Jammalamadugu", "owes": 240000, "oldestDays": 38, "status": "amber"}
+  ],
+  "brandPaymentsThisWeek": [
+    {"brand": "finolex", "amount": 960000, "due": "Fri 28 Nov"},
+    {"brand": "ultravolt", "amount": 540000, "due": "Thu 27 Nov"},
+    {"brand": "sparsh-pearl", "amount": 320000, "due": "Sat 29 Nov"}
+  ],
+  "drill": {
+    "unpaid": [
+      {"invoice": "DM/26-27/3418", "dealer": "Sri Lakshmi Electricals, Pulivendula", "amount": 184000, "days": 74, "status": "red"},
+      {"invoice": "DM/26-27/3502", "dealer": "Sai Ram Sanitary, Tadipatri", "amount": 86000, "days": 68, "status": "red", "note": "Cheque bounced"},
+      {"invoice": "DM/26-27/3611", "dealer": "Venkateswara Hardware, Kadapa", "amount": 152000, "days": 52, "status": "amber"},
+      {"invoice": "DM/26-27/3720", "dealer": "Sri Sai Electricals, Jammalamadugu", "amount": 98000, "days": 38, "status": "amber"},
+      {"invoice": "DM/26-27/3804", "dealer": "Balaji Pipes & Fittings, Guntakal", "amount": 121000, "days": 21, "status": "green", "note": "Half paid by UPI"}
+    ]
+  }
+}

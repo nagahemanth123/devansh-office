@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Devansh · Money map</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:wght@400;500;600;700;800&family=Overpass+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:"MidDot";src:local("Helvetica Neue"),local("Helvetica"),local("Arial");unicode-range:U+00B7}
+@font-face{
+  font-family:"Anek Telugu";
+  src:url("../assets/fonts/AnekTelugu-Variable.woff2") format("woff2");
+  font-weight:100 800;font-display:swap;
+  unicode-range:U+0C00-0C7F,U+200C-200D,U+25CC;
+}
+:root{
+  --page:#E7E5DF; --paper:#F7F6F2; --white:#FFFFFF;
+  --ink:#121620; --ink2:#454B58; --ink3:#5F6573;
+  --line:#E3E0D8; --line2:#D2CEC3;
+  --sap:#0F52BA; --sapTint:#EBF1FA;
+  --green:#17794A; --greenDot:#1E9A5E;
+  --amber:#965800; --amberDot:#E09A16;
+  --red:#B3261E; --redDot:#D2372D;
+  --blue:#1E58B8; --blueDot:#3B7BE0;
+  --grey:#5F6573; --greyDot:#9AA0AB;
+  --gut:16px;
+  --sans:"MidDot","Overpass","Anek Telugu",system-ui,sans-serif;
+  --mono:"Overpass Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--page);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.45;
+  font-variant-numeric:tabular-nums lining-nums;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left}
+button:focus-visible{outline:2px solid var(--sap);outline-offset:2px;border-radius:6px}
+img{display:block}
+.app{max-width:430px;margin:0 auto;background:var(--paper);min-height:100vh}
+html[lang="te"] .t{line-height:1.5}
+.num{font-weight:700;letter-spacing:-.01em}
+.mono{font-family:var(--mono);font-size:14px;letter-spacing:0}
+.muted{color:var(--ink3)}
+
+/* status: colour + word */
+.st{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;white-space:nowrap}
+.st::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;flex:none}
+.st.green{color:var(--green)} .st.green::before{background:var(--greenDot)}
+.st.amber{color:var(--amber)} .st.amber::before{background:var(--amberDot)}
+.st.red{color:var(--red)} .st.red::before{background:var(--redDot)}
+.st.blue{color:var(--blue)} .st.blue::before{background:var(--blueDot)}
+.st.neutral{color:var(--grey)} .st.neutral::before{background:var(--greyDot)}
+
+/* header */
+.top{background:var(--white);padding:6px var(--gut) 0}
+.bar{display:flex;align-items:center;gap:6px;height:50px}
+.logo{height:34px;width:auto;margin-left:-4px}
+.bar .sp{flex:1}
+.iconbtn{width:44px;height:44px;display:grid;place-items:center;border-radius:12px}
+.iconbtn:active{background:var(--sapTint)}
+.lang{display:flex;border:1px solid var(--line2);border-radius:12px;padding:3px;height:52px;box-sizing:border-box}
+.lang button{min-width:44px;padding:0 10px;border-radius:9px;font-size:15px;font-weight:600;color:var(--ink2);text-align:center}
+.lang button[aria-pressed="true"]{background:var(--sap);color:#fff}
+.lang button[data-l="te"]{font-family:"Anek Telugu",var(--sans);font-size:17px}
+.greet{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;padding:2px 0 0}
+.greet b{font-size:17px;font-weight:700}
+.greet span{font-size:15px;color:var(--ink3)}
+
+/* hero / money map */
+.hero{background:var(--white);padding:14px var(--gut) 16px;border-bottom:1px solid var(--line)}
+.q{font-size:17px;font-weight:600;color:var(--ink2)}
+.ans{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:4px}
+.ans .big{font-size:44px;line-height:1.05;font-weight:800;letter-spacing:-.025em;color:var(--ink)}
+.ans .of{font-size:18px;font-weight:600;color:var(--ink)}
+.ansline{font-size:16px;color:var(--ink2);margin-top:6px;max-width:34em}
+.ansline b{color:var(--ink);font-weight:700}
+.vs{display:flex;gap:7px;align-items:flex-start;margin-top:6px;font-size:15px;line-height:1.35;color:var(--green);font-weight:600}
+.vs svg{flex:none;margin-top:3px}
+
+.map{margin-top:18px;position:relative}
+.origin{display:flex;align-items:baseline;gap:8px;font-size:15px;color:var(--ink2);margin-bottom:6px}
+.origin b{font-size:17px;color:var(--ink)}
+.map svg{display:block;overflow:visible}
+.stops{display:grid;grid-template-columns:repeat(4,1fr);margin-top:8px}
+.stop{padding:4px 6px 6px 0;min-height:88px;border-radius:10px;display:flex;flex-direction:column;gap:2px;position:relative}
+.stop:active{background:var(--sapTint)}
+.stop .amt{font-size:19px;font-weight:800;letter-spacing:-.02em;display:flex;align-items:center;gap:3px;white-space:nowrap}
+.stop .amt svg{flex:none;opacity:.55}
+.stop .nm{font-size:15px;line-height:1.25;color:var(--ink2);font-weight:500}
+.stop .st{margin-top:auto;padding-top:4px;font-size:14px}
+.stop.bank .amt{color:var(--green)}
+.hint{font-size:14px;color:var(--ink3);margin-top:2px}
+.fade{opacity:0;transition:opacity .45s ease}
+.fade.on{opacity:1}
+
+/* sections */
+section.blk{padding:22px var(--gut) 8px}
+section.blk + section.blk{border-top:1px solid var(--line)}
+.h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px}
+.h h2{font-size:21px;font-weight:700;letter-spacing:-.01em;line-height:1.25}
+.h .aside{font-size:14px;color:var(--ink3);white-space:nowrap}
+h3{font-size:17px;font-weight:700;margin:26px 0 10px}
+
+/* tiles */
+.tiles{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line)}
+.tile{position:relative;padding:12px 26px 14px 0;min-height:108px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:3px}
+.tile:nth-child(2n){padding-left:14px;padding-right:22px}
+.tile:nth-child(2n+1){border-right:1px solid var(--line)}
+.tile:active{background:var(--sapTint)}
+.tile .lb{font-size:15px;color:var(--ink2);font-weight:500;line-height:1.3}
+.tile .v{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.15;margin-top:2px}
+.tile .v small{font-size:16px;font-weight:600;color:var(--ink2);letter-spacing:0}
+.tile .cmp{font-size:14px;color:var(--ink3);line-height:1.35;margin-top:auto;padding-top:4px}
+.tile .cmp.up{color:var(--green);font-weight:600}
+.tile .cmp.amber{color:var(--amber);font-weight:600}
+.tile .chev{position:absolute;right:6px;top:16px;opacity:.5}
+
+/* attention */
+.att{list-style:none}
+.att li{display:grid;grid-template-columns:1fr auto;gap:4px 14px;padding:14px 0;border-bottom:1px solid var(--line)}
+.att li:last-child{border-bottom:0}
+.att .tx{font-size:15px;line-height:1.4;grid-column:1}
+.att .am{font-weight:700;font-size:16px;grid-column:2;grid-row:1 / span 2;text-align:right;white-space:nowrap}
+.att .st{grid-column:1}
+
+/* tracks */
+.scale{display:grid;grid-template-columns:repeat(4,1fr);font-size:13px;color:var(--ink3);font-weight:600;margin:0 0 4px;line-height:1.25}
+.scale span:nth-child(2),.scale span:nth-child(3){text-align:center}
+.scale span:last-child{text-align:right}
+.row{padding:14px 0 16px;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.row .r1{display:flex;align-items:center;gap:10px}
+.row .r1 .grow{flex:1;min-width:0}
+.row .val{font-weight:700;font-size:16px;white-space:nowrap}
+.logobox{width:88px;height:30px;display:flex;align-items:center}
+.logobox img{max-width:100%;max-height:100%;object-fit:contain}
+.trk{position:relative;height:14px;margin:12px 0 10px}
+.trk .rail{position:absolute;top:6px;height:2px;background:#D2CEC3}
+.trk .fill{position:absolute;top:5px;height:4px;background:var(--sap);border-radius:2px}
+.trk i{position:absolute;top:0;width:14px;height:14px;border-radius:50%;background:#fff;border:2px solid #B9B4A8}
+.trk i.d{background:var(--sap);border-color:var(--sap)}
+.trk i.c{border:3px solid var(--sap);background:#fff}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.row .r3{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:14px;color:var(--ink3)}
+.veh{font-family:var(--mono);font-size:15px;font-weight:500;letter-spacing:.02em}
+.who{font-size:15px;color:var(--ink2);margin-top:2px}
+
+/* chart */
+.chart svg{display:block;width:100%;overflow:visible}
+.note{font-size:14px;color:var(--ink3);margin-top:8px}
+
+/* brands */
+.brands{list-style:none}
+.brands li{display:grid;grid-template-columns:96px 1fr auto;align-items:center;gap:12px;min-height:56px;border-bottom:1px solid var(--line)}
+.brands .barw{display:flex;flex-direction:column;gap:6px}
+.brands .barw b{font-size:16px}
+.brands .barw i{display:block;height:4px;background:var(--sap);border-radius:2px}
+.more{margin-top:6px;min-height:44px;font-size:15px;font-weight:600;color:var(--sap);display:inline-flex;align-items:center;gap:6px}
+
+/* money */
+.age{display:flex;gap:3px;height:14px;margin:4px 0 10px}
+.age i{display:block;height:100%;border-radius:3px}
+.agelb{display:grid;gap:8px}
+.agelb div{display:flex;flex-direction:column;gap:1px}
+.agelb b{font-size:18px}
+.agelb span.band{font-size:14px;color:var(--ink3)}
+.dl{list-style:none}
+.dl li{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.dl li:last-child{border-bottom:0}
+.dl .n{font-size:16px;font-weight:600;line-height:1.3}
+.dl .tw{font-size:14px;color:var(--ink3)}
+.dl .a{text-align:right;font-weight:700;font-size:16px}
+.dl .s{text-align:right}
+
+footer{padding:28px var(--gut) 40px;font-size:13px;color:var(--ink3);border-top:1px solid var(--line);margin-top:24px}
+
+/* sheet */
+.scrim{position:fixed;inset:0;background:rgba(18,22,32,.42);opacity:0;pointer-events:none;transition:opacity .22s ease;z-index:20}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:50%;bottom:0;width:100%;max-width:430px;max-height:86vh;overflow:auto;background:var(--white);
+  border-radius:20px 20px 0 0;transform:translate(-50%,104%);transition:transform .28s cubic-bezier(.2,.7,.2,1),visibility 0s linear .28s;z-index:21;padding:8px var(--gut) 28px}
+.sheet{visibility:hidden}
+.sheet.on{transform:translate(-50%,0);visibility:visible;transition-delay:0s}
+.grab{width:40px;height:4px;border-radius:2px;background:var(--line2);margin:4px auto 6px}
+.sh{display:flex;align-items:flex-start;gap:8px}
+.sh .grow{flex:1;padding-top:8px}
+.sh h2{font-size:19px;line-height:1.3;font-weight:700}
+.sh .tot{font-size:32px;font-weight:800;letter-spacing:-.02em;margin-top:4px}
+.sheet .sub{font-size:15px;color:var(--ink2);margin:2px 0 8px}
+.inv{list-style:none;border-top:1px solid var(--line);margin-top:10px}
+.inv li{display:grid;grid-template-columns:1fr auto;gap:3px 12px;padding:14px 0;border-bottom:1px solid var(--line)}
+.inv .d{font-size:16px;font-weight:600;line-height:1.3}
+.inv .a{font-size:17px;font-weight:700;text-align:right}
+.inv .meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.inv .nt{font-size:14px;color:var(--ink2)}
+.ph{font-size:16px;color:var(--ink2);padding:18px 0;border-top:1px solid var(--line);margin-top:12px}
+
+@media (max-width:374px){
+  :root{--gut:14px}
+  .ans .big{font-size:40px}
+  .stop .amt{font-size:18px}
+  .tile .v{font-size:24px}
+  .logobox{width:76px}
+  .brands li{grid-template-columns:84px 1fr auto}
+}
+@media (min-width:600px){
+  body{padding:28px 0}
+  .app{border-radius:24px;overflow:hidden;min-height:auto;border:1px solid #DAD7CF}
+}
+@media (prefers-reduced-motion:reduce){
+  .fade{transition:none}
+  .sheet,.scrim{transition:none}
+}
+.logobox img[src*="sparsh-pearl"]{transform:scale(1.3);transform-origin:left center}
+img[src*="sparsh-pearl"]{filter:brightness(.62) saturate(1.15)}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <header class="top">
+    <div class="bar">
+      <img class="logo" src="../assets/devansh/devansh-logo-primary.svg" alt="Devansh Marketing, Proddatur">
+      <span class="sp"></span>
+      <button class="iconbtn" aria-label="Search">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#121620" stroke-width="1.8" stroke-linecap="round"><circle cx="9.5" cy="9.5" r="6.5"/><path d="M14.5 14.5 L19.5 19.5"/></svg>
+      </button>
+      <div class="lang" role="group" aria-label="Language">
+        <button data-l="en" aria-pressed="true">EN</button>
+        <button data-l="te" aria-pressed="false" lang="te">తె</button>
+      </div>
+    </div>
+    <div class="greet"><b class="t" data-i="morning"></b><span id="asof"></span></div>
+  </header>
+
+  <section class="hero" aria-labelledby="qh">
+    <h1 class="q t" id="qh" data-i="q"></h1>
+    <div class="ans"><span class="big num" id="backAmt"></span><span class="of t" id="backOf"></span></div>
+    <p class="ansline t" id="ansline"></p>
+    <p class="vs t" id="vs"></p>
+    <div class="map" id="map">
+      <div class="origin"><span class="t" data-i="bought"></span><b class="num" id="totAmt"></b></div>
+      <svg id="mapsvg" aria-hidden="true"></svg>
+      <div class="stops" id="stops"></div>
+      <p class="hint t" data-i="hint"></p>
+    </div>
+  </section>
+
+  <section class="blk" aria-labelledby="h-tiles">
+    <div class="h"><h2 class="t" id="h-tiles" data-i="month"></h2><span class="aside t" data-i="tapAny"></span></div>
+    <div class="tiles" id="tiles"></div>
+  </section>
+
+  <section class="blk" aria-labelledby="h-att">
+    <div class="h"><h2 class="t" id="h-att" data-i="attention"></h2><span class="aside t" data-i="byMoney"></span></div>
+    <ul class="att" id="att"></ul>
+  </section>
+
+  <section class="blk" aria-labelledby="h-in">
+    <div class="h"><h2 class="t" id="h-in" data-i="comingIn"></h2><span class="aside" id="inTot"></span></div>
+    <div class="scale t" id="scale"></div>
+    <div id="inbound"></div>
+  </section>
+
+  <section class="blk" aria-labelledby="h-out">
+    <div class="h"><h2 class="t" id="h-out" data-i="goingOut"></h2><span class="aside" id="outTot"></span></div>
+    <div id="outbound"></div>
+  </section>
+
+  <section class="blk" aria-labelledby="h-dist">
+    <div class="h"><h2 class="t" id="h-dist" data-i="district"></h2><span class="aside t" data-i="weekly"></span></div>
+    <div class="chart" id="chart"></div>
+    <p class="note t" data-i="partial"></p>
+    <h3 class="t" data-i="topBrands"></h3>
+    <ul class="brands" id="brands"></ul>
+    <button class="more t" id="moreBrands" aria-expanded="false"></button>
+  </section>
+
+  <section class="blk" aria-labelledby="h-money">
+    <div class="h"><h2 class="t" id="h-money" data-i="money"></h2></div>
+    <h3 class="t" style="margin-top:0" data-i="duesAge"></h3>
+    <div id="age"></div>
+    <h3 class="t" data-i="topDues"></h3>
+    <ul class="dl" id="topdues"></ul>
+    <h3 class="t" data-i="brandPay"></h3>
+    <ul class="dl" id="brandpay"></ul>
+  </section>
+
+  <footer>Sample numbers for preview · Busy Fox</footer>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="shTitle" aria-hidden="true">
+  <div class="grab"></div>
+  <div class="sh">
+    <div class="grow"><h2 class="t" id="shTitle"></h2><div class="tot num" id="shTot"></div></div>
+    <button class="iconbtn" id="shClose" aria-label="Close">
+      <svg width="20" height="20" viewBox="0 0 20 20" stroke="#121620" stroke-width="1.8" stroke-linecap="round"><path d="M4 4 L16 16 M16 4 L4 16"/></svg>
+    </button>
+  </div>
+  <div id="shBody"></div>
+</div>
+
+<script>
+(function(){
+"use strict";
+const T = {
+  en:{morning:"Good morning",q:"Did the ₹1 Cr come back?",bought:"Bought this month",
+      backOf:"is back in the bank",
+      ansline:(tot,pct,out)=>`<b>${pct}%</b> of the <b>${tot}</b> bought this month. <b>${out}</b> is still out.`,
+      hint:"Tap a stop to see the list behind it",
+      s_godown:"In the godown",s_road:"On the road",s_unpaid:"With dealers",s_recovered:"In the bank",
+      w_godown:"In stock",w_road:"Moving",w_unpaid:"Unpaid",w_recovered:"Back",
+      month:"This month",tapAny:"Tap any box",attention:"Needs attention",byMoney:"Biggest money first",
+      comingIn:"Coming in from brands",goingOut:"Going out to dealers",
+      steps:["Ordered","Left brand godown","On the way","Received"],
+      district:"Sales by district",weekly:"Week by week",
+      partial:"The week of 24 Nov has only just started, so its line is dashed and will keep rising.",
+      topBrands:"Top brands",moreBrands:n=>`See all ${n} brands`,lessBrands:"Show fewer",
+      money:"Money",duesAge:"What dealers owe, by age",topDues:"Dealers who owe the most",brandPay:"Paying brands this week",
+      drillSub:"Oldest bills first. Call these dealers today.",drillSum:(a,n)=>`${a} across these ${n} bills`,
+      ph:"In the live app, every bill and entry behind this amount opens here.",
+      drops:(d,n)=>`${d} of ${n} drops`},
+  te:{morning:"శుభోదయం",q:"₹1 కోటి తిరిగి వచ్చిందా?",bought:"ఈ నెల కొన్నది",
+      backOf:"బ్యాంక్‌కి వచ్చింది",
+      ansline:(tot,pct,out)=>`ఈ నెల కొన్న <b>${tot}</b> లో <b>${pct}%</b>. ఇంకా <b>${out}</b> బయట ఉంది.`,
+      hint:"లిస్ట్ చూడటానికి ఏదైనా స్టాప్ మీద టచ్ చేయండి",
+      s_godown:"గోడౌన్‌లో",s_road:"రోడ్డు మీద",s_unpaid:"డీలర్ల దగ్గర",s_recovered:"బ్యాంక్‌లో",
+      w_godown:"స్టాక్",w_road:"వెళ్తోంది",w_unpaid:"కట్టలేదు",w_recovered:"వచ్చింది",
+      month:"ఈ నెల",tapAny:"ఏ బాక్స్ అయినా టచ్ చేయండి",attention:"చూడాల్సినవి",byMoney:"ఎక్కువ డబ్బు ముందు",
+      comingIn:"బ్రాండ్ల నుంచి వస్తున్న సరుకు",goingOut:"డీలర్లకు వెళ్తున్న సరుకు",
+      steps:["ఆర్డర్","బ్రాండ్ గోడౌన్ దాటింది","దారిలో ఉంది","వచ్చింది"],
+      district:"జిల్లా వారీ అమ్మకాలు",weekly:"వారం వారం",
+      partial:"24 Nov వారం ఇప్పుడే మొదలైంది, అందుకే ఆ లైన్ డాష్‌లో ఉంది. ఇంకా పెరుగుతుంది.",
+      topBrands:"టాప్ బ్రాండ్లు",moreBrands:n=>`మొత్తం ${n} బ్రాండ్లు చూడండి`,lessBrands:"తక్కువ చూపించు",
+      money:"డబ్బు",duesAge:"డీలర్ బాకీలు, ఎన్ని రోజులవి",topDues:"ఎక్కువ బాకీ ఉన్న డీలర్లు",brandPay:"ఈ వారం బ్రాండ్లకు కట్టాల్సింది",
+      drillSub:"పాత బిల్లులు ముందు. ఈ రోజే ఈ డీలర్లకు కాల్ చేయండి.",drillSum:(a,n)=>`ఈ ${n} బిల్లుల్లో ${a}`,
+      ph:"లైవ్ యాప్‌లో, ఈ అమౌంట్ వెనుక ఉన్న ప్రతి బిల్లు ఇక్కడ కనిపిస్తుంది.",
+      drops:(d,n)=>`${n} లో ${d} డ్రాప్స్`}
+};
+const VS_TE = "అక్టోబర్‌లో ఇదే టైమ్‌కి కంటే ₹6.4 L ఎక్కువ తిరిగి వచ్చింది";
+const BRAND_NAMES = {parryware:"Parryware",finolex:"Finolex",ultravolt:"Ultravolt",goldmedal:"Goldmedal",kenstar:"Kenstar","sparsh-pearl":"Sparsh Pearl",poddar:"Poddar Pipes",sentini:"Sentini Flopipes",victura:"Victura Airmotion",acebond:"Acebond"};
+
+let D=null, lang="en", animated=false, brandsOpen=false, lastFocus=null;
+const $=s=>document.querySelector(s);
+const tr=k=>T[lang][k];
+const trim=x=>String(parseFloat(x));
+function inr(n){
+  if(n>=1e7) return "₹"+trim((n/1e7).toFixed(2))+"\u00A0Cr";
+  if(n>=1e5) return "₹"+(n/1e5).toFixed(1)+"\u00A0L";
+  return "₹"+n.toLocaleString("en-IN");
+}
+const full=n=>"₹"+n.toLocaleString("en-IN");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const logo=(k,h)=>`<span class="logobox"${h?` style="height:${h}px"`:""}><img src="../assets/brands/${k}.png" alt="${esc(BRAND_NAMES[k]||k)}"></span>`;
+const chev=`<svg class="chev" width="9" height="14" viewBox="0 0 9 14" fill="none" stroke="#121620" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 2 L7 7 L2 12"/></svg>`;
+const part=k=>D.cycle.parts.find(p=>p.key===k);
+
+/* ---------- money map ---------- */
+const ORDER=["godown","road","unpaid","recovered"]; // left to right along the line
+const DOT={green:"#1E9A5E",amber:"#E09A16",blue:"#3B7BE0",neutral:"#9AA0AB",red:"#D2372D"};
+function drawMap(animate){
+  const svg=$("#mapsvg"), W=$("#map").clientWidth;
+  const P=24, col=(W-P)/4, scale=54/D.cycle.total, gap=2.5, y0=6, rIn=11;
+  // bundle layers, top to bottom: the line that travels furthest sits on top
+  const layers=[...ORDER].reverse().map(k=>({k,p:part(k),t:Math.max(5,part(k).amount*scale)}));
+  let y=y0; layers.forEach(L=>{L.yc=y+L.t/2; y+=L.t+gap;});
+  const bundleBottom=y-gap, yEnd=bundleBottom+34, H=yEnd+6;
+  svg.setAttribute("viewBox",`0 0 ${W} ${H}`); svg.setAttribute("width",W); svg.setAttribute("height",H);
+  let paths="", caps="";
+  layers.forEach(L=>{
+    const i=ORDER.indexOf(L.k), x0=P+i*col, sx=x0+6+L.t/2, R=rIn+L.t/2;
+    L.d=`M4 ${L.yc.toFixed(2)} H${(sx-R).toFixed(2)} A${R.toFixed(2)} ${R.toFixed(2)} 0 0 1 ${sx.toFixed(2)} ${(L.yc+R).toFixed(2)} V${yEnd-3}`;
+    paths+=`<path data-k="${L.k}" d="${L.d}" fill="none" stroke="#0F52BA" stroke-width="${L.t.toFixed(2)}"/>`;
+    caps+=`<g class="fade" data-cap="${L.k}"><rect x="${(sx-L.t/2-6).toFixed(2)}" y="${yEnd-4}" width="${(L.t+12).toFixed(2)}" height="9" rx="4.5" fill="#fff" stroke="#121620" stroke-width="2"/>`+
+          `<rect x="${(sx-2.5).toFixed(2)}" y="${yEnd-1.5}" width="5" height="4" rx="2" fill="${DOT[L.p.status]}"/></g>`;
+  });
+  const origin=`<rect x="0" y="${y0-5}" width="9" height="${(bundleBottom-y0+10).toFixed(2)}" rx="4.5" fill="#fff" stroke="#121620" stroke-width="2"/>`;
+  svg.innerHTML=paths+caps+origin;
+  // station labels
+  $("#stops").style.paddingLeft=P+"px";
+  $("#stops").innerHTML=ORDER.map(k=>{
+    const p=part(k);
+    return `<button class="stop fade ${k==="recovered"?"bank":""}" data-k="${k}" aria-haspopup="dialog">
+      <span class="amt num">${inr(p.amount)}<svg width="7" height="11" viewBox="0 0 7 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 1.5 L5.5 5.5 L1.5 9.5"/></svg></span>
+      <span class="nm t">${tr("s_"+k)}</span>
+      <span class="st ${p.status} t">${tr("w_"+k)}</span></button>`;
+  }).join("");
+  $("#stops").querySelectorAll(".stop").forEach(b=>b.addEventListener("click",()=>openSheet(b.dataset.k,b)));
+  // gentle one-time draw: every line travels at the same speed, so they peel off in order
+  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const els=[...svg.querySelectorAll("path")];
+  if(!animate||reduce){ document.querySelectorAll("#map .fade").forEach(e=>e.classList.add("on")); return; }
+  const speed=0.42; // px per ms
+  els.forEach(p=>{
+    const len=p.getTotalLength(), dur=len/speed, k=p.dataset.k;
+    p.style.strokeDasharray=len; p.style.strokeDashoffset=len;
+    p.getBoundingClientRect();
+    p.style.transition=`stroke-dashoffset ${dur}ms linear 250ms`;
+    requestAnimationFrame(()=>{p.style.strokeDashoffset=0;});
+    setTimeout(()=>{
+      svg.querySelector(`[data-cap="${k}"]`).classList.add("on");
+      $(`#stops .stop[data-k="${k}"]`).classList.add("on");
+    },250+dur-80);
+  });
+}
+
+/* ---------- small transit tracks (HTML so stops stay round at any width) ---------- */
+function track(n,reached,curColor){
+  // reached = index of the furthest stop reached; stops before it are filled
+  const pad=7;
+  let h=`<div class="trk" aria-hidden="true"><span class="rail" style="left:${pad}px;right:${pad}px"></span>`;
+  if(reached>0) h+=`<span class="fill" style="left:${pad}px;width:calc((100% - ${pad*2}px) * ${(reached/(n-1)).toFixed(4)})"></span>`;
+  for(let i=0;i<n;i++){
+    let cls=i<reached?"d":i===reached?"c":"";
+    const style=i===reached&&curColor?`background:${curColor};border-color:${curColor}`:"";
+    h+=`<i class="${cls}" style="left:calc((100% - 14px) * ${(i/(n-1)).toFixed(4)});${style}"></i>`;
+  }
+  return h+`</div>`;
+}
+const STEP_KEYS=["ordered","left brand godown","on the way","received"];
+const STEP_STATUS={ordered:["neutral","Ordered"],"left brand godown":["blue","Left brand godown"],"on the way":["blue","On the way"],received:["green","Received"]};
+
+/* ---------- district chart ---------- */
+function drawChart(){
+  const el=$("#chart"), W=el.clientWidth||358, H=200, L=46, R=86, Tp=14, B=30;
+  const dw=D.districtWeekly, n=dw.weeks.length, max=2000000;
+  const x=i=>L+i*(W-L-R)/(n-1), y=v=>Tp+(H-Tp-B)*(1-v/max);
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Weekly sales, Kadapa and Anantapur">`;
+  [0,1000000,2000000].forEach(v=>{
+    s+=`<line x1="${L}" x2="${W-R+20}" y1="${y(v)}" y2="${y(v)}" stroke="${v?"#E3E0D8":"#B9B4A8"}" stroke-width="1"/>`;
+    s+=`<text x="${L-8}" y="${y(v)+4}" text-anchor="end" font-size="13" fill="#5F6573" font-family="Overpass">${v?inr(v).replace(".0\u00A0L","\u00A0L"):"₹0"}</text>`;
+  });
+  dw.weeks.forEach((w,i)=>{
+    s+=`<text x="${x(i)}" y="${H-10}" text-anchor="middle" font-size="13" fill="#5F6573" font-family="Overpass">${w}${i===n-1?"*":""}</text>`;
+  });
+  const series=[["Kadapa","#0F52BA",2.75],["Anantapur","#121620",1.75]];
+  series.forEach(([name,c,w])=>{
+    const v=dw[name];
+    const full=v.slice(0,n-1).map((a,i)=>`${i?"L":"M"}${x(i).toFixed(1)} ${y(a).toFixed(1)}`).join(" ");
+    s+=`<path d="${full}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round"/>`;
+    s+=`<path d="M${x(n-2)} ${y(v[n-2])} L${x(n-1)} ${y(v[n-1])}" fill="none" stroke="${c}" stroke-width="${w}" stroke-dasharray="3 4" stroke-linecap="round"/>`;
+    v.forEach((a,i)=>{ if(i<n-1) s+=`<circle cx="${x(i)}" cy="${y(a)}" r="${i===n-2?4:2.6}" fill="${c}"/>`; });
+    s+=`<circle cx="${x(n-1)}" cy="${y(v[n-1])}" r="4" fill="#F7F6F2" stroke="${c}" stroke-width="2"/>`;
+    // direct label at the last full week
+    const ly=y(v[n-2]);
+    s+=`<text x="${x(n-1)+12}" y="${(name==="Kadapa"?ly-2:ly+2)}" font-size="14" font-weight="700" fill="${c}" font-family="Overpass">${name}</text>`;
+    s+=`<text x="${x(n-1)+12}" y="${(name==="Kadapa"?ly+14:ly+18)}" font-size="13" fill="#454B58" font-family="Overpass">${inr(v[n-2])}</text>`;
+  });
+  s+=`</svg>`;
+  el.innerHTML=s;
+}
+
+/* ---------- render ---------- */
+function render(animate){
+  document.documentElement.lang=lang;
+  document.querySelectorAll("[data-i]").forEach(e=>{const v=tr(e.dataset.i); if(typeof v==="string") e.textContent=v;});
+  document.querySelectorAll(".lang button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.l===lang)));
+  $("#asof").textContent=D.asOf;
+
+  const back=part("recovered").amount, tot=D.cycle.total, out=tot-back;
+  $("#backAmt").textContent=inr(back);
+  $("#backOf").textContent=tr("backOf");
+  $("#ansline").innerHTML=tr("ansline")(inr(tot),Math.round(back/tot*100),inr(out));
+  $("#vs").innerHTML=`<svg width="12" height="13" viewBox="0 0 12 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 12 V2 M1.5 6 L6 1.5 L10.5 6"/></svg><span><span class="sr">Better: </span>${lang==="te"?VS_TE:esc(D.cycle.vsLastMonth)}</span>`;
+  $("#totAmt").textContent=inr(tot);
+  drawMap(animate);
+
+  // tiles
+  $("#tiles").innerHTML=D.tiles.map(t=>{
+    let v;
+    if(t.of) v=`${t.value}<small> of ${t.of}</small>`;
+    else if(t.unit) v=`${t.value}<small> ${t.unit}</small>`;
+    else v=inr(t.value);
+    const cls=t.status==="amber"?"amber":t.trend==="up"?"up":"";
+    const arrow=t.trend==="up"?"▲ ":"";
+    return `<button class="tile" data-k="${t.key}">${chev}<span class="lb t">${esc(lang==="te"&&t.te?t.te:t.label)}</span><span class="v num">${v}</span><span class="cmp ${cls}">${cls==="amber"?'<span class="st amber" style="display:inline-flex;margin-right:2px">Needs a look</span><br>':""}${arrow}${esc(t.compare)}</span></button>`;
+  }).join("");
+  $("#tiles").querySelectorAll(".tile").forEach(b=>b.addEventListener("click",()=>{ if(b.dataset.k==="dealersOwe") openSheet("unpaid",b); }));
+
+  // attention: sorted by money at risk
+  const WORD={credit:"Over limit","brand-payment":"Due Fri",vehicle:"Not left",cheque:"Bounced",short:"Short",stock:"Low stock"};
+  const att=[...D.attention].sort((a,b)=>(b.amount??-1)-(a.amount??-1));
+  $("#att").innerHTML=att.map(a=>`<li><span class="tx">${esc(a.text)}</span><span class="am">${a.amount!=null?inr(a.amount):'<span class="muted" style="font-weight:500">6 days</span>'}</span><span class="st ${a.status}">${WORD[a.kind]}</span></li>`).join("");
+
+  // coming in
+  $("#scale").innerHTML=T[lang].steps.map(s=>`<span>${s}</span>`).join("");
+  $("#inTot").textContent=inr(D.comingIn.reduce((s,r)=>s+r.value,0))+" of goods";
+  $("#inbound").innerHTML=D.comingIn.map(r=>{
+    const i=STEP_KEYS.indexOf(r.step), [st,word]=STEP_STATUS[r.step];
+    const short=/short/i.test(r.note||"");
+    const fin=i===3?(short?"#D2372D":"#1E9A5E"):null;
+    return `<div class="row"><div class="r1">${logo(r.brand)}<span class="grow mono muted">${r.po}</span><span class="val">${inr(r.value)}</span></div>
+      ${track(4,i,fin)}
+      <div class="r3"><span class="st ${st}">${word}</span>${short?`<span class="st red">Short</span><span>${esc(r.note)}, claim raised</span>`:`<span>${esc(r.note)}</span>`}</div></div>`;
+  }).join("");
+
+  // going out
+  const done=D.goingOut.reduce((s,r)=>s+r.done,0), drops=D.goingOut.reduce((s,r)=>s+r.drops,0);
+  $("#outTot").textContent=`${D.goingOut.length} vehicles`;
+  const OW={amber:"Not left",blue:"On route",green:"All delivered"};
+  $("#outbound").innerHTML=D.goingOut.map(r=>`<div class="row">
+      <div class="r1"><span class="grow"><span class="veh">${r.vehicle}</span><div class="who">${esc(r.driver)} · ${esc(r.route)}</div></span><span class="val">${inr(r.value)}</span></div>
+      ${track(r.drops,r.done-1,r.done===r.drops?"#1E9A5E":null).replace(' class="c"',r.done===r.drops?' class="c"':' class="d"')}
+      <div class="r3"><span class="st ${r.status}">${OW[r.status]}</span><span style="color:var(--ink);font-weight:600">${T[lang].drops(r.done,r.drops)}</span>${r.note?`<span>${esc(r.note)}</span>`:""}</div></div>`).join("");
+
+  drawChart();
+
+  // brands
+  const HW={green:"Good",amber:"Watch",red:"Problem"};
+  const maxS=D.brands[0].sales;
+  const list=brandsOpen?D.brands:D.brands.slice(0,5);
+  $("#brands").innerHTML=list.map(b=>`<li>${logo(b.key)}<span class="barw"><b>${inr(b.sales)}</b><i style="width:${(b.sales/maxS*100).toFixed(1)}%"></i></span><span class="st ${b.health}">${HW[b.health]}</span></li>`).join("");
+  $("#moreBrands").textContent=brandsOpen?tr("lessBrands"):tr("moreBrands")(D.brands.length);
+  $("#moreBrands").setAttribute("aria-expanded",String(brandsOpen));
+
+  // dues by age
+  const totDue=D.duesByAge.reduce((s,a)=>s+a.amount,0);
+  const AC={green:"#1E9A5E",amber:"#E09A16",red:"#D2372D"}, AW={green:"On time",amber:"Late",red:"Overdue"};
+  $("#age").innerHTML=`<div class="age" role="img" aria-label="Dealer dues by age">${D.duesByAge.map(a=>`<i style="flex:${a.amount};background:${AC[a.status]}"></i>`).join("")}</div>
+    <div class="agelb" style="grid-template-columns:${D.duesByAge.map(a=>`${a.amount}fr`).join(" ")}">${D.duesByAge.map(a=>`<div><b class="num">${inr(a.amount)}</b><span class="band">${a.band}</span><span class="st ${a.status}">${AW[a.status]}</span></div>`).join("")}</div>
+    <p class="note">Total ${inr(totDue)} with dealers.</p>`;
+  $("#topdues").innerHTML=D.topDues.map(d=>`<li><span class="n">${esc(d.dealer)}</span><span class="a">${inr(d.owes)}</span><span class="tw">${esc(d.town)}</span><span class="s"><span class="st ${d.status}">${d.oldestDays} days · ${AW[d.status]}</span></span></li>`).join("");
+  const order=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+  const bp=[...D.brandPaymentsThisWeek].sort((a,b)=>order.indexOf(a.due.slice(0,3))-order.indexOf(b.due.slice(0,3)));
+  $("#brandpay").innerHTML=bp.map(p=>`<li><span style="grid-column:1;grid-row:1">${logo(p.brand)}</span><span class="a" style="grid-column:2;grid-row:1 / span 2;align-self:center">${inr(p.amount)}</span><span style="grid-column:1;grid-row:2"><span class="st amber">Due ${p.due}</span></span></li>`).join("")+
+    `<li style="border-bottom:0"><span class="tw">Total this week</span><span class="a">${inr(bp.reduce((s,p)=>s+p.amount,0))}</span></li>`;
+
+  if($("#sheet").classList.contains("on")) fillSheet(currentSheet);
+}
+
+/* ---------- sheet ---------- */
+let currentSheet=null;
+function fillSheet(k){
+  const p=part(k);
+  $("#shTitle").textContent=lang==="te"?p.te:p.label;
+  $("#shTot").textContent=inr(p.amount);
+  if(k==="unpaid"){
+    const rows=D.drill.unpaid, sum=rows.reduce((s,r)=>s+r.amount,0);
+    const AW={green:"On time",amber:"Late",red:"Overdue"};
+    $("#shBody").innerHTML=`<p class="sub t">${tr("drillSub")}</p>
+      <ul class="inv">${rows.map(r=>`<li>
+        <span class="d">${esc(r.dealer)}</span><span class="a">${full(r.amount)}</span>
+        <span class="meta"><span class="mono muted">${r.invoice}</span><span class="st ${r.status}">${r.days} days · ${AW[r.status]}</span></span><span></span>
+        ${r.note?`<span class="nt" style="grid-column:1 / -1">${esc(r.note)}</span>`:""}</li>`).join("")}</ul>
+      <p class="note t">${tr("drillSum")(full(sum),rows.length)}</p>`;
+  } else {
+    $("#shBody").innerHTML=`<p class="ph t">${tr("ph")}</p>`;
+  }
+}
+function openSheet(k,from){
+  currentSheet=k; lastFocus=from||document.activeElement;
+  fillSheet(k);
+  $("#sheet").setAttribute("aria-hidden","false");
+  $("#sheet").classList.add("on"); $("#scrim").classList.add("on");
+  document.body.style.overflow="hidden";
+  setTimeout(()=>$("#shClose").focus(),50);
+}
+function closeSheet(){
+  $("#sheet").classList.remove("on"); $("#scrim").classList.remove("on");
+  $("#sheet").setAttribute("aria-hidden","true");
+  document.body.style.overflow="";
+  currentSheet=null;
+  if(lastFocus) lastFocus.focus();
+}
+$("#shClose").addEventListener("click",closeSheet);
+$("#scrim").addEventListener("click",closeSheet);
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&currentSheet) closeSheet(); });
+
+document.querySelectorAll(".lang button").forEach(b=>b.addEventListener("click",()=>{ if(lang!==b.dataset.l){lang=b.dataset.l; render(false);} }));
+$("#moreBrands").addEventListener("click",()=>{brandsOpen=!brandsOpen; render(false);});
+let rt; addEventListener("resize",()=>{clearTimeout(rt); rt=setTimeout(()=>{drawMap(false);drawChart();},120);});
+
+fetch("../assets/data.json").then(r=>r.json()).then(d=>{D=(x=>JSON.parse(JSON.stringify(x).replace(/(₹[\d.,]+) (L|Cr)\b/g,'$1\u00A0$2')))(d); render(true);})
+  .catch(err=>{ console.warn("data.json could not be loaded", err); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Devansh Marketing · Owner home</title>
+<meta name="theme-color" content="#FFFFFF">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,300..600&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:"Anek Telugu";src:url("../assets/fonts/AnekTelugu-Variable.woff2") format("woff2");font-weight:100 800;font-display:swap}
+:root{
+  --sapphire:#0F52BA;
+  --ink:#132A4F;
+  --ink-2:#56627A;
+  --ink-3:#5F6B80;
+  --rule:#DFE4EC;
+  --rule-strong:#C5CEDB;
+  --page:#FFFFFF;
+  --outside:#F1F3F6;
+  --green:#1B7A4A; --green-line:#2E8B57;
+  --blue:#2E66C8;  --blue-line:#4A82DF;
+  --amber:#8C5800; --amber-line:#D2952A;
+  --red:#B3261E;   --red-line:#C8443B;
+  --neutral:#5B6780; --neutral-line:#AEB7C5;
+  --serif:"Source Serif 4","Anek Telugu",Georgia,serif;
+  --sans:"IBM Plex Sans","Anek Telugu",system-ui,sans-serif;
+  --gutter:24px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--outside);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
+.num{font-family:var(--serif);font-variant-numeric:lining-nums tabular-nums;font-feature-settings:"lnum" 1,"tnum" 1;letter-spacing:-.005em}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer;text-align:left}
+button:focus-visible,a:focus-visible{outline:2px solid var(--sapphire);outline-offset:2px}
+.col{max-width:440px;margin:0 auto;background:var(--page);min-height:100vh;position:relative}
+@media (min-width:520px){.col{border-left:1px solid var(--rule);border-right:1px solid var(--rule)}}
+.pad{padding-left:var(--gutter);padding-right:var(--gutter)}
+@media (max-width:370px){:root{--gutter:20px}}
+
+/* header */
+.top{display:flex;align-items:center;justify-content:space-between;padding-top:10px;height:64px}
+.logo{height:38px;width:auto;display:block;margin-left:-9px}
+.tools{display:flex;align-items:center;gap:2px}
+.icon-btn{width:44px;height:44px;display:grid;place-items:center;color:var(--sapphire)}
+.lang{display:flex;align-items:center;height:44px}
+.lang button{height:44px;min-width:44px;padding:0 8px;font-size:15px;color:var(--ink-3);position:relative;text-align:center}
+.lang button[aria-pressed="true"]{color:var(--sapphire);font-weight:600}
+.lang button[aria-pressed="true"]::after{content:"";position:absolute;left:10px;right:10px;bottom:9px;height:1.5px;background:var(--sapphire)}
+.lang .sep{width:1px;height:16px;background:var(--rule-strong)}
+.lang button.te{font-family:"Anek Telugu",sans-serif;font-size:18px;line-height:1;padding-top:5px}
+.greet{padding-top:6px;padding-bottom:18px;border-bottom:1px solid var(--rule)}
+.greet h1{margin:0;font-family:var(--serif);font-weight:400;font-size:25px;line-height:1.2;color:var(--ink);letter-spacing:-.01em}
+.greet p{margin:3px 0 0;color:var(--ink-2);font-size:15px}
+
+/* sections */
+section{padding-top:26px;padding-bottom:6px}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:14px}
+.sec-head h2{margin:0;font-family:var(--serif);font-weight:500;font-size:22px;line-height:1.25;color:var(--ink);letter-spacing:-.01em}
+.sec-head .meta{color:var(--ink-2);font-size:15px;white-space:nowrap}
+.sub-h{margin:26px 0 10px;font-family:var(--serif);font-weight:500;font-size:18px;color:var(--ink)}
+.rule-top{border-top:1px solid var(--rule)}
+
+/* status word */
+.st{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:500;white-space:nowrap}
+.st::before{content:"";width:8px;height:8px;flex:none}
+.st.green{color:var(--green)} .st.green::before{background:var(--green-line);border-radius:50%}
+.st.blue{color:var(--blue)} .st.blue::before{background:var(--blue-line);border-radius:50%}
+.st.amber{color:var(--amber)} .st.amber::before{background:var(--amber-line);transform:rotate(45deg);width:7px;height:7px}
+.st.red{color:var(--red)} .st.red::before{background:var(--red-line);border-radius:1px}
+.st.neutral{color:var(--neutral)} .st.neutral::before{background:var(--neutral-line);border-radius:50%}
+
+.chev{flex:none;color:var(--ink-3)}
+
+/* hero */
+.hero{padding-top:22px}
+.hero h2{margin:0;font-family:var(--serif);font-weight:400;font-size:21px;color:var(--ink);line-height:1.3}
+.answer{margin-top:10px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.answer .big{font-size:54px;line-height:1;color:var(--sapphire);font-weight:400;letter-spacing:-.02em}
+.answer .of{font-size:16px;color:var(--ink-2);line-height:1.35}
+.answer .of b{font-weight:500;color:var(--ink)}
+.seg{margin-top:18px;display:flex;gap:2px;height:4px}
+.seg span{display:block;height:100%}
+.scale{display:flex;justify-content:space-between;margin-top:6px;font-size:13px;color:var(--ink-3)}
+.ledger4{margin-top:10px}
+.prow{display:flex;align-items:center;gap:12px;width:100%;min-height:52px;padding:8px 0;border-top:1px solid var(--rule)}
+.prow:last-child{border-bottom:1px solid var(--rule)}
+.prow .tick{width:14px;height:3px;flex:none}
+.prow .lbl{flex:1;font-size:15px;color:var(--ink);line-height:1.3}
+.prow .lbl small{display:block;color:var(--ink-3);font-size:13px}
+.prow .amt{font-size:22px;color:var(--ink);white-space:nowrap}
+.prow:hover .lbl{color:var(--sapphire)}
+.vs{margin:12px 0 0;font-size:15px;color:var(--ink-2);display:flex;gap:8px;align-items:flex-start}
+.vs svg{flex:none;margin-top:4px}
+
+/* tiles = ruled ledger */
+.tiles{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--rule)}
+.tile{display:flex;flex-direction:column;align-items:stretch;min-height:118px;padding:14px 14px 14px 0;border-bottom:1px solid var(--rule);position:relative}
+.tile:nth-child(2n){padding-left:16px;padding-right:0;border-left:1px solid var(--rule)}
+.tile .t-l{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;font-size:15px;color:var(--ink-2);line-height:1.3}
+.tile .t-v{margin-top:8px;font-size:30px;line-height:1.05;color:var(--ink)}
+.tile .t-v small{font-family:var(--sans);font-size:15px;color:var(--ink-2);margin-left:4px;letter-spacing:0}
+.tile .t-c{margin-top:6px;font-size:15px;color:var(--ink-2);line-height:1.35}
+.tile .t-c .up{color:var(--green);font-weight:500}
+.tile .t-s{margin-top:6px}
+.tile:hover .t-v{color:var(--sapphire)}
+
+/* attention */
+.att{display:block;width:100%;padding:14px 0;border-top:1px solid var(--rule)}
+.att:last-child{border-bottom:1px solid var(--rule)}
+.att .a1{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.att .a1 .num{font-size:20px;color:var(--ink)}
+.att .a1 .num.none{font-family:var(--sans);font-size:15px;color:var(--ink-3)}
+.att p{margin:4px 0 0;font-size:15px;line-height:1.45;color:var(--ink)}
+
+/* trackers */
+.axis{display:grid;grid-template-columns:repeat(4,1fr);font-size:13px;color:var(--ink-3);line-height:1.25;margin-bottom:4px}
+.axis span:nth-child(2),.axis span:nth-child(3){text-align:center}
+.axis span:last-child{text-align:right}
+.trow{padding:14px 0 14px;border-top:1px solid var(--rule)}
+.trow:last-child{border-bottom:1px solid var(--rule)}
+.trow .r1{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.blogo{height:22px;width:auto;max-width:96px;object-fit:contain;display:block}
+.trow .po{font-size:14px;color:var(--ink-3);margin-left:10px}
+.trow .r1 .num{font-size:20px}
+.track{position:relative;height:16px;margin:14px 5px 8px}
+.track .ln{position:absolute;left:0;right:0;top:7px;height:1px;background:var(--rule-strong)}
+.track .done{position:absolute;left:0;top:6.5px;height:2px}
+.track i{position:absolute;top:3px;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:#fff;border:1px solid var(--rule-strong)}
+.track i.on{border-color:transparent}
+.trow .r3{display:flex;justify-content:space-between;gap:10px;font-size:15px;color:var(--ink-2)}
+.plate{display:inline-block;font-size:14px;font-weight:600;letter-spacing:.04em;color:var(--ink);border:1px solid var(--rule-strong);padding:1px 7px;border-radius:3px;white-space:nowrap}
+.drv{font-size:15px;color:var(--ink-2);margin-left:8px}
+.route{font-size:15px;color:var(--ink);margin-top:6px}
+.drops{display:flex;gap:3px;margin:12px 0 8px}
+.drops span{flex:1;height:4px;background:#E8ECF2}
+
+/* chart */
+.chart{width:100%;display:block}
+.chart text{font-family:var(--sans);font-size:13px;fill:var(--ink-3)}
+.chart .dl{font-size:14px;font-weight:500}
+.note{font-size:14px;color:var(--ink-2);margin:6px 0 0}
+
+/* brands */
+.brow{display:grid;grid-template-columns:92px 1fr auto;align-items:center;gap:12px;min-height:56px;padding:8px 0;border-top:1px solid var(--rule)}
+.brow:last-of-type{border-bottom:1px solid var(--rule)}
+.brow .bn{font-size:15px;color:var(--ink);line-height:1.25}
+.brow .bn .bar{display:block;height:2px;background:var(--sapphire);opacity:.55;margin-top:7px}
+.brow .bv{text-align:right}
+.brow .bv .num{font-size:19px;display:block}
+.more{display:flex;align-items:center;gap:6px;min-height:44px;color:var(--sapphire);font-weight:500;font-size:15px;margin-top:4px}
+
+/* money */
+.age{display:grid;grid-template-columns:repeat(3,1fr);margin-top:12px}
+.age div{padding-right:8px}
+.age .k{font-size:14px;color:var(--ink-2);display:block}
+.age .num{font-size:22px;display:block;margin-top:2px}
+.age .st{margin-top:4px}
+.drow{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:60px;padding:10px 0;border-top:1px solid var(--rule)}
+.drow:last-child{border-bottom:1px solid var(--rule)}
+.drow .dn{font-size:15px;line-height:1.3;color:var(--ink)}
+.drow .dn small{display:block;font-size:14px;color:var(--ink-2);margin-top:2px}
+.drow .dv{text-align:right;flex:none}
+.drow .dv .num{font-size:20px;display:block}
+.total{display:flex;justify-content:space-between;align-items:baseline;padding:12px 0 0;font-size:15px;color:var(--ink-2)}
+.total .num{font-size:20px;color:var(--sapphire)}
+
+footer{margin-top:34px;padding-top:16px;padding-bottom:40px;border-top:1px solid var(--rule);font-size:14px;color:var(--ink-3)}
+
+/* sheet */
+.scrim{position:fixed;inset:0;background:rgba(14,30,58,.32);opacity:0;pointer-events:none;transition:opacity .22s ease;z-index:20}
+.scrim.open{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:50%;bottom:0;width:100%;max-width:440px;max-height:86vh;overflow:auto;background:#fff;border-top-left-radius:14px;border-top-right-radius:14px;transform:translate(-50%,104%);visibility:hidden;transition:transform .26s cubic-bezier(.2,.7,.2,1),visibility 0s linear .26s;z-index:21;padding:8px var(--gutter) 28px}
+.sheet.open{transform:translate(-50%,0);visibility:visible;transition:transform .26s cubic-bezier(.2,.7,.2,1),visibility 0s}
+.grab{width:36px;height:4px;border-radius:2px;background:var(--rule-strong);margin:4px auto 6px}
+.sh-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.sh-top h3{margin:8px 0 0;font-family:var(--serif);font-weight:500;font-size:21px;line-height:1.3}
+.sh-sum{margin:10px 0 16px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.sh-sum .num{font-size:38px;color:var(--sapphire);line-height:1}
+.sh-sum span{color:var(--ink-2);font-size:15px}
+.inv{padding:13px 0;border-top:1px solid var(--rule)}
+.inv:last-child{border-bottom:1px solid var(--rule)}
+.inv .i1{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.inv .i1 b{font-weight:500;font-size:15px;line-height:1.35}
+.inv .i1 .num{font-size:20px;white-space:nowrap}
+.inv .i2{display:flex;justify-content:space-between;gap:12px;margin-top:5px;font-size:14px;color:var(--ink-2)}
+.inv .i3{margin-top:4px;font-size:14px;color:var(--ink)}
+.sh-foot{margin-top:14px;font-size:14px;color:var(--ink-2)}
+.ph{padding:18px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);color:var(--ink-2)}
+
+:lang(te) .greet h1,:lang(te) .sec-head h2,:lang(te) .hero h2,:lang(te) .sub-h,:lang(te) .sh-top h3{line-height:1.55;padding-top:2px}
+:lang(te) .prow .lbl,:lang(te) .tile .t-l{line-height:1.6}
+.skip{position:absolute;left:-999px}
+@media (prefers-reduced-motion:reduce){.sheet,.scrim{transition:none}}
+.blogo[src*="sparsh-pearl"]{height:34px;width:auto;margin:-6px 0}
+img[src*="sparsh-pearl"]{filter:brightness(.62) saturate(1.15)}
+</style>
+</head>
+<body>
+<div class="col" id="app" aria-live="off"></div>
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-title" aria-hidden="true"></div>
+
+<script id="data-inline" type="application/json">{"_note": "SAMPLE numbers for the look previews. Same numbers in every direction. Dealer names are made up; towns are real. Money in rupees.", "asOf": "Tue 24 Nov 2026, 8:10 am", "business": "Devansh Marketing, Proddatur", "owner": "Owner", "cycle": {"label": "This month's purchases", "total": 13800000, "parts": [{"key": "recovered", "label": "Cash back in the bank", "te": "బ్యాంక్‌లో వచ్చిన డబ్బు", "amount": 5210000, "status": "green"}, {"key": "unpaid", "label": "Delivered, dealers yet to pay", "te": "డెలివరీ అయింది, డీలర్లు ఇంకా కట్టలేదు", "amount": 4430000, "status": "amber"}, {"key": "road", "label": "On the road", "te": "రోడ్డు మీద ఉంది", "amount": 860000, "status": "blue"}, {"key": "godown", "label": "Still in the godown", "te": "ఇంకా గోడౌన్‌లోనే", "amount": 3300000, "status": "neutral"}], "vsLastMonth": "₹6.4 L more came back than at this point in October"}, "tiles": [{"key": "sales", "label": "Sales this month", "te": "ఈ నెల అమ్మకాలు", "value": 9640000, "compare": "+12% vs October", "trend": "up"}, {"key": "collected", "label": "Collected", "te": "వసూలైంది", "value": 5210000, "compare": "54% of sales", "trend": "flat"}, {"key": "dealersOwe", "label": "Dealers owe us", "te": "డీలర్లు మనకు ఇవ్వాల్సింది", "value": 4430000, "compare": "₹11.8 L is 60+ days old", "trend": "down", "status": "amber"}, {"key": "weOwe", "label": "We owe brands", "te": "మనం బ్రాండ్లకు ఇవ్వాల్సింది", "value": 6170000, "compare": "₹18.2 L due this week", "trend": "flat"}, {"key": "stock", "label": "Stock value", "te": "స్టాక్ విలువ", "value": 16200000, "compare": "41 days of cover", "trend": "flat"}, {"key": "lorries", "label": "Lorries coming in", "te": "వస్తున్న లారీలు", "value": 4, "unit": "lorries", "compare": "₹27.6 L of goods", "trend": "flat"}, {"key": "vehicles", "label": "Our vehicles on the road", "te": "రోడ్డు మీద మన వాహనాలు", "value": 3, "of": 5, "compare": "17 of 26 drops done", "trend": "flat"}, {"key": "staff", "label": "Staff present", "te": "హాజరైన సిబ్బంది", "value": 14, "of": 16, "compare": "2 on leave", "trend": "flat"}], "attention": [{"text": "Sri Lakshmi Electricals, Pulivendula is ₹1.9 L over credit limit, with a new order waiting", "amount": 190000, "status": "red", "kind": "credit"}, {"text": "Finolex payment of ₹9.6 L is due Friday 28 Nov", "amount": 960000, "status": "amber", "kind": "brand-payment"}, {"text": "Vehicle AP 04 TU 5521 was loaded 2 h ago and has not left (₹4.7 L of goods)", "amount": 470000, "status": "amber", "kind": "vehicle"}, {"text": "Sai Ram Sanitary, Tadipatri: cheque of ₹86,000 bounced", "amount": 86000, "status": "red", "kind": "cheque"}, {"text": "Goldmedal lorry arrived 10 units short (6A modular switches). Claim ₹14,600", "amount": 14600, "status": "red", "kind": "short"}, {"text": "Parryware Neo EWC will run out in 6 days", "amount": null, "status": "amber", "kind": "stock"}], "comingIn": [{"brand": "goldmedal", "po": "PO-2611-041", "value": 640000, "step": "received", "note": "10 short"}, {"brand": "finolex", "po": "PO-2611-044", "value": 920000, "step": "on the way", "note": "Expected tomorrow"}, {"brand": "parryware", "po": "PO-2611-046", "value": 710000, "step": "left brand godown", "note": "Chennai, 2 days"}, {"brand": "victura", "po": "PO-2611-048", "value": 490000, "step": "ordered", "note": "Placed Sat"}], "goingOut": [{"vehicle": "AP 04 TU 5521", "driver": "Ramesh", "route": "Kadapa · Kamalapuram", "drops": 6, "done": 0, "value": 470000, "status": "amber", "note": "Loaded, not left"}, {"vehicle": "AP 04 TV 1187", "driver": "Suresh", "route": "Jammalamadugu · Mydukur", "drops": 7, "done": 5, "value": 380000, "status": "blue"}, {"vehicle": "AP 39 U 2204", "driver": "Naresh", "route": "Tadipatri · Gooty · Guntakal", "drops": 8, "done": 7, "value": 560000, "status": "blue"}, {"vehicle": "AP 04 TS 9032", "driver": "Mahesh", "route": "Pulivendula", "drops": 5, "done": 5, "value": 290000, "status": "green"}], "districtWeekly": {"weeks": ["27 Oct", "3 Nov", "10 Nov", "17 Nov", "24 Nov"], "Kadapa": [1480000, 1720000, 1610000, 1890000, 920000], "Anantapur": [1020000, 1150000, 1240000, 1310000, 640000]}, "brands": [{"key": "parryware", "name": "Parryware", "sales": 2210000, "health": "green"}, {"key": "finolex", "name": "Finolex", "sales": 1840000, "health": "amber"}, {"key": "ultravolt", "name": "Ultravolt", "sales": 1560000, "health": "green"}, {"key": "goldmedal", "name": "Goldmedal", "sales": 1120000, "health": "red"}, {"key": "kenstar", "name": "Kenstar", "sales": 830000, "health": "amber"}, {"key": "sparsh-pearl", "name": "Sparsh Pearl", "sales": 610000, "health": "green"}, {"key": "poddar", "name": "Poddar Pipes", "sales": 520000, "health": "green"}, {"key": "sentini", "name": "Sentini Flopipes", "sales": 430000, "health": "green"}, {"key": "victura", "name": "Victura Airmotion", "sales": 310000, "health": "amber"}, {"key": "acebond", "name": "Acebond", "sales": 210000, "health": "green"}], "duesByAge": [{"band": "0–30 days", "amount": 2210000, "status": "green"}, {"band": "31–60 days", "amount": 1040000, "status": "amber"}, {"band": "60+ days", "amount": 1180000, "status": "red"}], "topDues": [{"dealer": "Sri Lakshmi Electricals", "town": "Pulivendula", "owes": 540000, "oldestDays": 74, "status": "red"}, {"dealer": "Venkateswara Hardware", "town": "Kadapa", "owes": 410000, "oldestDays": 52, "status": "amber"}, {"dealer": "Sai Ram Sanitary", "town": "Tadipatri", "owes": 360000, "oldestDays": 68, "status": "red"}, {"dealer": "Balaji Pipes & Fittings", "town": "Guntakal", "owes": 290000, "oldestDays": 21, "status": "green"}, {"dealer": "Sri Sai Electricals", "town": "Jammalamadugu", "owes": 240000, "oldestDays": 38, "status": "amber"}], "brandPaymentsThisWeek": [{"brand": "finolex", "amount": 960000, "due": "Fri 28 Nov"}, {"brand": "ultravolt", "amount": 540000, "due": "Thu 27 Nov"}, {"brand": "sparsh-pearl", "amount": 320000, "due": "Sat 29 Nov"}], "drill": {"unpaid": [{"invoice": "DM/26-27/3418", "dealer": "Sri Lakshmi Electricals, Pulivendula", "amount": 184000, "days": 74, "status": "red"}, {"invoice": "DM/26-27/3502", "dealer": "Sai Ram Sanitary, Tadipatri", "amount": 86000, "days": 68, "status": "red", "note": "Cheque bounced"}, {"invoice": "DM/26-27/3611", "dealer": "Venkateswara Hardware, Kadapa", "amount": 152000, "days": 52, "status": "amber"}, {"invoice": "DM/26-27/3720", "dealer": "Sri Sai Electricals, Jammalamadugu", "amount": 98000, "days": 38, "status": "amber"}, {"invoice": "DM/26-27/3804", "dealer": "Balaji Pipes & Fittings, Guntakal", "amount": 121000, "days": 21, "status": "green", "note": "Half paid by UPI"}]}}</script>
+<script>
+(function(){
+"use strict";
+var D, LANG = "en", showAllBrands = false, lastFocus = null, openKey = null;
+
+var T = {
+  greet:   {en:"Good morning", te:"శుభోదయం"},
+  hero:    {en:"Did the ₹1 Cr come back?", te:"₹1 కోటి తిరిగి వచ్చిందా?"},
+  backOf:  {en:"is back in the bank, out of", te:"బ్యాంక్‌కి తిరిగి వచ్చింది, మొత్తం"},
+  bought:  {en:"bought this month", te:"ఈ నెల కొన్న సరుకులో"},
+  month:   {en:"This month", te:"ఈ నెల"},
+  attn:    {en:"Needs attention", te:"చూడాల్సినవి"},
+  coming:  {en:"Coming in from brands", te:"బ్రాండ్ల నుండి వస్తున్న సరుకు"},
+  going:   {en:"Going out to dealers", te:"డీలర్లకు వెళ్తున్న సరుకు"},
+  district:{en:"Sales by district", te:"జిల్లా వారీగా అమ్మకాలు"},
+  brands:  {en:"Top brands", te:"టాప్ బ్రాండ్లు"},
+  money:   {en:"Money", te:"డబ్బు"},
+  age:     {en:"Dealers owe us, by age", te:"డీలర్ల బాకీ, రోజుల వారీగా"},
+  topd:    {en:"Dealers who owe the most", te:"ఎక్కువ బాకీ ఉన్న డీలర్లు"},
+  bpay:    {en:"Brand payments this week", te:"ఈ వారం బ్రాండ్లకు కట్టాల్సింది"},
+  sample:  {en:"Sample numbers for preview · Busy Fox", te:"Sample numbers for preview · Busy Fox"}
+};
+function t(k){ return T[k][LANG] || T[k].en; }
+function L(o){ return (LANG==="te" && o.te) ? o.te : o.label; }
+function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+
+/* Indian money */
+function group(n){
+  var s = String(Math.round(n)); if (s.length<=3) return s;
+  var last3 = s.slice(-3), rest = s.slice(0,-3);
+  return rest.replace(/\B(?=(\d{2})+(?!\d))/g,",") + "," + last3;
+}
+function inr(n){
+  if (n >= 1e7) return "₹" + (n/1e7).toFixed(2) + "\u00A0Cr";
+  if (n >= 1e5) return "₹" + (n/1e5).toFixed(1) + "\u00A0L";
+  return "₹" + group(n);
+}
+function full(n){ return "₹" + group(n); }
+
+var LINE = {green:"var(--green-line)",amber:"var(--amber-line)",blue:"var(--blue-line)",red:"var(--red-line)",neutral:"var(--neutral-line)"};
+function st(status, word){ return '<span class="st '+status+'">'+esc(word)+'</span>'; }
+var CHEV = '<svg class="chev" width="8" height="14" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>';
+var CHEV_SM = '<svg class="chev" width="7" height="12" viewBox="0 0 7 12" aria-hidden="true"><path d="M1 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>';
+var BRANDNAME = {};
+
+function render(){
+  var d = D, h = [];
+  document.documentElement.lang = LANG;
+  d.brands.forEach(function(b){ BRANDNAME[b.key]=b.name; });
+
+  /* header */
+  h.push('<header class="pad"><div class="top">'+
+    '<img class="logo" src="../assets/devansh/devansh-logo-primary.svg" alt="Devansh Marketing">'+
+    '<div class="tools">'+
+      '<button class="icon-btn" type="button" aria-label="Search"><svg width="21" height="21" viewBox="0 0 21 21" aria-hidden="true"><circle cx="9" cy="9" r="6.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M14 14l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>'+
+      '<div class="lang" role="group" aria-label="Language">'+
+        '<button type="button" data-lang="en" aria-pressed="'+(LANG==="en")+'">EN</button><span class="sep" aria-hidden="true"></span>'+
+        '<button type="button" class="te" data-lang="te" lang="te" aria-pressed="'+(LANG==="te")+'">తె</button>'+
+      '</div></div></div>'+
+    '<div class="greet"><h1>'+t("greet")+'</h1><p>'+esc(d.asOf)+' · Proddatur</p></div></header>');
+
+  /* hero: did the 1 Cr come back */
+  var c = d.cycle, back = c.parts[0];
+  var pct = function(a){ return Math.round(a/c.total*100); };
+  h.push('<section class="hero pad" aria-labelledby="h-hero"><h2 id="h-hero">'+t("hero")+'</h2>'+
+    '<div class="answer"><span class="big num">'+inr(back.amount)+'</span>'+
+    '<span class="of">'+t("backOf")+' <b class="num">'+inr(c.total)+'</b><br>'+t("bought")+' · <b>'+pct(back.amount)+'%</b></span></div>'+
+    '<div class="seg" role="img" aria-label="'+c.parts.map(function(p){return p.label+' '+inr(p.amount);}).join(', ')+'">'+
+      c.parts.map(function(p){ return '<span style="flex:'+p.amount+';background:'+LINE[p.status]+'"></span>'; }).join("")+
+    '</div><div class="scale"><span>₹0</span><span class="num">'+full(c.total)+'</span></div>'+
+    '<div class="ledger4">'+c.parts.map(function(p){
+      return '<button type="button" class="prow" data-part="'+p.key+'" aria-haspopup="dialog">'+
+        '<span class="tick" style="background:'+LINE[p.status]+'"></span>'+
+        '<span class="lbl">'+esc(L(p))+'<small>'+pct(p.amount)+'% of purchases</small></span>'+
+        '<span class="amt num">'+inr(p.amount)+'</span>'+CHEV+'</button>';
+    }).join("")+'</div>'+
+    '<p class="vs"><span><span class="st green" style="font-size:15px">Better</span> &nbsp;'+esc(c.vsLastMonth)+'</span></p>'+
+  '</section>');
+
+  /* tiles */
+  h.push('<section class="pad" aria-labelledby="h-month"><div class="sec-head"><h2 id="h-month">'+t("month")+'</h2><span class="meta">Nov 2026</span></div><div class="tiles">'+
+    d.tiles.map(function(x){
+      var v;
+      if (x.of) v = x.value+'<small>of '+x.of+'</small>';
+      else if (x.unit) v = x.value+'<small>'+esc(x.unit)+'</small>';
+      else v = inr(x.value);
+      var cmp = esc(x.compare);
+      if (x.trend==="up") cmp = '<span class="up">▲ '+cmp.replace(/ vs /,'</span> vs ');
+      var stl = x.status ? '<div class="t-s">'+st(x.status, x.status==="amber"?"Needs a look":"Fine")+'</div>' : '';
+      return '<button type="button" class="tile" data-tile="'+x.key+'"><span class="t-l"><span>'+esc(L(x))+'</span>'+CHEV_SM+'</span>'+
+        '<span class="t-v num">'+v+'</span><span class="t-c">'+cmp+'</span>'+stl+'</button>';
+    }).join("")+'</div></section>');
+
+  /* attention */
+  var ATW = {credit:"Over limit", "brand-payment":"Due Fri", vehicle:"Not left", cheque:"Bounced", short:"Short", stock:"Runs out in 6 days"};
+  var att = d.attention.slice().sort(function(a,b){ return (b.amount||0)-(a.amount||0); });
+  h.push('<section class="pad" aria-labelledby="h-attn"><div class="sec-head"><h2 id="h-attn">'+t("attn")+'</h2><span class="meta">'+att.length+' items</span></div><div>'+
+    att.map(function(a){
+      return '<div class="att"><div class="a1">'+st(a.status, ATW[a.kind]||"Needs a look")+
+        (a.amount ? '<span class="num">'+inr(a.amount)+'</span>' : '<span class="num none">Stock</span>')+'</div><p>'+esc(a.text)+'</p></div>';
+    }).join("")+'</div></section>');
+
+  /* coming in */
+  var STEPS = ["ordered","left brand godown","on the way","received"];
+  var stepWord = {"ordered":"Ordered","left brand godown":"Left brand godown","on the way":"On the way","received":"Received"};
+  var ciTotal = d.comingIn.reduce(function(s,x){return s+x.value;},0);
+  h.push('<section class="pad" aria-labelledby="h-in"><div class="sec-head"><h2 id="h-in">'+t("coming")+'</h2><span class="meta num" style="font-size:16px">'+inr(ciTotal)+'</span></div>'+
+    '<div class="axis" aria-hidden="true"><span>Ordered</span><span>Left brand godown</span><span>On the way</span><span>Received</span></div><div>'+
+    d.comingIn.map(function(x){
+      var i = STEPS.indexOf(x.step), recv = i===3, short = /short/i.test(x.note||"");
+      var col = recv ? (short ? "var(--red-line)" : "var(--green-line)") : "var(--blue-line)";
+      var dots = STEPS.map(function(_,k){
+        var on = k<=i;
+        return '<i class="'+(on?'on':'')+'" style="left:'+(k*100/3)+'%;'+(on?'background:'+col:'')+'"></i>';
+      }).join("");
+      var status = recv ? (short ? st("red","Short") : st("green","Received")) : st("blue", stepWord[x.step]);
+      return '<div class="trow"><div class="r1"><span style="display:flex;align-items:center"><img class="blogo" src="../assets/brands/'+x.brand+'.png" alt="'+esc(BRANDNAME[x.brand]||x.brand)+'"><span class="po">'+x.po+'</span></span><span class="num">'+inr(x.value)+'</span></div>'+
+        '<div class="track" aria-hidden="true"><span class="ln"></span><span class="done" style="width:'+(i*100/3)+'%;background:'+col+'"></span>'+dots+'</div>'+
+        '<div class="r3">'+status+'<span>'+esc(recv && short ? "Received, "+x.note : x.note)+'</span></div></div>';
+    }).join("")+'</div></section>');
+
+  /* going out */
+  var goTotal = d.goingOut.reduce(function(s,x){return s+x.value;},0);
+  h.push('<section class="pad" aria-labelledby="h-out"><div class="sec-head"><h2 id="h-out">'+t("going")+'</h2><span class="meta num" style="font-size:16px">'+inr(goTotal)+'</span></div><div>'+
+    d.goingOut.map(function(x){
+      var word = x.status==="amber" ? (x.note||"Needs a look") : x.status==="green" ? "All delivered" : "On route";
+      var col = LINE[x.status];
+      var dr = ""; for (var k=0;k<x.drops;k++) dr += '<span style="'+(k<x.done?'background:'+col:'')+'"></span>';
+      return '<div class="trow"><div class="r1"><span><span class="plate">'+esc(x.vehicle)+'</span><span class="drv">'+esc(x.driver)+'</span></span><span class="num">'+inr(x.value)+'</span></div>'+
+        '<div class="route">'+esc(x.route)+'</div>'+
+        '<div class="drops" aria-hidden="true">'+dr+'</div>'+
+        '<div class="r3">'+st(x.status, word)+'<span><b class="num" style="font-weight:500;color:var(--ink)">'+x.done+'</b> of '+x.drops+' drops</span></div></div>';
+    }).join("")+'</div></section>');
+
+  /* district chart */
+  h.push('<section class="pad" aria-labelledby="h-dist"><div class="sec-head"><h2 id="h-dist">'+t("district")+'</h2><span class="meta">Weekly</span></div>'+
+    '<div id="chart"></div><p class="note">Week of 24 Nov is partial (Mon–Tue only), shown dotted. So far: Kadapa <span class="num" style="color:var(--ink)">'+inr(D.districtWeekly.Kadapa[4])+'</span> · Anantapur <span class="num" style="color:var(--ink)">'+inr(D.districtWeekly.Anantapur[4])+'</span>.</p>');
+
+  /* brands */
+  var maxB = d.brands[0].sales, HW = {green:"Fine", amber:"Needs a look", red:"Problem"};
+  var bl = showAllBrands ? d.brands : d.brands.slice(0,6);
+  h.push('<h3 class="sub-h">'+t("brands")+'</h3><div>'+
+    bl.map(function(b){
+      return '<div class="brow"><img class="blogo" src="../assets/brands/'+b.key+'.png" alt="" style="max-width:92px">'+
+        '<span class="bn">'+esc(b.name)+'<span class="bar" style="width:'+(b.sales/maxB*100).toFixed(1)+'%"></span></span>'+
+        '<span class="bv"><span class="num">'+inr(b.sales)+'</span>'+st(b.health,HW[b.health])+'</span></div>';
+    }).join("")+'</div>'+
+    '<button type="button" class="more" id="moreBrands" aria-expanded="'+showAllBrands+'">'+(showAllBrands?'Show top 6':'Show all 10 brands')+
+    ' <svg width="12" height="8" viewBox="0 0 12 8" aria-hidden="true" style="transform:rotate('+(showAllBrands?180:0)+'deg)"><path d="M1 1l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.4"/></svg></button></section>');
+
+  /* money */
+  var dueTot = d.duesByAge.reduce(function(s,x){return s+x.amount;},0);
+  var AGEW = {green:"Fine", amber:"Follow up", red:"Overdue"};
+  var DUEW = {green:"On time", amber:"Follow up", red:"Overdue"};
+  var bpTot = d.brandPaymentsThisWeek.reduce(function(s,x){return s+x.amount;},0);
+  h.push('<section class="pad" aria-labelledby="h-money"><div class="sec-head"><h2 id="h-money">'+t("money")+'</h2></div>'+
+    '<div class="sub-h" style="margin-top:0;display:flex;justify-content:space-between;align-items:baseline"><span>'+t("age")+'</span><span class="num" style="color:var(--sapphire);font-size:20px">'+inr(dueTot)+'</span></div>'+
+    '<div class="seg" style="margin-top:4px">'+d.duesByAge.map(function(x){return '<span style="flex:'+x.amount+';background:'+LINE[x.status]+'"></span>';}).join("")+'</div>'+
+    '<div class="age">'+d.duesByAge.map(function(x){
+      return '<div><span class="k">'+x.band+'</span><span class="num">'+inr(x.amount)+'</span>'+st(x.status,AGEW[x.status])+'</div>';
+    }).join("")+'</div>'+
+    '<h3 class="sub-h">'+t("topd")+'</h3><div>'+
+    d.topDues.map(function(x){
+      return '<div class="drow"><span class="dn">'+esc(x.dealer)+'<small>'+esc(x.town)+' · oldest bill '+x.oldestDays+' days</small></span>'+
+        '<span class="dv"><span class="num">'+inr(x.owes)+'</span>'+st(x.status,DUEW[x.status])+'</span></div>';
+    }).join("")+'</div>'+
+    '<h3 class="sub-h">'+t("bpay")+'</h3><div>'+
+    d.brandPaymentsThisWeek.map(function(x){
+      return '<div class="drow"><span style="display:flex;align-items:center;gap:14px"><img class="blogo" src="../assets/brands/'+x.brand+'.png" alt="" style="width:84px"><span class="dn">'+esc(BRANDNAME[x.brand])+'<small>Due '+esc(x.due)+'</small></span></span>'+
+        '<span class="dv"><span class="num">'+inr(x.amount)+'</span>'+st("amber","Due "+x.due.split(" ")[0])+'</span></div>';
+    }).join("")+'</div>'+
+    '<div class="total"><span>Total due this week</span><span class="num">'+inr(bpTot)+'</span></div>'+
+  '</section>');
+
+  h.push('<footer class="pad">'+t("sample")+'</footer>');
+  document.getElementById("app").innerHTML = h.join("");
+  drawChart();
+}
+
+function drawChart(){
+  var box = document.getElementById("chart"); if(!box) return;
+  var W = Math.max(280, box.clientWidth), H = 220;
+  var m = {l:34, r:26, t:22, b:28};
+  var dw = D.districtWeekly, weeks = dw.weeks, n = weeks.length;
+  var maxV = 2000000;
+  var x = function(i){ return m.l + i*(W-m.l-m.r)/(n-1); };
+  var y = function(v){ return m.t + (1 - v/maxV)*(H-m.t-m.b); };
+  var s = '<svg class="chart" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Weekly sales, Kadapa and Anantapur">';
+  [0,500000,1000000,1500000,2000000].forEach(function(v){
+    s += '<line x1="'+m.l+'" x2="'+(W-m.r+8)+'" y1="'+y(v)+'" y2="'+y(v)+'" stroke="'+(v===0?'#C5CEDB':'#E7EBF1')+'" stroke-width="1"/>';
+    s += '<text x="'+(m.l-8)+'" y="'+(y(v)+4)+'" text-anchor="end">'+(v===0?'0':(v/1e5)+' L')+'</text>';
+  });
+  weeks.forEach(function(w,i){
+    s += '<text x="'+x(i)+'" y="'+(H-8)+'" text-anchor="'+(i===0?'start':'middle')+'"'+(i===0?' dx="-4"':'')+'>'+w+'</text>';
+  });
+  var series = [{k:"Kadapa", c:"#0F52BA", w:2},{k:"Anantapur", c:"#8A9BB8", w:2}];
+  series.forEach(function(se){
+    var v = dw[se.k], p = v.map(function(a,i){return [x(i),y(a)];});
+    s += '<polyline points="'+p.slice(0,n-1).map(function(q){return q.join(",");}).join(" ")+'" fill="none" stroke="'+se.c+'" stroke-width="'+se.w+'" stroke-linejoin="round"/>';
+    s += '<line x1="'+p[n-2][0]+'" y1="'+p[n-2][1]+'" x2="'+p[n-1][0]+'" y2="'+p[n-1][1]+'" stroke="'+se.c+'" stroke-width="1.6" stroke-dasharray="2 4" stroke-linecap="round"/>';
+    p.forEach(function(q,i){
+      s += '<circle cx="'+q[0]+'" cy="'+q[1]+'" r="'+(i===n-1?3.5:2.6)+'" fill="'+(i===n-1?'#fff':se.c)+'" stroke="'+se.c+'" stroke-width="1.5"/>';
+    });
+  });
+  /* direct labels: names at the start of each line, values at the last full week */
+  var k0=y(dw.Kadapa[0]), a0=y(dw.Anantapur[0]), k3=y(dw.Kadapa[n-2]), a3=y(dw.Anantapur[n-2]);
+  s += '<text class="dl" x="'+(x(0)+2)+'" y="'+(k0+20)+'" style="fill:#0F52BA">Kadapa</text>';
+  s += '<text class="dl" x="'+(x(0)+2)+'" y="'+(a0+20)+'" style="fill:#5A6C8C">Anantapur</text>';
+  s += '<text x="'+x(n-2)+'" y="'+(k3-10)+'" text-anchor="middle" style="fill:#13284F;font-family:var(--serif);font-size:14px">'+inr(dw.Kadapa[n-2])+'</text>';
+  s += '<text x="'+(x(n-2)-6)+'" y="'+(a3+20)+'" text-anchor="end" style="fill:#13284F;font-family:var(--serif);font-size:14px">'+inr(dw.Anantapur[n-2])+'</text>';
+  s += '</svg>';
+  box.innerHTML = s;
+}
+
+/* sheet */
+function openSheet(key){
+  var sh = document.getElementById("sheet"), p = D.cycle.parts.filter(function(x){return x.key===key;})[0];
+  if (!p) return;
+  openKey = key; lastFocus = document.activeElement;
+  var body;
+  if (key==="unpaid"){
+    var rows = D.drill.unpaid, sum = rows.reduce(function(s,x){return s+x.amount;},0);
+    var W = {red:"Overdue", amber:"Follow up", green:"On time"};
+    body = '<div>'+rows.map(function(r){
+      return '<div class="inv"><div class="i1"><b>'+esc(r.dealer)+'</b><span class="num">'+full(r.amount)+'</span></div>'+
+        '<div class="i2"><span>'+esc(r.invoice)+' · '+r.days+' days</span>'+st(r.status,W[r.status])+'</div>'+
+        (r.note ? '<div class="i3">'+st(r.status==="red"?"red":"neutral",r.note)+'</div>' : '')+'</div>';
+    }).join("")+'</div><p class="sh-foot">Oldest bills first. These 5 bills add up to <span class="num" style="color:var(--ink)">'+full(sum)+'</span> of the '+inr(p.amount)+'.</p>';
+  } else {
+    body = '<div class="ph">The full list behind this number opens here in the live app.</div>';
+  }
+  sh.innerHTML = '<div class="grab" aria-hidden="true"></div><div class="sh-top"><h3 id="sh-title">'+esc(L(p))+'</h3>'+
+    '<button type="button" class="icon-btn" id="shClose" aria-label="Close" style="margin-right:-12px;color:var(--ink-2)"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.5"/></svg></button></div>'+
+    '<div class="sh-sum"><span class="num">'+inr(p.amount)+'</span>'+st(p.status, p.status==="amber"?"Needs a look":p.status==="green"?"Received":p.status==="blue"?"In progress":"In stock")+
+    '<span>'+full(p.amount)+'</span></div>'+body;
+  sh.setAttribute("aria-hidden","false");
+  sh.classList.add("open"); document.getElementById("scrim").classList.add("open");
+  document.body.style.overflow = "hidden";
+  setTimeout(function(){ var c=document.getElementById("shClose"); c && c.focus(); }, 60);
+}
+function closeSheet(){
+  var sh = document.getElementById("sheet");
+  if (!sh.classList.contains("open")) return;
+  sh.classList.remove("open"); document.getElementById("scrim").classList.remove("open");
+  sh.setAttribute("aria-hidden","true"); document.body.style.overflow = ""; openKey = null;
+  if (lastFocus && document.body.contains(lastFocus)) lastFocus.focus();
+}
+
+document.addEventListener("click", function(e){
+  var b;
+  if ((b = e.target.closest("[data-lang]"))) { LANG = b.getAttribute("data-lang"); render(); var nb=document.querySelector('[data-lang="'+LANG+'"]'); nb && nb.focus(); if(openKey) openSheet(openKey); return; }
+  if ((b = e.target.closest("[data-part]"))) { openSheet(b.getAttribute("data-part")); return; }
+  if ((b = e.target.closest('[data-tile="dealersOwe"]'))) { openSheet("unpaid"); return; }
+  if (e.target.closest("#shClose") || e.target.id==="scrim") { closeSheet(); return; }
+  if (e.target.closest("#moreBrands")) { showAllBrands = !showAllBrands; render(); var m=document.getElementById("moreBrands"); m && m.focus(); return; }
+});
+document.addEventListener("keydown", function(e){ if (e.key==="Escape") closeSheet(); });
+var rt; window.addEventListener("resize", function(){ clearTimeout(rt); rt=setTimeout(drawChart,120); });
+
+function boot(data){ D = (x=>JSON.parse(JSON.stringify(x).replace(/(₹[\d.,]+) (L|Cr)\b/g,'$1\u00A0$2')))(data); render(); if (/[?&]sheet=unpaid/.test(location.search)) openSheet("unpaid"); }
+var inline = JSON.parse(document.getElementById("data-inline").textContent);
+fetch("../assets/data.json").then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(boot).catch(function(){ boot(inline); });
+})();
+</script>
+</body>
+</html>
