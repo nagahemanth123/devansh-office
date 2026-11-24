@@ -12,6 +12,7 @@
 <noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap" rel="stylesheet"></noscript>
 <link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/owner.css">
 </head>
 <body>
 <a class="skip" href="#view" data-i18n="a11y.skip">Skip to content</a>
@@ -42,6 +43,7 @@
 <script type="module">
 import { t, getLang, setLang, onLangChange, translateDom } from './js/i18n.js';
 import { onRoute } from './js/router.js';
+import { initSearch, setSearchAllowed } from './js/ui/search.js';
 
 const view = document.getElementById('view');
 const hdr = document.getElementById('hdr');
@@ -49,7 +51,7 @@ const toggle = document.getElementById('search-toggle');
 const roleName = document.getElementById('role-name');
 let current = null;
 
-const ROLE_OF = { landing: 'landing', owner: 'owner', 'owner-report': 'owner', staff: 'staff', dealer: 'dealer', driver: 'driver', whatsapp: 'whatsapp', unknown: 'unknown' };
+const ROLE_OF = { landing: 'landing', owner: 'owner', 'owner-report': 'owner', 'owner-activity': 'owner', 'owner-invoice': 'owner', staff: 'staff', dealer: 'dealer', driver: 'driver', whatsapp: 'whatsapp', unknown: 'unknown' };
 const el = (tag, attrs = {}, text) => {
   const n = document.createElement(tag);
   for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
@@ -57,11 +59,28 @@ const el = (tag, attrs = {}, text) => {
   return n;
 };
 
-// Placeholder views; later tasks replace these with the real screens.
+// Screens load on demand. A view returns a function that stops its listeners; it runs before the next render.
+const VIEWS = {
+  owner: async () => (await import('./js/views/owner-home.js')).renderOwnerHome(view),
+  'owner-report': async (r) => (await import('./js/views/owner-reports.js')).renderOwnerReports(view, r.params),
+  'owner-activity': async () => (await import('./js/views/owner-activity.js')).renderOwnerActivity(view),
+  'owner-invoice': async (r) => (await import('./js/views/invoice.js')).renderInvoice(view, r.params.invoiceId),
+  whatsapp: async (r) => (await import('./js/views/whatsapp.js')).renderWhatsApp(view, r.params),
+};
+const BLEED = new Set(['owner', 'owner-report', 'owner-activity', 'owner-invoice']);
+let dispose = null;
+let token = 0;
+
 function renderView(r) {
   const role = ROLE_OF[r.name];
+  const mine = ++token;
+  if (dispose) { dispose(); dispose = null; }
   view.replaceChildren();
-  if (r.name === 'landing') {
+  view.classList.toggle('bleed', BLEED.has(r.name));
+  setSearchAllowed(role === 'owner');
+  if (VIEWS[r.name]) {
+    VIEWS[r.name](r).then((stop) => { if (mine === token) dispose = stop; else if (stop) stop(); });
+  } else if (r.name === 'landing') {
     view.append(el('h1', {}, t('landing.title')), el('p', { class: 'lede' }, t('landing.intro')));
     const list = el('ul', { class: 'roles' });
     for (const [key, href] of [['owner', '#/owner'], ['staff', '#/staff'], ['dealer', '#/dealer/demo'], ['driver', '#/driver/demo']]) {
@@ -94,6 +113,7 @@ toggle.addEventListener('click', () => {
 });
 onLangChange(() => { translateDom(); syncLangButtons(); if (current) renderView(current); });
 onRoute((r) => { current = r; renderView(r); window.scrollTo(0, 0); });
+initSearch(document.getElementById('search-input'), document.getElementById('search'));
 translateDom();
 syncLangButtons();
 document.documentElement.dataset.ready = '1'; // the shell is wired: tests wait for this

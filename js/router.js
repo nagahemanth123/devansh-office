@@ -1,5 +1,5 @@
 // Hash routes: #/ , #/owner , #/owner/reports/:lens , #/staff/:page ,
-// #/dealer/:dealerId , #/driver/:driverId , #/whatsapp/:kind
+// #/owner/reports/:lens/...drill , #/owner/activity , #/owner/invoice/:id , #/dealer/:dealerId , #/driver/:driverId , #/whatsapp/:kind
 // route(hash) is pure. onRoute(fn) calls fn with the current route now and on every change.
 const SIMPLE = {
   owner: { name: 'owner' },
@@ -17,7 +17,9 @@ export function route(hash = '') {
   const [head, a, b] = parts;
   if (head === 'owner') {
     if (parts.length === 1) return make('owner');
-    if (a === 'reports' && b && parts.length === 3) return make('owner-report', { lens: b });
+    if (a === 'reports' && b) return make('owner-report', { lens: b, rest: parts.slice(3) }); // rest = drill path after the lens
+    if (a === 'activity' && parts.length === 2) return make('owner-activity');
+    if (a === 'invoice' && b && parts.length === 3) return make('owner-invoice', { invoiceId: b });
     return make('unknown');
   }
   const def = SIMPLE[head];

@@ -752,3 +752,107 @@ export function search(state, q, { limit = 12 } = {}) {
 export function activity(state, { limit = 200 } = {}) {
   return state.audit.slice(-limit).reverse();
 }
+
+// ---------- owner drill-down helpers (Tasks 3 and 4) ----------
+// Sample HSN codes by brand (the catalogue carries GST % only). All sample data.
+const HSN_BY_BRAND = { parryware: '6910', finolex: '3917', ultravolt: '8544', goldmedal: '8536', kenstar: '8516', 'sparsh-pearl': '3924', poddar: '3917', sentini: '3917', victura: '8414', acebond: '3506' };
+
+function rangedLines(s, r, district) {
+  const i = ix(s);
+  const out = [];
+  for (const inv of s.invoices) {
+    if (!counted(inv) || !inRange(inv.date, r)) continue;
+    const d = i.dealer.get(inv.dealerId);
+    if (district && d.district !== district) continue;
+    for (const l of inv.lines) out.push({ inv, d, l });
+  }
+  return out;
+}
+
+// Dealers who bought one product in the range, biggest first.
+export function productDealers(state, productId, { district, range = 'month' } = {}) {
+  const m = new Map();
+  for (const { inv, d, l } of rangedLines(state, resolveRange(state, range), district)) {
+    if (l.productId !== productId) continue;
+    const row = m.get(d.id) || { dealerId: d.id, name: d.name, town: d.town, qty: 0, value: 0, invoices: new Set() };
+    row.qty += l.qty; row.value += l.taxable + l.gst; row.invoices.add(inv.id);
+    m.set(d.id, row);
+  }
+  return [...m.values()].map((x) => ({ ...x, value: r2(x.value), invoices: x.invoices.size })).sort((a, b) => b.value - a.value);
+}
+
+// One dealer's purchases by brand, and by product inside one brand (the reverse drill path).
+export function dealerBrands(state, dealerId, { range = 'month' } = {}) {
+  const m = new Map();
+  for (const { d, l } of rangedLines(state, resolveRange(state, range))) if (d.id === dealerId) m.set(l.brand, (m.get(l.brand) || 0) + l.taxable + l.gst);
+  return [...m].map(([brand, value]) => ({ brand, name: BRAND.get(brand).name, value: r2(value) })).sort((a, b) => b.value - a.value);
+}
+
+export function dealerBrandProducts(state, dealerId, brand, { range = 'month' } = {}) {
+  const m = new Map();
+  for (const { d, l } of rangedLines(state, resolveRange(state, range))) {
+    if (d.id !== dealerId || l.brand !== brand) continue;
+    const p = PRODUCT.get(l.productId);
+    const row = m.get(l.productId) || { productId: l.productId, name: p.name, photo: p.photo, qty: 0, value: 0 };
+    row.qty += l.qty; row.value += l.taxable + l.gst;
+    m.set(l.productId, row);
+  }
+  return [...m.values()].map((x) => ({ ...x, value: r2(x.value) })).sort((a, b) => b.value - a.value);
+}
+
+// Invoices of one dealer that carry one product, in the range.
+export function dealerProductInvoices(state, dealerId, productId, { range = 'month' } = {}) {
+  const r = resolveRange(state, range);
+  return trail(state, productId, dealerId).history.filter((h) => inRange(h.date, r));
+}
+
+// The invoice as a document: GST split into CGST and SGST (intra-state), total equal to the record.
+export function invoiceDoc(state, invoiceId) {
+  const s = state;
+  const i = ix(s);
+  const inv = i.invoice.get(invoiceId);
+  if (!inv) return null;
+  const d = i.dealer.get(inv.dealerId);
+  const lines = inv.lines.map((l) => {
+    const p = PRODUCT.get(l.productId);
+    const cgst = r2(l.gst / 2);
+    return { productId: l.productId, name: p.name, brand: l.brand, unit: p.unit, hsn: HSN_BY_BRAND[l.brand], qty: l.qty, rate: l.rate,
+      taxable: l.taxable, gstPct: l.gstPct, cgst, sgst: r2(l.gst - cgst), total: r2(l.taxable + l.gst) };
+  });
+  const trip = inv.tripId ? i.trip.get(inv.tripId) : null;
+  return {
+    id: inv.id, date: inv.date, dueDate: inv.dueDate, status: inv.status, orderId: inv.orderId,
+    seller: { name: 'Devansh Marketing', town: 'Proddatur, Andhra Pradesh', gstin: '37XXXXX0000X1ZX' },
+    buyer: { dealerId: d.id, name: d.name, town: d.town, address: d.address, phone: d.phone, gstin: '37XXXXX0000X1ZX' },
+    lines, taxable: inv.taxable, cgst: r2(sumBy(lines, (x) => x.cgst)), sgst: r2(sumBy(lines, (x) => x.sgst)), roundOff: inv.roundOff, total: inv.total,
+    paid: inv.paid, balance: invoiceBalance(inv),
+    payments: (i.payByInv.get(inv.id) || []).map(({ p, amount }) => ({ id: p.id, date: p.date, mode: p.mode, status: p.status, amount })),
+    trip: trip ? { id: trip.id, plate: i.vehicle.get(trip.vehicleId).plate, driver: i.driver.get(trip.driverId).name, ewayBill: trip.ewayBill || null } : null,
+    deliveredAt: inv.deliveredAt,
+  };
+}
+
+// Brand payments due in the next 7 days (or already late): one row per brand, soonest due first.
+export function brandPaymentsWeek(state) {
+  const s = state;
+  const week = addDays(s.today, 7);
+  const m = new Map();
+  for (const b of openBills(s)) {
+    if (b.due > week || b.left <= 0) continue;
+    const x = m.get(b.brand) || { brand: b.brand, name: BRAND.get(b.brand).name, amount: 0, due: b.due };
+    x.amount += b.left; if (b.due < x.due) x.due = b.due;
+    m.set(b.brand, x);
+  }
+  return [...m.values()].map((x) => ({ ...x, amount: r2(x.amount), late: x.due < s.today })).sort((a, b) => (a.due < b.due ? -1 : a.due > b.due ? 1 : b.amount - a.amount));
+}
+
+// Dealers who owe the most, with the age of their oldest open bill.
+export function topDealerDues(state, { limit = 5 } = {}) {
+  const s = state;
+  const i = ix(s);
+  return s.dealers.map((d) => {
+    const open = (i.invByDealer.get(d.id) || []).filter((inv) => invoiceBalance(inv) > 0);
+    const oldestDays = open.length ? Math.max(...open.map((inv) => daysBetween(inv.date, s.today))) : 0;
+    return { dealerId: d.id, name: d.name, town: d.town, owes: r2(sumBy(open, invoiceBalance)), oldestDays, status: oldestDays > 60 ? 'red' : oldestDays > 30 ? 'amber' : 'green' };
+  }).filter((x) => x.owes > 0).sort((a, b) => b.owes - a.owes).slice(0, limit);
+}
