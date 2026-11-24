@@ -708,7 +708,8 @@ export function dealerView(state, dealerId) {
       byBrand: [...byBrand].map(([brand, value]) => ({ brand, name: BRAND.get(brand).name, value: r2(value) })).sort((a, b) => b.value - a.value),
       byProduct: [...byProduct.values()].map((p) => ({ ...p, value: r2(p.value) })).sort((a, b) => b.value - a.value),
     },
-    lastOrder: lastOrder ? { orderId: lastOrder.id, lines: lastOrder.lines.map((l) => ({ productId: l.productId, qty: l.qty, rate: l.rate })) } : null,
+    // inStock lets "Reorder" order what the godown has, without the dealer screen reading stock records.
+    lastOrder: lastOrder ? { orderId: lastOrder.id, lines: lastOrder.lines.map((l) => ({ productId: l.productId, qty: l.qty, rate: l.rate, inStock: s.lots.reduce((n, x) => n + (x.productId === l.productId ? x.left : 0), 0) })) } : null,
     queries: s.queries.filter((x) => x.dealerId === dealerId).map((x) => ({ id: x.id, at: x.at, text: x.text, status: x.status })),
   };
 }
