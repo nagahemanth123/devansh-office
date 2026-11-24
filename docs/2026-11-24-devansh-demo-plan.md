@@ -2,11 +2,13 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** A hosted, no-login clickable demo of the Devansh dashboard (owner, staff, dealer, driver and WhatsApp mockups) in the "Godown board" look, which runs the brief's acceptance-test day end to end.
+**Goal:** A hosted, no-login clickable demo of the Devansh dashboard (owner, staff, dealer, driver) in the "Godown board" look, which runs the brief's acceptance-test day end to end.
 
 **Architecture:** A static site with no build step. One pure-logic module (`js/store.js`) holds the records, the business rules and the selectors, persists to localStorage, and is unit-tested in Node. Views are plain ES modules that render from the store, routed by URL hash inside one app shell. A Node script generates the product data and web-size photos once from the real catalogue.
 
 **Tech Stack:** HTML, CSS, vanilla JS ES modules; Node 24 `node --test` for logic; Playwright (`npx playwright`, Chromium) for end-to-end; macOS `sips` for photo resizing; GitHub Pages hosting.
+
+> **Client changes 24 Nov 2026:** Telugu removed (English only, no toggle) and the WhatsApp segment removed (no 8 pm summary, reminder or OTP-message mockups, routes, links or guide step). Where tasks below mention them, they are void.
 
 **Spec:** `/Users/nagahemanth/Downloads/devansh-office/docs/2026-11-24-devansh-demo-design.md` (read it with the source brief `~/Downloads/Devansh Marketing Dashboard Brief.docx`). Look reference: `site/previews/godown-board/index.html`.
 

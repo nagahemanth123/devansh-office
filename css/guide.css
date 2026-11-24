@@ -1,0 +1,77 @@
+/* Role menu, the phone frame (laptop only), and the guided-day bar / rail. Calm: flat fills, hard outlines, no glow. */
+
+/* ---------- role chip menu ---------- */
+.rolemenu { position: relative; }
+.chip { gap: 8px; }
+.rolelist { position: absolute; left: 0; top: calc(100% + 6px); z-index: 80; min-width: 210px; margin: 0; padding: 6px; list-style: none; background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: 12px; }
+.rolelist[hidden] { display: none; }
+.rolelist a { display: flex; align-items: center; min-height: 48px; padding: 0 14px; border-radius: 8px; text-decoration: none; font-weight: 600; }
+.rolelist a:hover { background: var(--well); }
+.rolelist a[aria-current="page"] { background: var(--well); color: var(--sapphire-ink); font-weight: 800; }
+.rolelist :focus-visible { outline-color: var(--sapphire); }
+
+/* ---------- stage and phone frame ---------- */
+.stage { flex: 1 0 auto; width: 100%; min-width: 0; }
+.phone { width: 100%; }
+@media (min-width: 900px) {
+  .stage.framed { background: var(--page); display: flex; justify-content: center; align-items: flex-start; padding: 24px 0 32px; }
+  .stage.framed .phone {
+    position: relative; flex: 0 0 auto; width: 410px; height: min(844px, calc(100vh - 150px)); min-height: 520px;
+    border: 10px solid var(--ink); border-radius: 42px; background: var(--paper); overflow: hidden;
+    transform: translateZ(0); /* fixed sheets and overlays stay inside the phone */
+  }
+  .stage.framed .view { position: absolute; inset: 0; width: 100%; max-width: none; margin: 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; }
+  .stage.framed .view:not(.bleed) { padding: 20px 16px 28px; }
+  .stage.framed .view h1 { font-size: 24px; }
+}
+
+/* ---------- the guide ring: one clean outline on what to tap ---------- */
+.guide-target { outline: 3px solid var(--sapphire); outline-offset: 4px; box-shadow: 0 0 0 4px #fff; border-radius: 10px; }
+.guide-target.part, .guide-target.stf-q, .guide-target.fm-btn { border-radius: 12px; }
+
+/* ---------- the bar (phone) ---------- */
+.guide {
+  position: fixed; z-index: 70; left: 0; right: 0; bottom: 0;
+  background: var(--card); color: var(--ink); border-top: 2px solid var(--sapphire);
+  padding: 10px var(--gutter) max(10px, env(safe-area-inset-bottom));
+  display: grid; gap: 6px;
+}
+.guide[hidden] { display: none; }
+.g-top { display: flex; align-items: center; gap: 10px; }
+.g-step { font-size: 14px; font-weight: 800; color: var(--sapphire-ink); white-space: nowrap; }
+.g-dots { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; flex: 1; }
+.g-dots li { flex: 1; height: 5px; border-radius: 3px; background: var(--well); }
+.g-dots li.done { background: var(--sapphire); opacity: .45; }
+.g-dots li.now { background: var(--sapphire); }
+.g-x { min-height: 36px; padding: 0 4px; font-size: 14px; font-weight: 700; color: var(--ink-2); text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+.g-who { margin: 0; font-size: 13px; font-weight: 700; color: var(--ink-3); display: flex; align-items: center; gap: 8px; }
+.g-done { background: var(--green); color: #fff; border-radius: 6px; padding: 1px 8px; font-size: 12px; }
+.g-title { margin: 0; font-size: 18px; line-height: 1.2; font-weight: 800; }
+.g-text { margin: 2px 0 0; font-size: 15px; line-height: 1.4; color: var(--ink-2); }
+.g-err { margin: 4px 0 0; font-size: 14px; font-weight: 700; color: var(--red); }
+.g-btns { display: grid; grid-template-columns: auto 1fr; gap: 8px; margin-top: 2px; }
+.g-back, .g-main { min-height: 48px; border-radius: 10px; font-weight: 800; font-size: 16px; text-align: center; padding: 0 16px; display: grid; place-items: center; line-height: 1.25; }
+.g-back { border: 2px solid var(--line); background: #fff; color: var(--ink); }
+.g-back:disabled { opacity: .4; }
+.g-main { background: var(--sapphire); color: #fff; border: 2px solid var(--sapphire); }
+.g-main:active { background: var(--sapphire-press); }
+.g-main[data-mode="next"], .g-main[data-mode="phase"], .g-main[data-mode="finish"] { background: #fff; color: var(--sapphire-ink); }
+.guide :focus-visible { outline-color: var(--sapphire); }
+
+/* the bar takes room from the page and from overlays, so nothing hides behind it */
+body.guide-on { padding-bottom: var(--guide-h, 0); }
+body.guide-on .scrim, body.guide-on .sp-scrim { bottom: var(--guide-h, 0); }
+body.guide-on .dr-ov { bottom: var(--guide-h, 0); }
+
+/* ---------- the rail (laptop) ---------- */
+@media (min-width: 900px) {
+  .guide { left: 0; right: auto; top: var(--rail-top, 64px); bottom: 0; width: 300px; border-top: 0; border-right: 2px solid var(--sapphire); padding: 20px 20px 24px; align-content: start; gap: 12px; overflow-y: auto; }
+  .g-title { font-size: 22px; }
+  .g-text { font-size: 16px; }
+  .g-btns { grid-template-columns: 1fr; margin-top: 8px; }
+  .g-back { order: 2; min-height: 44px; }
+  body.guide-on { padding-bottom: 0; }
+  body.guide-on .stage, body.guide-on .ftr { margin-left: 300px; width: auto; min-width: 0; }
+  body.guide-on .scrim, body.guide-on .sp-scrim, body.guide-on .dr-ov { bottom: 0; }
+}
+@media (prefers-reduced-motion: no-preference) { .guide-target { transition: outline-offset .15s; } }

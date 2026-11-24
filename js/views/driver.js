@@ -1,12 +1,23 @@
 // The driver's phone: today's drops in order, one big Delivered button (photo, then the dealer's 4-digit code),
 // Not delivered (shop closed, rejected, or partial), and an offline switch. Reads only driverView.
-import { t } from '../i18n.js';
+import { addStrings, t } from '../i18n.js';
 import { getState, subscribe, markDelivered, markNotDelivered } from '../store.js';
 import { driverView } from '../selectors.js';
 import { esc, chip, inr } from '../ui/common.js';
+import phoneStrings from '../strings/en-phone.js';
+import staffStrings from '../strings/en-staff.js';
+addStrings(phoneStrings);
+addStrings(staffStrings);
 
 const FULL = { full: true };
 export const DEFAULT_DRIVER = 'DR2';
+// "demo" is DR2 on the guided day. Outside the guide it is a driver who has drops today, so the screen is never empty (DR2 has none until the guided trip).
+function demoDriver() {
+  try { if (globalThis.localStorage?.getItem('dm.guide')) return DEFAULT_DRIVER; } catch { /* storage blocked */ }
+  const s = getState();
+  const busy = s.drivers.find((d) => driverView(s, d.id)?.drops.length);
+  return busy ? busy.id : DEFAULT_DRIVER;
+}
 const OFFLINE_KEY = 'dm.offline';
 const QUEUE_KEY = 'dm.syncQueue';
 
@@ -85,7 +96,7 @@ function flowHTML() {
 const PICK = ['DR1', 'DR2', 'DR3', 'DR4', 'DR5'];
 
 export function renderDriver(el, { driverId } = {}) {
-  const id = !driverId || driverId === 'demo' ? DEFAULT_DRIVER : driverId;
+  const id = !driverId || driverId === 'demo' ? demoDriver() : driverId;
   el.innerHTML = '<div class="dr"><div data-main></div><div data-flow></div></div>';
   const main = el.querySelector('[data-main]'); const ov = el.querySelector('[data-flow]');
   const view = () => driverView(getState(), id);

@@ -1,12 +1,9 @@
 import owner from './en-owner.js';
-import staff from './en-staff.js';
-import phone from './en-phone.js';
+// The staff, phone and guide strings load with their own screens (see addStrings in i18n.js) so the owner home downloads less.
 
-// English UI strings. Keys are shared with te.js. Add a key here and in te.js together.
+// English UI strings.
 export default {
   ...owner,
-  ...staff,
-  ...phone,
   'app.title': 'Devansh Marketing',
   'a11y.skip': 'Skip to content',
   'role.landing': 'Demo',
@@ -14,15 +11,15 @@ export default {
   'role.staff': 'Staff',
   'role.dealer': 'Dealer',
   'role.driver': 'Driver',
-  'role.whatsapp': 'WhatsApp',
   'role.unknown': 'Demo',
+  'role.menu': 'Switch role',
+  'role.home': 'Start page',
+  'landing.previews': 'Previews',
   'role.change': 'Change role',
   'search.label': 'Search',
   'search.placeholder': 'Search dealer, brand, product or invoice',
   'lang.label': 'Language',
   'footer.sample': 'Sample data · Busy Fox demo',
-  'landing.title': 'Devansh Marketing demo',
-  'landing.intro': 'Pick a role to see the day from that seat.',
   'landing.owner': 'Owner',
   'landing.owner.desc': 'See where the money is, in one place',
   'landing.staff': 'Staff',

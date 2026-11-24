@@ -19,10 +19,4 @@ export default {
   'dr.confirm': 'Confirm', 'dr.fail': 'That did not work. Please try again.', 'dr.savedTitle': 'Saved on this phone', 'dr.savedHelp': 'It goes to the office as soon as the network is back.', 'dr.doneTitle': 'Done', 'dr.doneHelp': 'The office and the dealer can see it now.',
   'dr.whyTitle': 'Why not delivered?', 'dr.confirmNot': 'Tell the office this drop was not delivered?', 'dr.partialTitle': 'What did you deliver?', 'dr.partialHelp': 'Set how many of each item the dealer took.', 'dr.partialNone': 'Lower at least one item, or use Delivered.',
   'dr.less': 'One less', 'dr.more': 'One more', 'dr.of': 'of {n}', 'dr.none': 'No drops for you today.', 'dr.notFound': 'We could not find this driver.', 'dr.presenter': 'Demo only: switch driver', 'dr.driverN': 'Driver {n}',
-  'wa.note': 'Nothing is sent in this demo.', 'wa.tabs': 'Messages', 'wa.tab.summary': 'Evening summary', 'wa.tab.reminder': 'Payment reminder', 'wa.tab.otp': 'Delivery code',
-  'wa.rem.title': 'Payment reminder', 'wa.rem.te': 'Telugu', 'wa.rem.en': 'English',
-  'wa.rem.body': 'Hello {name}. A gentle reminder: your payment of {amount} for invoice {invoice} is due on {date}. Your total outstanding is {owes}. Thank you. - Devansh Marketing',
-  'wa.rem.bodyNone': 'Hello {name}. Your total outstanding with us is {owes}. Please pay when you can. Thank you. - Devansh Marketing',
-  'wa.otp.title': 'Delivery code', 'wa.otp.body': 'Your goods for invoice {invoice} are on the way with {driver}, vehicle {vehicle}. Your delivery code is:', 'wa.otp.note': 'Give this code to the driver only when you have received the goods.',
-  'wa.otp.none': 'When a vehicle is loaded for this dealer, the delivery code arrives here.',
 };

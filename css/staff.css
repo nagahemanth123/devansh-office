@@ -2,7 +2,6 @@
 .stf { background: var(--paper); }
 .stf-in { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
 .stf a { text-decoration: none; color: inherit; }
-html[lang="te"] .stf .tel, html[lang="te"] .sp .tel { line-height: 1.55; }
 
 /* top bar: pages, role, quick actions. Stays on screen while the page scrolls. */
 .stf-top { position: sticky; top: 0; z-index: 20; background: var(--card); border-bottom: 1px solid var(--line); }
@@ -18,11 +17,19 @@ html[lang="te"] .stf .tel, html[lang="te"] .sp .tel { line-height: 1.55; }
 .stf-role button:first-of-type { border-radius: 10px 0 0 10px; }
 .stf-role button:last-of-type { border-radius: 0 10px 10px 0; }
 .stf-role button[aria-pressed="true"] { background: var(--ink); color: #fff; }
-.stf-quick { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.stf-quick { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; }
 .stf-q { min-height: 48px; padding: 6px 10px; background: var(--sapphire); color: #fff; font-weight: 700; font-size: 15px; text-align: center; border-radius: 10px; line-height: 1.2; }
 .stf-q:hover { background: var(--sapphire-press); }
 .stf-q:active { background: var(--sapphire-ink); }
-html[lang="te"] .stf-q { line-height: 1.45; padding-top: 8px; }
+
+/* phones: the top block scrolls away with the page (the guide bar needs the room); roles and quick actions wrap */
+@media (max-width: 899px) {
+  .stf-top { position: static; }
+  .stf-top .stf-in { grid-template-columns: minmax(0, 1fr); }
+  .stf-role { flex-wrap: wrap; }
+  .stf-quick { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stf-quick > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+}
 
 .stf-page { padding-top: 20px; padding-bottom: 48px; }
 .stf-h1, .stf-sh h1 { margin: 0 0 14px; font-size: 26px; line-height: 1.2; font-weight: 800; font-stretch: 108%; letter-spacing: -.01em; }
@@ -115,7 +122,6 @@ html[lang="te"] .stf-q { line-height: 1.45; padding-top: 8px; }
 .fm-btn.danger { border-color: var(--red); color: var(--red); }
 .fm-btn.small { padding: 4px 12px; font-size: 14px; }
 .fm-btn:disabled { opacity: .45; cursor: not-allowed; }
-html[lang="te"] .fm-btn { line-height: 1.45; padding-top: 8px; }
 .fm-total { display: flex; flex-wrap: wrap; gap: 4px 20px; margin-top: 14px; font-size: 16px; align-items: center; } .fm-total b { font-size: 19px; }
 .fm-head { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; } .fm-head b { font-size: 20px; }
 .fm-row-h { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 6px; }
@@ -168,4 +174,12 @@ body.sp-lock { overflow: hidden; }
   .stf-inb, .stf-row.trip { grid-template-columns: 1fr; }
   .stf-tools.three { grid-template-columns: 1fr; }
   .fm-two { grid-template-columns: 1fr; }
+}
+
+/* phones: the receive and order line tables fit the panel (tighter cells), and scroll inside their own box if they still cannot */
+@media (max-width: 599px) {
+  .fm-table th, .fm-table td { padding: 6px 4px; }
+  .fm-table .fm-in { width: 60px; min-width: 60px; padding: 6px 4px; text-align: center; }
+  .fm-table th { font-size: 12px; }
+  [data-lines] { overflow-x: auto; }
 }

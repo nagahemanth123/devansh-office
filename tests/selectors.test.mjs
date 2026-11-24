@@ -6,7 +6,7 @@ import {
 import { seed, GUIDED } from '../js/seed.js';
 import {
   cycleBar, tiles, attention, comingIn, goingOut, districtWeekly, brandCards, productRows, dealerCards, grid, trail,
-  dealerBalance, stock, recordsBehind, summary8pm, dealerView, driverView, invoiceCost,
+  dealerBalance, stock, recordsBehind, dealerView, driverView, invoiceCost,
 } from '../js/selectors.js';
 
 const sum = (rows) => rows.reduce((a, r) => a + r.amount, 0);
@@ -92,7 +92,6 @@ test('guided day moves the bar', () => {
   near(after.bank - afterReceive.bank, cost * GUIDED.paymentAmount / invoice.total, 1, 'bank by the paid share');
   near(after.total, afterReceive.total, 1, 'total unchanged by selling');
   assert.equal(dealer.orders[0].step, 'delivered');
-  assert.ok(summary8pm(getState(), getState().today).collected >= GUIDED.paymentAmount);
 });
 
 test('the guided day runs cleanly again after a reset', () => {
@@ -172,6 +171,4 @@ test('trackers, chart and reports read from the records', () => {
   near(bal.ageing.d0_30 + bal.ageing.d31_60 + bal.ageing.d60p, bal.owes, 1, 'ageing');
   const st = stock(s, { brand: 'goldmedal' });
   assert.ok(st.length > 0 && st.every((r) => r.brand === 'goldmedal'));
-  const sm = summary8pm(s, s.today);
-  assert.ok('sales' in sm && 'collected' in sm && 'deliveries' in sm && 'overdue' in sm);
 });

@@ -11,35 +11,22 @@ const test = base.extend({
 
 const WIDTHS = [360, 390, 430, 1024, 1280];
 
-test('shell renders landing with header, role chip, search, toggle and footer', async ({ page }) => {
-  await page.goto('/app.html');
+test('shell renders landing with header, role chip, search and footer', async ({ page }) => {
+  await page.goto('/index.html');
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await expect(page.getByRole('img', { name: 'Devansh Marketing' })).toBeVisible();
   await expect(page.locator('#role-chip')).toHaveText('Demo');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Devansh Marketing demo');
-  await expect(page.locator('footer')).toHaveText('Sample data · Busy Fox demo');
-});
-
-test('EN | తె toggle flips html lang, translates, and is remembered', async ({ page }) => {
-  await page.goto('/app.html');
-  await page.getByRole('button', { name: 'తె' }).click();
-  await expect(page.locator('html')).toHaveAttribute('lang', 'te');
-  await expect(page.locator('footer')).toHaveText('శాంపిల్ డేటా · Busy Fox డెమో');
-  await expect(page.getByRole('button', { name: 'తె' })).toHaveAttribute('aria-pressed', 'true');
-  expect(await page.evaluate(() => localStorage.getItem('dm.lang'))).toBe('te');
-  await page.reload();
-  await expect(page.locator('html')).toHaveAttribute('lang', 'te');
-  await page.getByRole('button', { name: 'EN' }).click();
-  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Where is my money today?');
+  await expect(page.locator('footer')).toContainText('Sample data · Busy Fox demo');
 });
 
 test('hash routes update the view and role chip', async ({ page }) => {
-  await page.goto('/app.html#/owner');
+  await page.goto('/index.html#/owner');
   await expect(page.locator('#role-chip')).toHaveText('Owner');
-  await page.goto('/app.html#/dealer/D-MYD-01');
+  await page.goto('/index.html#/dealer/D-MYD-01');
   await expect(page.locator('#role-chip')).toHaveText('Dealer');
   await expect(page.locator('.dl-hero')).toBeVisible();
-  await page.goto('/app.html#/nowhere');
+  await page.goto('/index.html#/nowhere');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('That page was not found');
 });
 
@@ -47,17 +34,16 @@ test('demo still runs when localStorage throws', async ({ page }) => {
   await page.addInitScript(() => {
     Object.defineProperty(window, 'localStorage', { get() { throw new Error('blocked'); } });
   });
-  await page.goto('/app.html');
-  await page.getByRole('button', { name: 'తె' }).click();
-  await expect(page.locator('html')).toHaveAttribute('lang', 'te');
+  await page.goto('/index.html');
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
 });
 
-for (const lang of ['en', 'te']) {
+for (const lang of ['en']) {
   for (const width of WIDTHS) {
     test(`no horizontal scroll and tap targets >= 44px at ${width}px in ${lang}`, async ({ page }) => {
       await page.setViewportSize({ width, height: 800 });
       await page.addInitScript((l) => { try { localStorage.setItem('dm.lang', l); } catch {} }, lang);
-      await page.goto('/app.html');
+      await page.goto('/index.html');
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
       expect(overflow).toBeLessThanOrEqual(0);
       const small = await page.evaluate(() =>
@@ -72,9 +58,20 @@ for (const lang of ['en', 'te']) {
   }
 }
 
-test('search opens on phone and stays inline on desktop', async ({ page }) => {
+test('search is hidden where it does nothing (start page, staff, dealer, driver)', async ({ page }) => {
+  for (const width of [390, 1280]) {
+    await page.setViewportSize({ width, height: 800 });
+    for (const h of ['', '#/staff/inbound', '#/dealer/D-MYD-01', '#/driver/demo']) {
+      await page.goto(`/index.html${h}`);
+      await expect(page.locator('#search-toggle'), `${h} ${width}`).toBeHidden();
+      await expect(page.locator('#search-input'), `${h} ${width}`).toBeHidden();
+    }
+  }
+});
+
+test('search opens on phone and stays inline on desktop (owner)', async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 700 });
-  await page.goto('/app.html');
+  await page.goto('/index.html#/owner');
   await expect(page.locator('#search-input')).toBeHidden();
   await page.locator('#search-toggle').click();
   await expect(page.locator('#search-input')).toBeVisible();

@@ -15,7 +15,7 @@ function ensure() {
   scrim.className = 'scrim';
   scrim.hidden = true;
   scrim.innerHTML = '<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle"></div>';
-  document.body.append(scrim);
+  (document.getElementById('phone') || document.body).append(scrim); // inside the phone frame on a laptop
   scrim.addEventListener('click', (e) => { if (e.target === scrim || e.target.closest('[data-close-sheet]')) closeSheet(); });
   document.addEventListener('keydown', (e) => {
     if (scrim.hidden) return;

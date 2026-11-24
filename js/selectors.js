@@ -235,7 +235,7 @@ export function tiles(state, { range = 'month' } = {}) {
   return [
     { key: 'sales', unit: 'money', value: r2(salesNow), trend: change > 2 ? 'up' : change < -2 ? 'down' : 'flat', status: null,
       compare: { key: 'cmp.vsPrev', vars: { pct: change, period: r.kind, prevFrom: r.prev.from, prevTo: r.prev.to } } },
-    { key: 'collected', unit: 'money', value: r2(collected), status: null, compare: { key: 'cmp.pctOfSales', vars: { pct: Math.round(pct(collected, salesNow)) } } },
+    { key: 'collected', unit: 'money', value: r2(collected), status: null, compare: { key: pct(collected, salesNow) > 100.5 ? 'cmp.pctOfSalesOlder' : 'cmp.pctOfSales', vars: { pct: Math.round(pct(collected, salesNow)) } } },
     { key: 'dealersOwe', unit: 'money', value: r2(owe), status: age.d60p > 0.2 * owe ? 'red' : age.d60p > 0 ? 'amber' : 'green',
       compare: { key: 'cmp.old60', vars: { amount: age.d60p } } },
     { key: 'weOwe', unit: 'money', value: r2(weOwe), status: dueWeek > 0 ? 'amber' : null, compare: { key: 'cmp.dueThisWeek', vars: { amount: r2(dueWeek) } } },
@@ -647,25 +647,6 @@ export function stock(state, { q, brand, category } = {}) {
     .sort((a, b) => b.value - a.value);
 }
 
-// ---------- tonight's 8 pm summary ----------
-export function summary8pm(state, date = state.today) {
-  const s = state;
-  const invs = s.invoices.filter((inv) => counted(inv) && inv.date === date);
-  const cleared = s.payments.filter((p) => p.status === 'cleared' && dayOf(p.clearedAt) === date);
-  const cheques = s.payments.filter((p) => p.mode === 'cheque' && p.date === date && p.status === 'pending');
-  const drops = s.trips.filter((t) => t.date === date).flatMap((t) => t.drops);
-  const overdue = s.invoices.filter((inv) => invoiceBalance(inv) > 0 && inv.dueDate < date);
-  const bar = cycleBar(s);
-  return {
-    date, sales: r2(sumBy(invs, (x) => x.total)), invoices: invs.length,
-    collected: r2(sumBy(cleared, (p) => p.amount)), chequesPending: r2(sumBy(cheques, (p) => p.amount)),
-    deliveries: { done: drops.filter((d) => d.status === 'delivered').length, total: drops.length },
-    overdue: r2(sumBy(overdue, invoiceBalance)), overdueDealers: new Set(overdue.map((x) => x.dealerId)).size,
-    claims: s.claims.filter((c) => c.date === date).length,
-    bar: { total: bar.total, bank: bar.bank },
-  };
-}
-
 // ---------- the only data the dealer and driver screens may read ----------
 // They carry no purchase rates, margins, costs, or anything about another dealer.
 const DEALER_STEP = { waiting: 'packed', planned: 'packed', loaded: 'loaded', ontheway: 'ontheway', delivered: 'delivered', cancelled: 'cancelled' };
@@ -708,8 +689,8 @@ export function dealerView(state, dealerId) {
       byBrand: [...byBrand].map(([brand, value]) => ({ brand, name: BRAND.get(brand).name, value: r2(value) })).sort((a, b) => b.value - a.value),
       byProduct: [...byProduct.values()].map((p) => ({ ...p, value: r2(p.value) })).sort((a, b) => b.value - a.value),
     },
-    // inStock lets "Reorder" order what the godown has, without the dealer screen reading stock records.
-    lastOrder: lastOrder ? { orderId: lastOrder.id, lines: lastOrder.lines.map((l) => ({ productId: l.productId, qty: l.qty, rate: l.rate, inStock: s.lots.reduce((n, x) => n + (x.productId === l.productId ? x.left : 0), 0) })) } : null,
+    // take is what "Reorder" can order now (the last quantity, capped by what the godown has); the dealer never sees stock counts.
+    lastOrder: lastOrder ? { orderId: lastOrder.id, lines: lastOrder.lines.map((l) => ({ productId: l.productId, qty: l.qty, rate: l.rate, take: Math.min(l.qty, s.lots.reduce((n, x) => n + (x.productId === l.productId ? x.left : 0), 0)) })) } : null,
     queries: s.queries.filter((x) => x.dealerId === dealerId).map((x) => ({ id: x.id, at: x.at, text: x.text, status: x.status })),
   };
 }

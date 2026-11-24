@@ -21,11 +21,12 @@ The demo has to make the owner believe two things:
 - A **guided "One day at Devansh"** mode that walks the acceptance test step by step and hops between roles, so the presenter never gets lost.
 - Every number is computed from one shared set of records (lines, invoices, payments). Tapping any number lists the records behind it. Nothing is hard-coded as a total.
 - Changes made in one role show up in the others (staff marks received → owner's tiles change; driver marks delivered → dealer sees "Delivered").
-- The WhatsApp side shown as phone mockups.
 - EN | తె toggle on every screen.
 
 **Non-goals (not in this demo)**
-- Real logins, server, database, or sending anything (WhatsApp, SMS, OTP). Everything runs in the browser.
+- Real logins, server, database, or sending anything (SMS, OTP). Everything runs in the browser.
+- **WhatsApp of any kind** (8 pm summary, reminders, OTP messages): removed by the client on 24 Nov 2026.
+- **Telugu**: removed by the client on 24 Nov 2026. The demo is English only, with no language toggle.
 - Tally import, GST filing, e-invoice IRN generation. (The invoice shows where the IRN/QR would go.)
 - Attendance details, salesperson targets, and per-brand profit reports beyond the margin % shown on the owner's brand card (all v2 in the brief).
 - A report builder.
@@ -62,7 +63,7 @@ The demo has to make the owner believe two things:
 - **The chain rule is the data model**: PO line → goods-received line → invoice line → trip drop → delivery proof → payment allocation. Every line carries brand, product, dealer (where relevant), district, quantity, rate and date. The three lenses are filters on those lines.
 - **Business rules implemented in the demo** (brief section 6): stock rises only on "received"; it falls when the invoice is created; a shortage on receipt creates a brand claim and reduces the payable; an over-limit dealer order is flagged and needs admin approval (one tap in the demo, logged); one payment can be split across invoices and an invoice can be part-paid; cheques are pending → cleared or bounced, and a bounce puts the amount back on dues and raises a red flag; a trip over ₹50,000 asks for an e-way bill number (free text).
 - **Audit trail**: every change writes a log entry (who = role and sample staff name, what, when). The owner can open "Activity", which shows the owner cannot edit.
-- **Delivery proof**: the driver's Delivered button opens the phone camera or file picker (`<input type="file" accept="image/*" capture>`), then asks for a 4-digit OTP. In the demo the dealer's screen and the WhatsApp mockup show that OTP. "Offline": a toggle in the driver header simulates no network, so the delivery is saved as "Waiting to sync" and syncs when switched back.
+- **Delivery proof**: the driver's Delivered button opens the phone camera or file picker (`<input type="file" accept="image/*" capture>`), then asks for a 4-digit OTP. In the demo the dealer's screen shows that OTP. "Offline": a toggle in the driver header simulates no network, so the delivery is saved as "Waiting to sync" and syncs when switched back.
 - **Telugu**: EN is the default and the toggle is on every screen. All UI text, headings, buttons, status words and tile comparisons are translated into spoken Telugu mixed with common English terms ("invoice", "stock", "outstanding"). Dealer, product and brand names stay as they are. The choice is remembered. Telugu strings are marked "needs native check" in a list for Busy Fox. This covers **every** screen, staff desktop forms and lenses included (the client chose "toggle everywhere").
 
 ## 5. What each role sees
@@ -98,12 +99,6 @@ Top: "You owe ₹X", credit used as a bar, next due date. Order tracker in 5 ste
 ### Driver (phone, very simple)
 Today's drops in order, each with dealer name, town, address, a call button (tel: link to a dummy number) and invoice amount. One big **Delivered** button → photo → OTP → done. **Not delivered** → reason: Shop closed / Rejected / Partial (partial asks which lines). An offline toggle (see 4). Driver picker for the presenter.
 
-### WhatsApp mockups
-Shown as phone screens (a WhatsApp-like chat, not the real WhatsApp logo or name):
-- the owner's **8 pm daily summary** (sales, collected, deliveries done, overdue), generated from the day's records;
-- a **dealer payment reminder** in Telugu and English;
-- the **delivery OTP** message to the dealer.
-They are reachable from the owner home ("Tonight's 8 pm summary") and from the guided day. A note says nothing is sent in the demo.
 
 ## 6. The guided day ("One day at Devansh")
 
@@ -116,7 +111,7 @@ A slim step guide (a bottom bar on phone, a side rail on desktop) with Next/Back
 5. **Driver**: mark the drop Delivered with a photo and the OTP.
 6. **Dealer**: sees "Delivered" and what he owes.
 7. **Staff, accounts**: the dealer pays half by UPI. The payment is attached to the invoice and the balance shows pending.
-8. **Owner, evening**: the ₹1 Cr bar has moved (a short "before → after" note), then the 8 pm WhatsApp summary.
+8. **Owner, evening**: the ₹1 Cr bar has moved, with a short, accurate "before → after" note.
 
 It runs once per reset: "Reset demo" puts the day back to its start, and it must run cleanly again after every reset. One device drives the whole demo (the presenter's phone or laptop). On a laptop the owner, dealer and driver screens show inside a phone-sized frame. If someone opens the link on a second device, it shows its own fresh copy; that is accepted. Users can also leave the guide and click freely.
 
