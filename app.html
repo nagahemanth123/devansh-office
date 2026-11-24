@@ -15,7 +15,7 @@
 <link rel="stylesheet" href="css/owner.css">
 <link rel="stylesheet" href="css/staff.css">
 <link rel="stylesheet" href="css/phone-roles.css">
-<style>.lang{display:none!important}</style>
+<style>.lang{display:none!important}.sumlink{display:none!important}</style>
 <script>try{localStorage.setItem("dm.lang","en")}catch(e){}</script>
 </head>
 <body>
@@ -72,7 +72,7 @@ const VIEWS = {
   staff: async (r) => (await import('./js/views/staff.js')).renderStaff(view, r.params),
   dealer: async (r) => (await import('./js/views/dealer.js')).renderDealer(view, r.params),
   driver: async (r) => (await import('./js/views/driver.js')).renderDriver(view, r.params),
-  whatsapp: async (r) => (await import('./js/views/whatsapp.js')).renderWhatsApp(view, r.params),
+  whatsapp: async () => { location.hash = '#/owner'; },
 };
 const BLEED = new Set(['owner', 'owner-report', 'owner-activity', 'owner-invoice', 'staff', 'dealer', 'driver']);
 let dispose = null;
