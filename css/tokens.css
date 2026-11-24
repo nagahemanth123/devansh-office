@@ -1,0 +1,31 @@
+/* Design tokens, copied from the Godown board look. */
+:root {
+  --sapphire: #0F52BA;
+  --sapphire-press: #0B4296;
+  --sapphire-ink: #0A3A84;
+
+  --ink: #0E1A2B;
+  --ink-2: #38424F;
+  --ink-3: #5A6372;
+
+  --paper: #F3F2EE;
+  --card: #FFFFFF;
+  --line: #E2E0D9;
+  --well: #E7E5DE;
+  --page: #DEDCD5;
+
+  /* Status: a solid colour always travels with a word. */
+  --green: #17804A;
+  --blue: #2563EB;
+  --amber: #AE5A00;
+  --red: #C22A2A;
+  --neutral: #59636F;
+
+  --focus-on-blue: #F2B705;
+  --radius: 14px;
+  --tap: 44px;
+  --tap-big: 56px;
+  --gutter: 16px;
+
+  --font: "Archivo", "Anek Telugu", system-ui, sans-serif;
+}
