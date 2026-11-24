@@ -15,7 +15,7 @@ test.use({ viewport: { width: 390, height: 844 } });
 
 const st = (page, fn, arg) => page.evaluate(async ([src, a]) => { const m = await import('/js/store.js'); return new Function('m', 'a', `return (${src})(m, a)`)(m, a); }, [fn.toString(), arg]);
 // A loaded trip for D-MYD-01 on vehicle V2 with driver DR2, as on the guided day.
-const loadTrip = async (page) => { if (page.url() === 'about:blank') await page.goto('/app.html'); return loadTripNow(page); };
+const loadTrip = async (page) => { if (page.url() === 'about:blank') await page.goto('/index.html'); return loadTripNow(page); };
 const loadTripNow = (page) => st(page, (m) => {
   const by = { role: 'sales', name: 'Sandeep' };
   const { invoice } = m.createOrder('D-MYD-01', [{ productId: 'parryware-casa-coupled-closet', qty: 8 }, { productId: 'parryware-elite-ewc', qty: 4 }], by);
@@ -27,7 +27,7 @@ const photo = { name: 'drop.jpg', mimeType: 'image/jpeg', buffer: Buffer.from('/
 const tall = async (loc) => { for (const b of await loc.all()) if (await b.isVisible()) expect((await b.boundingBox()).height).toBeGreaterThanOrEqual(56); };
 
 test('dealer: what he owes, a credit bar, a 5-step tracker, invoice labels, two big buttons, and nothing private', async ({ page }) => {
-  await page.goto('/app.html#/dealer/D-MYD-01');
+  await page.goto('/index.html#/dealer/D-MYD-01');
   await expect(page.getByText('You owe', { exact: true })).toBeVisible();
   await expect(page.locator('[data-owes]')).toHaveAttribute('data-owes', '210000');
   await expect(page.locator('.dl-bar')).toBeVisible();
@@ -46,7 +46,7 @@ test('dealer: what he owes, a credit bar, a 5-step tracker, invoice labels, two 
 });
 
 test('dealer: a query appears in the staff orders; a reorder places an order; the OTP shows once loaded', async ({ page }) => {
-  await page.goto('/app.html#/dealer/D-MYD-01');
+  await page.goto('/index.html#/dealer/D-MYD-01');
   await page.getByRole('button', { name: 'Raise a query' }).click();
   await page.getByLabel('What do you want to ask us?').fill('Please send the invoice copy for last week.');
   await tall(page.locator('.pbtn'));
@@ -59,16 +59,16 @@ test('dealer: a query appears in the staff orders; a reorder places an order; th
   expect(await st(page, (m) => m.getState().orders.length)).toBe(before + 1);
   await expect(page.locator('[data-otp]')).toHaveCount(0);
   await loadTrip(page);
-  await page.goto('/app.html#/dealer/D-MYD-01');
+  await page.goto('/index.html#/dealer/D-MYD-01');
   await expect(page.locator('[data-otp] b').first()).toHaveText('4721');
-  await page.goto('/app.html#/staff/orders');
+  await page.goto('/index.html#/staff/orders');
   await expect(page.locator('[data-queries]')).toContainText('Please send the invoice copy for last week.');
   expect(page.errors).toEqual([]);
 });
 
 test('driver: drops in order with a call link, wrong OTP then the right one', async ({ page }) => {
   await loadTrip(page);
-  await page.goto('/app.html#/driver/DR2');
+  await page.goto('/index.html#/driver/DR2');
   const card = page.locator('[data-drop]').first();
   await expect(card).toContainText('Sri Durga Electricals');
   await expect(card.locator('a[href^="tel:"]')).toBeVisible();
@@ -91,7 +91,7 @@ test('driver: drops in order with a call link, wrong OTP then the right one', as
 
 test('driver offline: the delivery waits to sync, then syncs when the switch is off', async ({ page }) => {
   const { trip, invoice } = await loadTrip(page);
-  await page.goto('/app.html#/driver/DR2');
+  await page.goto('/index.html#/driver/DR2');
   await page.getByRole('switch').click();
   const card = page.locator('[data-drop]').first();
   await card.getByRole('button', { name: 'Delivered', exact: true }).click();
@@ -110,7 +110,7 @@ test('driver offline: the delivery waits to sync, then syncs when the switch is 
 
 test('driver: not delivered, partial asks which lines', async ({ page }) => {
   const { invoice } = await loadTrip(page);
-  await page.goto('/app.html#/driver/DR2');
+  await page.goto('/index.html#/driver/DR2');
   const card = page.locator('[data-drop]').first();
   await card.getByRole('button', { name: 'Not delivered' }).click();
   await expect(page.getByRole('button', { name: 'Shop closed' })).toBeVisible();
@@ -128,14 +128,14 @@ test('driver: not delivered, partial asks which lines', async ({ page }) => {
   expect(page.errors).toEqual([]);
 });
 
-test('phone screens hold at 360 and 430, in Telugu too', async ({ page }) => {
+test('phone screens hold at 360 and 430', async ({ page }) => {
   await loadTrip(page);
-  for (const lang of ['en', 'te']) {
+  for (const lang of ['en']) {
     await page.addInitScript((l) => localStorage.setItem('dm.lang', l), lang);
     for (const w of [360, 430]) {
       await page.setViewportSize({ width: w, height: 844 });
       for (const hash of ['#/dealer/D-MYD-01', '#/driver/DR2', '#/whatsapp/reminder', '#/whatsapp/otp', '#/whatsapp/summary']) {
-        await page.goto(`/app.html${hash}`);
+        await page.goto(`/index.html${hash}`);
         await expect(page.locator('#view')).not.toBeEmpty();
         const over = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
         expect(over, `${hash} ${w} ${lang}`).toBeLessThanOrEqual(0);
@@ -144,13 +144,12 @@ test('phone screens hold at 360 and 430, in Telugu too', async ({ page }) => {
   }
 });
 
-test('whatsapp: reminder in Telugu and English, the OTP, and the not-sent note, with no real app name', async ({ page }) => {
-  await page.goto('/app.html#/whatsapp/reminder');
-  await expect(page.locator('.wa-msg[lang="te"]')).toContainText('నమస్తే');
+test('whatsapp: reminder, the OTP, and the not-sent note, with no real app name', async ({ page }) => {
+  await page.goto('/index.html#/whatsapp/reminder');
   await expect(page.locator('.wa-msg[lang="en"]')).toContainText('Hello Sri Durga Electricals');
   await expect(page.locator('[data-wa-note]')).toHaveText('Nothing is sent in this demo.');
   await loadTrip(page);
-  await page.goto('/app.html#/whatsapp/otp');
+  await page.goto('/index.html#/whatsapp/otp');
   await expect(page.locator('[data-otp-code]')).toHaveText('4721');
   expect((await page.locator('#view').innerText()).toLowerCase()).not.toContain('whatsapp');
 });

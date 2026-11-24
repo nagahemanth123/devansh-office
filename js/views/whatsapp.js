@@ -6,11 +6,10 @@ import { getState, subscribe } from '../store.js';
 import { summary8pm, dealerView } from '../selectors.js';
 import { esc, inr, fmtDay, fmtTime } from '../ui/common.js';
 import en from '../strings/en.js';
-import te from '../strings/te.js';
 
 const DEALER = 'D-MYD-01'; // the dealer of the guided day
 const KINDS = ['summary', 'reminder', 'otp'];
-const TABLE = { en, te };
+const TABLE = { en };
 const say = (lang, key, vars = {}) => TABLE[lang][key].replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m));
 const dayIn = (lang, iso) => { const p = Object.fromEntries(new Intl.DateTimeFormat(lang === 'te' ? 'te-IN' : 'en-IN', { timeZone: 'UTC', weekday: 'short', day: 'numeric', month: 'short' }).formatToParts(new Date(`${iso}T12:00:00Z`)).map((x) => [x.type, x.value])); return `${p.weekday} ${p.day} ${p.month}`; };
 
@@ -42,7 +41,7 @@ function chat(kind, s) {
     const due = dv.nextDue;
     const vars = (lang) => ({ name: dv.dealer.name, owes: inr(dv.owes), amount: due ? inr(due.amount) : inr(dv.owes), invoice: due ? due.invoiceId : '', date: due ? dayIn(lang, due.date) : '' });
     const one = (lang) => bubble(`<p class="tel">${esc(say(lang, due ? 'wa.rem.body' : 'wa.rem.bodyNone', vars(lang)))}</p>`, '10:30 am', lang);
-    return { title: t('wa.rem.title'), body: `<div class="wa-day">${esc(t('wa.rem.te'))}</div>${one('te')}<div class="wa-day">${esc(t('wa.rem.en'))}</div>${one('en')}` };
+    return { title: t('wa.rem.title'), body: one('en') };
   }
   const o = dv.orders.find((x) => x.otp);
   const body = o

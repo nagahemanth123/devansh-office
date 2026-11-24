@@ -7,6 +7,13 @@ import { esc, chip, inr } from '../ui/common.js';
 
 const FULL = { full: true };
 export const DEFAULT_DRIVER = 'DR2';
+// "demo" is DR2 on the guided day. Outside the guide it is a driver who has drops today, so the screen is never empty (DR2 has none until the guided trip).
+function demoDriver() {
+  try { if (globalThis.localStorage?.getItem('dm.guide')) return DEFAULT_DRIVER; } catch { /* storage blocked */ }
+  const s = getState();
+  const busy = s.drivers.find((d) => driverView(s, d.id)?.drops.length);
+  return busy ? busy.id : DEFAULT_DRIVER;
+}
 const OFFLINE_KEY = 'dm.offline';
 const QUEUE_KEY = 'dm.syncQueue';
 
@@ -85,7 +92,7 @@ function flowHTML() {
 const PICK = ['DR1', 'DR2', 'DR3', 'DR4', 'DR5'];
 
 export function renderDriver(el, { driverId } = {}) {
-  const id = !driverId || driverId === 'demo' ? DEFAULT_DRIVER : driverId;
+  const id = !driverId || driverId === 'demo' ? demoDriver() : driverId;
   el.innerHTML = '<div class="dr"><div data-main></div><div data-flow></div></div>';
   const main = el.querySelector('[data-main]'); const ov = el.querySelector('[data-flow]');
   const view = () => driverView(getState(), id);

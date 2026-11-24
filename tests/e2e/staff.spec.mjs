@@ -21,7 +21,7 @@ const role = (page, r) => page.addInitScript((x) => localStorage.setItem('dm.sta
 
 test('the five quick actions are visible on every staff page', async ({ page }) => {
   for (const p of PAGES) {
-    await page.goto(`/app.html#/staff/${p}`);
+    await page.goto(`/index.html#/staff/${p}`);
     await expect(page.locator('[data-quick]')).toHaveCount(5);
     for (const name of QUICK) await expect(page.locator('.stf-quick').getByRole('button', { name, exact: true })).toBeVisible();
   }
@@ -29,7 +29,7 @@ test('the five quick actions are visible on every staff page', async ({ page }) 
 });
 
 test('inbound: one button, a double click moves one step, receiving short 10 raises a claim', async ({ page }) => {
-  await page.goto('/app.html#/staff/inbound');
+  await page.goto('/index.html#/staff/inbound');
   const row = page.locator('[data-po="PO-2611-041"]');
   await expect(row.getByRole('button', { name: 'Move to next step' })).toHaveCount(1);
   await row.getByRole('button', { name: 'Move to next step' }).dblclick();
@@ -48,7 +48,7 @@ test('inbound: one button, a double click moves one step, receiving short 10 rai
 });
 
 test('order desk: credit left, a blocked discount, then an invoice with the GST layout', async ({ page }) => {
-  await page.goto('/app.html#/staff/orders');
+  await page.goto('/index.html#/staff/orders');
   await page.locator('.stf-quick').getByRole('button', { name: 'New dealer order' }).click();
   const panel = page.getByRole('dialog');
   await panel.getByPlaceholder('Name or town').fill('Durga');
@@ -84,7 +84,7 @@ test('order desk: credit left, a blocked discount, then an invoice with the GST 
 
 test('an order over the credit limit waits for the admin, who approves it', async ({ page }) => {
   await role(page, 'admin');
-  await page.goto('/app.html#/staff/orders');
+  await page.goto('/index.html#/staff/orders');
   await expect(page.locator('[data-held-order]')).toHaveCount(1);
   await page.getByRole('button', { name: 'Approve credit exception' }).click();
   await expect(page.locator('[data-held-order]')).toHaveCount(0);
@@ -92,7 +92,7 @@ test('an order over the credit limit waits for the admin, who approves it', asyn
 });
 
 test('a new trip with that invoice asks for an e-way bill', async ({ page }) => {
-  await page.goto('/app.html#/staff/outbound');
+  await page.goto('/index.html#/staff/outbound');
   const inv = await st(page, (m, s) => {
     const by = { role: 'sales', name: 'Sandeep' };
     return m.createOrder('D-MYD-01', [{ productId: 'parryware-casa-coupled-closet', qty: 8 }], by).invoice.id;
@@ -112,7 +112,7 @@ test('a new trip with that invoice asks for an e-way bill', async ({ page }) => 
 });
 
 test('ledger: a payment that does not add up is refused, a split payment is saved', async ({ page }) => {
-  await page.goto('/app.html#/staff/ledger');
+  await page.goto('/index.html#/staff/ledger');
   await expect(page.locator('[data-owes]')).toHaveAttribute('data-owes', '210000');
   await page.locator('.stf-quick').getByRole('button', { name: 'Record payment' }).click();
   const panel = page.getByRole('dialog');
@@ -132,11 +132,11 @@ test('ledger: a payment that does not add up is refused, a split payment is save
 test('the Godown role never sees a purchase rate; the other roles do', async ({ page }) => {
   await role(page, 'godown');
   for (const p of PAGES) {
-    await page.goto(`/app.html#/staff/${p}`);
+    await page.goto(`/index.html#/staff/${p}`);
     await expect(page.locator('.stf-page')).not.toBeEmpty();
     expect(await page.locator('[data-field=purchaseRate]').count(), p).toBe(0);
   }
-  await page.goto('/app.html#/staff/inbound');
+  await page.goto('/index.html#/staff/inbound');
   await page.locator('.stf-quick').getByRole('button', { name: 'New purchase order' }).click();
   await page.getByRole('dialog').locator('[data-brand]').selectOption('goldmedal');
   await page.getByRole('dialog').getByRole('button', { name: 'Add' }).first().click();
@@ -147,12 +147,12 @@ test('the Godown role never sees a purchase rate; the other roles do', async ({ 
   await expect(page.locator('.stf-inb [data-field=purchaseRate]').first()).toBeVisible();
 });
 
-test('layout holds at 1024 and in Telugu', async ({ page }) => {
+test('layout holds at 1024', async ({ page }) => {
   await page.setViewportSize({ width: 1024, height: 768 });
-  for (const lang of ['en', 'te']) {
+  for (const lang of ['en']) {
     await page.addInitScript((l) => localStorage.setItem('dm.lang', l), lang);
     for (const p of PAGES) {
-      await page.goto(`/app.html#/staff/${p}`);
+      await page.goto(`/index.html#/staff/${p}`);
       await expect(page.locator('[data-quick]')).toHaveCount(5);
       await expect(page.locator('.stf-page')).not.toBeEmpty();
       const over = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);

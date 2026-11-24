@@ -1,1 +1,144 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex"><meta http-equiv="refresh" content="0; url=previews/"><title>Devansh Marketing · Owner dashboard</title></head><body><a href="previews/">Open the previews</a></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Devansh Marketing</title>
+<meta name="theme-color" content="#0F52BA">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Archivo loads without blocking the page; system-ui shows until it arrives. -->
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap" rel="stylesheet"></noscript>
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/owner.css">
+<link rel="stylesheet" href="css/staff.css">
+<link rel="stylesheet" href="css/phone-roles.css">
+<link rel="stylesheet" href="css/guide.css">
+</head>
+<body>
+<a class="skip" href="#view" data-i18n="a11y.skip">Skip to content</a>
+
+<header class="hdr" id="hdr">
+  <div class="hdr-in">
+    <a class="brand" href="#/"><img src="assets/devansh/devansh-logo-primary-white.svg" alt="Devansh Marketing"></a>
+    <div class="rolemenu">
+      <button class="chip" id="role-chip" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="role-menu" data-i18n-attr="title:role.menu">
+        <span id="role-name" data-i18n="role.landing">Demo</span>
+        <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 6l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <ul class="rolelist" id="role-menu" hidden></ul>
+    </div>
+    <button class="iconbtn search-toggle" id="search-toggle" type="button" aria-expanded="false" aria-controls="search" data-i18n-attr="aria-label:search.label">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg>
+    </button>
+    <form class="search" id="search" role="search" onsubmit="return false">
+      <input type="search" id="search-input" autocomplete="off" data-i18n-attr="placeholder:search.placeholder;aria-label:search.label" placeholder="Search dealer, brand, product or invoice">
+    </form>
+  </div>
+</header>
+
+<div class="stage" id="stage"><div class="phone" id="phone"><main class="view" id="view" tabindex="-1"></main></div></div>
+
+<footer class="ftr"><p><span data-i18n="footer.sample">Sample data · Busy Fox demo</span><a class="ftr-link" id="ftr-previews" href="previews/" hidden data-i18n="landing.previews">Previews</a></p></footer>
+
+<script type="module">
+import { t, translateDom } from './js/i18n.js';
+import { onRoute } from './js/router.js';
+import { initSearch, setSearchAllowed } from './js/ui/search.js';
+import { renderLanding } from './js/views/landing.js';
+
+const view = document.getElementById('view');
+const hdr = document.getElementById('hdr');
+const toggle = document.getElementById('search-toggle');
+const roleName = document.getElementById('role-name');
+const stage = document.getElementById('stage');
+const chip = document.getElementById('role-chip');
+const roleMenu = document.getElementById('role-menu');
+const previews = document.getElementById('ftr-previews');
+let current = null;
+
+const ROLE_OF = { landing: 'landing', owner: 'owner', 'owner-report': 'owner', 'owner-activity': 'owner', 'owner-invoice': 'owner', staff: 'staff', dealer: 'dealer', driver: 'driver', whatsapp: 'whatsapp', unknown: 'unknown' };
+const el = (tag, attrs = {}, text) => {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+  if (text !== undefined) n.textContent = text;
+  return n;
+};
+
+// Screens load on demand. A view returns a function that stops its listeners; it runs before the next render.
+const VIEWS = {
+  landing: async () => {
+    const G = await import('./js/guide.js');
+    G.initGuide(view);
+    return renderLanding(view, { total: G.TOTAL, savedStep: G.savedStep, onStart: () => G.startGuide(), onContinue: () => G.resumeGuide(), onReset: () => G.resetAll() });
+  },
+  owner: async () => (await import('./js/views/owner-home.js')).renderOwnerHome(view),
+  'owner-report': async (r) => (await import('./js/views/owner-reports.js')).renderOwnerReports(view, r.params),
+  'owner-activity': async () => (await import('./js/views/owner-activity.js')).renderOwnerActivity(view),
+  'owner-invoice': async (r) => (await import('./js/views/invoice.js')).renderInvoice(view, r.params.invoiceId),
+  staff: async (r) => (await import('./js/views/staff.js')).renderStaff(view, r.params),
+  dealer: async (r) => (await import('./js/views/dealer.js')).renderDealer(view, r.params),
+  driver: async (r) => (await import('./js/views/driver.js')).renderDriver(view, r.params),
+  whatsapp: async (r) => (await import('./js/views/whatsapp.js')).renderWhatsApp(view, r.params),
+};
+// Owner, dealer, driver and the chat mockups are phone screens: on a laptop they sit in a phone-sized frame.
+const FRAMED = new Set(['owner', 'dealer', 'driver', 'whatsapp']);
+const BLEED = new Set(['owner', 'owner-report', 'owner-activity', 'owner-invoice', 'staff', 'dealer', 'driver']);
+let dispose = null;
+let token = 0;
+
+function renderView(r) {
+  const role = ROLE_OF[r.name];
+  const mine = ++token;
+  if (dispose) { dispose(); dispose = null; }
+  view.replaceChildren();
+  view.classList.toggle('bleed', BLEED.has(r.name));
+  stage.classList.toggle('framed', FRAMED.has(role));
+  previews.hidden = r.name !== 'landing';
+  setSearchAllowed(role === 'owner');
+  if (VIEWS[r.name]) {
+    VIEWS[r.name](r).then((stop) => { if (mine === token) dispose = stop; else if (stop) stop(); });
+  } else if (r.name === 'unknown') {
+    view.append(el('h1', {}, t('unknown.title')), el('a', { class: 'btn', href: '#/' }, t('unknown.back')));
+  } else {
+    const p = el('p', { class: 'stub' }, t('view.soon') + ' ');
+    p.append(el('code', {}, r.hash));
+    view.append(el('h1', {}, t(`role.${role}`)), p);
+  }
+  roleName.dataset.i18n = `role.${role}`;
+  drawMenu(role);
+  setMenu(false);
+  translateDom(hdr);
+  document.title = `${t(`role.${role}`)} · ${t('app.title')}`;
+}
+
+// The role chip opens a small menu: the four roles and the start page.
+const SEATS = [['owner', '#/owner'], ['staff', '#/staff'], ['dealer', '#/dealer/D-MYD-01'], ['driver', '#/driver/demo']];
+function drawMenu(role) {
+  const items = [['landing', '#/', t('role.home')], ...SEATS.map(([k, h]) => [k, h, t(`role.${k}`)])];
+  roleMenu.replaceChildren(...items.map(([k, h, label]) => {
+    const li = el('li'); const a = el('a', { href: h, 'data-seat': k }, label);
+    if (k === role) a.setAttribute('aria-current', 'page');
+    li.append(a); return li;
+  }));
+}
+function setMenu(open) { roleMenu.hidden = !open; chip.setAttribute('aria-expanded', String(open)); }
+chip.addEventListener('click', () => setMenu(roleMenu.hidden));
+document.addEventListener('click', (e) => { if (!roleMenu.hidden && !e.target.closest('.rolemenu')) setMenu(false); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !roleMenu.hidden) { setMenu(false); chip.focus(); } });
+
+toggle.addEventListener('click', () => {
+  const open = hdr.classList.toggle('search-open');
+  toggle.setAttribute('aria-expanded', String(open));
+  if (open) document.getElementById('search-input').focus();
+});
+onRoute((r) => { current = r; renderView(r); window.scrollTo(0, 0); });
+initSearch(document.getElementById('search-input'), document.getElementById('search'));
+translateDom();
+try { if (localStorage.getItem('dm.guide')) import('./js/guide.js').then((G) => G.initGuide(view)); } catch { /* storage blocked: no saved guide */ }
+document.documentElement.dataset.ready = '1'; // the shell is wired: tests wait for this
+</script>
+</body>
+</html>

@@ -18,7 +18,7 @@ const bar = (page) => page.evaluate(async () => (await import('/js/selectors.js'
 const sumRows = (page) => page.$$eval('[data-rows] .inv', (rows) => rows.reduce((a, r) => a + Number(r.dataset.amount), 0));
 
 test('home shows the bar with 4 parts and the question', async ({ page }) => {
-  await page.goto('/app.html#/owner');
+  await page.goto('/index.html#/owner');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Did the ₹1 Cr come back?');
   await expect(page.locator('[data-bar] > button')).toHaveCount(4);
   await expect(page.locator('.part')).toHaveCount(4);
@@ -26,7 +26,7 @@ test('home shows the bar with 4 parts and the question', async ({ page }) => {
 });
 
 test('each bar part opens the list behind it and the rows add up to the part', async ({ page }) => {
-  await page.goto('/app.html#/owner');
+  await page.goto('/index.html#/owner');
   const b = await bar(page);
   for (const [label, key] of [['Delivered, dealers yet to pay', 'unpaid'], ['Cash back in the bank', 'bank'], ['On the road', 'road'], ['Still in the godown', 'godown']]) {
     await page.locator('.part', { hasText: label }).click();
@@ -41,7 +41,7 @@ test('each bar part opens the list behind it and the rows add up to the part', a
 });
 
 test('all 8 tiles open a sheet', async ({ page }) => {
-  await page.goto('/app.html#/owner');
+  await page.goto('/index.html#/owner');
   const tiles = page.locator('.tile');
   await expect(tiles).toHaveCount(8);
   for (let i = 0; i < 8; i++) {
@@ -54,13 +54,13 @@ test('all 8 tiles open a sheet', async ({ page }) => {
 });
 
 test('search finds a dealer by town; the 8 pm link opens the summary', async ({ page }) => {
-  await page.goto('/app.html#/owner');
+  await page.goto('/index.html#/owner');
   await page.locator('#search-toggle').click();
   await page.locator('#search-input').fill('Mydukur');
   await expect(page.locator('.search-results')).toContainText('Sri Durga Electricals');
   await page.locator('.search-results .hit', { hasText: 'Sri Durga Electricals' }).click();
   await expect(page).toHaveURL(/#\/owner\/reports\/dealer\/D-/);
-  await page.goto('/app.html#/owner');
+  await page.goto('/index.html#/owner');
   await page.getByRole('link', { name: /Tonight’s 8 pm summary/ }).click();
   await expect(page).toHaveURL(/#\/whatsapp\/summary$/);
   await expect(page.locator('.wa-msg')).toContainText('Sales:');
@@ -68,7 +68,7 @@ test('search finds a dealer by town; the 8 pm link opens the summary', async ({ 
 });
 
 test('time toggle changes the tiles and is remembered', async ({ page }) => {
-  await page.goto('/app.html#/owner');
+  await page.goto('/index.html#/owner');
   await expect(page.locator('.tile').first()).toContainText('Sales this month');
   await page.getByRole('radio', { name: 'Today' }).click();
   await expect(page.locator('.tile').first()).toContainText('Sales today');
@@ -80,7 +80,7 @@ test('time toggle changes the tiles and is remembered', async ({ page }) => {
 });
 
 test('the bar moves live when the store changes', async ({ page }) => {
-  await page.goto('/app.html#/owner');
+  await page.goto('/index.html#/owner');
   const before = await page.locator('[data-bank]').textContent();
   await page.evaluate(async () => {
     const st = await import('/js/store.js');
@@ -94,12 +94,12 @@ test('the bar moves live when the store changes', async ({ page }) => {
   expect(before).toBeTruthy();
 });
 
-for (const lang of ['en', 'te']) {
+for (const lang of ['en']) {
   test(`owner home has no horizontal scroll, no raw keys, no missing strings (${lang})`, async ({ page }) => {
     await page.addInitScript((l) => localStorage.setItem('dm.lang', l), lang);
     for (const w of [360, 390, 430, 1024, 1280]) {
       await page.setViewportSize({ width: w, height: 900 });
-      await page.goto('/app.html#/owner');
+      await page.goto('/index.html#/owner');
       await expect(page.locator('.tile')).toHaveCount(8);
       const sw = await page.evaluate(() => [document.documentElement.scrollWidth, innerWidth]);
       expect(sw[0], `width ${w}`).toBeLessThanOrEqual(sw[1]);

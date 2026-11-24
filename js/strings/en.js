@@ -1,12 +1,14 @@
 import owner from './en-owner.js';
 import staff from './en-staff.js';
 import phone from './en-phone.js';
+import guide from './en-guide.js';
 
 // English UI strings. Keys are shared with te.js. Add a key here and in te.js together.
 export default {
   ...owner,
   ...staff,
   ...phone,
+  ...guide,
   'app.title': 'Devansh Marketing',
   'a11y.skip': 'Skip to content',
   'role.landing': 'Demo',
@@ -21,8 +23,6 @@ export default {
   'search.placeholder': 'Search dealer, brand, product or invoice',
   'lang.label': 'Language',
   'footer.sample': 'Sample data · Busy Fox demo',
-  'landing.title': 'Devansh Marketing demo',
-  'landing.intro': 'Pick a role to see the day from that seat.',
   'landing.owner': 'Owner',
   'landing.owner.desc': 'See where the money is, in one place',
   'landing.staff': 'Staff',

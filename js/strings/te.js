@@ -1,6 +1,7 @@
 import owner from './te-owner.js';
 import staff from './te-staff.js';
 import phone from './te-phone.js';
+import guide from './te-guide.js';
 
 // Telugu UI strings: spoken Telugu with common English words (invoice, stock, dealer).
 // Dealer, product and brand names are never translated.
@@ -9,6 +10,7 @@ export default {
   ...owner,
   ...staff,
   ...phone,
+  ...guide,
   'app.title': 'Devansh Marketing',
   'a11y.skip': 'కంటెంట్‌కి వెళ్ళండి',
   'role.landing': 'డెమో',
@@ -23,8 +25,6 @@ export default {
   'search.placeholder': 'డీలర్, బ్రాండ్, ప్రోడక్ట్ లేదా ఇన్వాయిస్ వెతకండి',
   'lang.label': 'భాష',
   'footer.sample': 'శాంపిల్ డేటా · Busy Fox డెమో',
-  'landing.title': 'Devansh Marketing డెమో',
-  'landing.intro': 'ఏ రోల్ నుంచి చూడాలో ఎంచుకోండి.',
   'landing.owner': 'ఓనర్',
   'landing.owner.desc': 'డబ్బు ఎక్కడ ఉందో ఒకే చోట చూడండి',
   'landing.staff': 'స్టాఫ్',
