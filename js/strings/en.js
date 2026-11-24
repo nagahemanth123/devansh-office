@@ -1,8 +1,12 @@
 import owner from './en-owner.js';
+import staff from './en-staff.js';
+import phone from './en-phone.js';
 
 // English UI strings. Keys are shared with te.js. Add a key here and in te.js together.
 export default {
   ...owner,
+  ...staff,
+  ...phone,
   'app.title': 'Devansh Marketing',
   'a11y.skip': 'Skip to content',
   'role.landing': 'Demo',

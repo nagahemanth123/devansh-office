@@ -1,10 +1,14 @@
 import owner from './te-owner.js';
+import staff from './te-staff.js';
+import phone from './te-phone.js';
 
 // Telugu UI strings: spoken Telugu with common English words (invoice, stock, dealer).
 // Dealer, product and brand names are never translated.
 // NEEDS NATIVE CHECK: every string here is for Busy Fox to review with a native speaker.
 export default {
   ...owner,
+  ...staff,
+  ...phone,
   'app.title': 'Devansh Marketing',
   'a11y.skip': 'కంటెంట్‌కి వెళ్ళండి',
   'role.landing': 'డెమో',

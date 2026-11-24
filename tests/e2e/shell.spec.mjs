@@ -36,9 +36,9 @@ test('EN | తె toggle flips html lang, translates, and is remembered', async 
 test('hash routes update the view and role chip', async ({ page }) => {
   await page.goto('/app.html#/owner');
   await expect(page.locator('#role-chip')).toHaveText('Owner');
-  await page.goto('/app.html#/dealer/d07');
+  await page.goto('/app.html#/dealer/D-MYD-01');
   await expect(page.locator('#role-chip')).toHaveText('Dealer');
-  await expect(page.locator('.stub code')).toHaveText('#/dealer/d07');
+  await expect(page.locator('.dl-hero')).toBeVisible();
   await page.goto('/app.html#/nowhere');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('That page was not found');
 });

@@ -13,6 +13,8 @@
 <link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/app.css">
 <link rel="stylesheet" href="css/owner.css">
+<link rel="stylesheet" href="css/staff.css">
+<link rel="stylesheet" href="css/phone-roles.css">
 </head>
 <body>
 <a class="skip" href="#view" data-i18n="a11y.skip">Skip to content</a>
@@ -65,9 +67,12 @@ const VIEWS = {
   'owner-report': async (r) => (await import('./js/views/owner-reports.js')).renderOwnerReports(view, r.params),
   'owner-activity': async () => (await import('./js/views/owner-activity.js')).renderOwnerActivity(view),
   'owner-invoice': async (r) => (await import('./js/views/invoice.js')).renderInvoice(view, r.params.invoiceId),
+  staff: async (r) => (await import('./js/views/staff.js')).renderStaff(view, r.params),
+  dealer: async (r) => (await import('./js/views/dealer.js')).renderDealer(view, r.params),
+  driver: async (r) => (await import('./js/views/driver.js')).renderDriver(view, r.params),
   whatsapp: async (r) => (await import('./js/views/whatsapp.js')).renderWhatsApp(view, r.params),
 };
-const BLEED = new Set(['owner', 'owner-report', 'owner-activity', 'owner-invoice']);
+const BLEED = new Set(['owner', 'owner-report', 'owner-activity', 'owner-invoice', 'staff', 'dealer', 'driver']);
 let dispose = null;
 let token = 0;
 
